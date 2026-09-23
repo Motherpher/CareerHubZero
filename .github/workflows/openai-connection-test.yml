@@ -1,0 +1,57 @@
+name: CareerHubZero — Test OpenAI Connection
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/openai-connection-test.yml"
+      - "scripts/test_openai.py"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      CAREERHUB_MODEL: ${{ secrets.CAREERHUB_MODEL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check secret exists
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "## ❌ OpenAI secret missing" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Add repository secret **OPENAI_API_KEY** under Settings → Secrets and variables → Actions." >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::OPENAI_API_KEY is missing."
+            exit 1
+          fi
+
+      - name: Test OpenAI Responses API
+        run: |
+          python scripts/test_openai.py
+          echo "## ✅ CareerHubZero is connected to OpenAI" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "The repository secret **OPENAI_API_KEY** is available and a live Responses API request succeeded." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "CareerHubZero can now use OpenAI for HRDM and application-generation workflows." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Troubleshooting
+        if: failure()
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Troubleshooting" >> "$GITHUB_STEP_SUMMARY"
+          echo "- confirm API billing/credits are active" >> "$GITHUB_STEP_SUMMARY"
+          echo "- confirm the key belongs to the intended OpenAI project" >> "$GITHUB_STEP_SUMMARY"
+          echo "- confirm the project can access the configured model" >> "$GITHUB_STEP_SUMMARY"
+          echo "- if CAREERHUB_MODEL is set, verify that model ID" >> "$GITHUB_STEP_SUMMARY"
