@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub Profiled Instance",
+  "type": "object",
+  "required": ["careerhub", "profile", "search", "state"],
+  "properties": {
+    "careerhub": {
+      "type": "object",
+      "required": ["instance_id", "engine"],
+      "properties": {
+        "instance_id": {"type": "string", "minLength": 1},
+        "engine": {
+          "type": "object",
+          "required": ["repository", "version"],
+          "properties": {
+            "repository": {"type": "string"},
+            "version": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {"path": {"type": "string"}},
+      "additionalProperties": false
+    },
+    "search": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {"path": {"type": "string"}},
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "required": ["job_vault", "applications"],
+      "properties": {
+        "job_vault": {"type": "string"},
+        "applications": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
