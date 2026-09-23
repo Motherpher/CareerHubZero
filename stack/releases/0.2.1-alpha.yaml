@@ -1,0 +1,27 @@
+version: 0.2.1-alpha
+reconstructed: false
+status: superseded
+date: 2026-09-24
+purpose: Remove base-contract drift introduced in 0.2.0-alpha.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  removed:
+    - Napp as user-facing command
+    - separate market-response subsystem from base contract
+    - response-ledger/experiment requirements from central instance contract
+  restored:
+    - job_vault + applications as canonical state core
+    - application status progression and outcomes
+  retained:
+    - evidence-bounded profile support
+    - profiled-instance loader
+    - dashboard rendering
+known_limitations:
+  - package __version__ was still stale
+  - no stack-wide release registry or automatic profile propagation existed
+  - WPB still contained a local motor copy
+compatibility:
+  stack_harmonised: false
+  reason: Version pins and local-motor parity were not enforced.
+provenance:
+  merge_commit: 43344eaaef7f8cc60129e90eed1f69b2bfff07c2
