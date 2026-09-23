@@ -1,0 +1,30 @@
+version: 0.2.3-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Verified-career evidence firewall and search-only user raster.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  evidence_firewall:
+    - only verified career sources may generate matchable candidate evidence
+    - every evidence item must bind to at least one verified source id
+    - private-life fields are rejected by runtime policy validation
+    - model memory and conversational impressions are not candidate evidence
+  search_raster:
+    - a user may enter specific wishes or needs
+    - the overlay source is user_input
+    - the overlay scope is search_only
+    - the overlay may affect sourcing filtering ranking and presentation
+    - the overlay may not become a CV claim HRDM proof point or application claim
+  contracts:
+    - candidate profile schema restricted to verified career sources
+    - search profile schema includes canonical user_search_overlay
+    - instance loader fails closed on policy violations
+  tests:
+    - reject unverified career sources
+    - reject private-life profile fields
+    - accept search-only wishes and needs
+    - reject wishes and needs when inserted into the candidate profile
+compatibility:
+  migration_required: true
+  note: Existing profiled hubs must migrate candidate evidence into the verified-source contract before adopting this version.
