@@ -4,7 +4,7 @@
 
 CareerHubZero is the single reusable motor behind every profiled CareerHub instance. It owns sourcing/matching capability, HRDM-R, application generation, state contracts, rendering, reusable workflows, schemas and stack version governance.
 
-A profiled hub owns only its profile/evidence, search preferences, durable job/application state and generated artifacts. It must not fork or redefine the motor.
+A profiled hub owns only verified career evidence, search settings, durable job/application state and generated artifacts. User-entered wishes or needs are a search-only raster and never candidate evidence. It must not fork or redefine the motor.
 
 ## User contract
 
@@ -25,7 +25,7 @@ A CareerHub version is stack-current only when every active registered profile h
 
 ## Current version
 
-**CareerHubZero 0.2.2-alpha — harmonised stack version governance.**
+**CareerHubZero 0.2.3-alpha — verified-career evidence firewall + search-only user raster.**
 
 Canonical version source: `VERSION`.
 
@@ -61,7 +61,7 @@ stack/
 **Central CareerHub = motor/capability.**  
 **Profiled CareerHub = context/state.**
 
-Motor changes are made only in CareerHubZero. Every motor/schema/workflow change requires a version bump and release-ledger entry. The release workflow propagates that version to registered profile hubs and fails rather than silently leaving a hub behind.
+Motor changes are made only in CareerHubZero. The matchable profile is hard-bound to verified career sources; private-life data has no profile path. Every motor/schema/workflow change requires a version bump and release-ledger entry. The release workflow propagates that version to registered profile hubs and fails rather than silently leaving a hub behind.
 
 ## Migration status
 
