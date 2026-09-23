@@ -43,6 +43,24 @@ def put_file(repo: str, path: str, content: str, token: str, message: str, sha: 
     return r.json()
 
 
+def canonical_instance(existing: dict, engine_repository: str, current: str) -> dict:
+    return {
+        "careerhub": {
+            "instance_id": existing.get("careerhub", {}).get("instance_id"),
+            "engine": {
+                "repository": engine_repository,
+                "version": current,
+            },
+        },
+        "profile": {"path": existing.get("profile", {}).get("path")},
+        "search": {"path": existing.get("search", {}).get("path")},
+        "state": {
+            "job_vault": existing.get("state", {}).get("job_vault"),
+            "applications": existing.get("state", {}).get("applications"),
+        },
+    }
+
+
 def main():
     token = os.getenv("CAREERHUB_STACK_TOKEN", "")
     if not token:
@@ -58,10 +76,18 @@ def main():
         if not item:
             failures.append(f"{repo}: missing instance file {inst['instance_path']}")
             continue
-        cfg = yaml.safe_load(base64.b64decode(item["content"]).decode("utf-8"))
-        cfg.setdefault("careerhub", {}).setdefault("engine", {})
-        cfg["careerhub"]["engine"]["repository"] = reg["engine_repository"]
-        cfg["careerhub"]["engine"]["version"] = current
+        existing = yaml.safe_load(base64.b64decode(item["content"]).decode("utf-8"))
+        cfg = canonical_instance(existing, reg["engine_repository"], current)
+        if not all([
+            cfg["careerhub"]["instance_id"],
+            cfg["profile"]["path"],
+            cfg["search"]["path"],
+            cfg["state"]["job_vault"],
+            cfg["state"]["applications"],
+        ]):
+            failures.append(f"{repo}: instance file lacks required canonical paths")
+            continue
+
         blockers = [p for p in inst.get("forbidden_motor_paths", []) if get_file(repo, p, token)]
         aligned = not blockers
         lock = {
