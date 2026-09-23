@@ -1,0 +1,26 @@
+schema_version: "1.0"
+stack_id: careerhub
+engine_repository: Motherpher/CareerHubZero
+version_source: VERSION
+alignment_rule: "All active profile hubs consume the same central motor; only profile/config/state/artifacts may vary."
+instances:
+  - instance_id: linus-fast
+    repository: Motherpher/CareerHub-LinusF
+    instance_path: instance.yaml
+    lock_path: stack.lock.yaml
+    status: active
+    auto_sync: true
+    forbidden_motor_paths:
+      - src/careerhub
+      - scripts/careerhub.py
+      - core/hrdm
+  - instance_id: weronika-perez-borjas
+    repository: Hybrismannen/wpb
+    instance_path: CareerHub/instance.yaml
+    lock_path: CareerHub/stack.lock.yaml
+    status: active
+    auto_sync: true
+    forbidden_motor_paths:
+      - CareerHub/src/careerhub
+      - CareerHub/scripts/careerhub.py
+      - CareerHub/hrdm/HRDM_R_v6.3.md
