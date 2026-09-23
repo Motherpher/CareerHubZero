@@ -1,0 +1,21 @@
+search:
+  geographies: []
+  work_modes: []
+  engagement_types: []
+
+lanes:
+  core: []
+  adjacent: []
+  bridge: []
+  specialist: []
+
+positioning_surfaces:
+  default: default
+  enabled:
+    - default
+
+filters:
+  salary:
+    mode: advisory
+    minimum: null
+  exclude_terms: []
