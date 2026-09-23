@@ -25,6 +25,11 @@ jobs:
         run: |
           find src -name '*.py' -print0 | xargs -0 -r -n1 python -m py_compile
 
+      - name: Run unit tests
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
       - name: Validate JSON schemas
         run: |
           python - <<'PY'
@@ -33,8 +38,11 @@ jobs:
 
           for p in [
               Path("schemas/instance.schema.json"),
+              Path("schemas/profile.schema.json"),
               Path("schemas/candidate_profile.schema.json"),
+              Path("schemas/search_profile.schema.json"),
               Path("schemas/response_event.schema.json"),
+              Path("schemas/response_ledger.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
@@ -50,8 +58,11 @@ jobs:
               "data/applications.json",
               "data/job_vault.json",
               "data/response_events.json",
+              "data/response_ledger.json",
+              "data/experiments.json",
               "data/verification_queue.json",
               "profile/candidate.yaml",
+              "profile/evidence_index.yaml",
           }
           present = [p for p in forbidden_paths if Path(p).exists()]
           if present:
