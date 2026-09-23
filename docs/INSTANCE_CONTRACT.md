@@ -1,85 +1,72 @@
 # Profiled Instance Contract
 
-A profiled CareerHub instance supplies context and receives state/artifacts. It does not duplicate the central engine.
+A profiled CareerHub instance supplies verified career context, search preferences and state. It does not duplicate the central engine.
 
 ## Required instance inputs
 
 At minimum:
 
-```yaml
-careerhub:
-  instance_id: example-person
-  engine:
-    repository: Motherpher/CareerHubZero
-    version: "0.x"
+    careerhub:
+      instance_id: example-person
+      engine:
+        repository: Motherpher/CareerHubZero
+        version: "0.x"
 
-profile:
-  path: profile/candidate.yaml
+    profile:
+      path: profile/candidate.yaml
 
-search:
-  path: config/search_profile.yaml
+    search:
+      path: config/search_profile.yaml
 
-state:
-  job_vault: data/job_vault.json
-  applications: data/applications.json
-```
+    state:
+      job_vault: data/job_vault.json
+      applications: data/applications.json
 
-## Candidate evidence rule
+## Hard candidate-evidence rule
 
-CareerHub may only position a candidate using evidence supplied by the profiled instance or explicitly verified external evidence allowed by that instance.
+CareerHub may position or match a candidate only from evidence that is career-related, bound to an allowed career source, verified and present in the profiled instance.
 
 Absent evidence remains **unknown**.
 
-CareerHub must never invent:
+CareerHub must never generate a matchable profile fact from private-life information, family or relationship context, health information, religion, ethnicity or sexual orientation, political affiliation, personal financial context, model memory, conversational impressions or unverified biographical claims.
 
-- dates
-- employers
-- qualifications
-- software/tool proficiency
-- language proficiency
-- results or achievements
-- current location
-- current employment status
+CareerHub must never invent dates, employers, qualifications, tools, language proficiency, results, achievements, current location or current employment status.
 
-A profiled repository may maintain additional private evidence indexes, positioning views and verification material, but these do not alter the CareerHub base contract.
+## Search-only user overlay
+
+The user may enter **specific wishes or needs** to refine a search.
+
+Canonical contract:
+
+    user_search_overlay:
+      source: user_input
+      scope: search_only
+      specific_wishes_or_needs: "..."
+
+This overlay may influence sourcing queries, filtering, ranking and presentation order.
+
+It may not influence candidate-evidence truth, CV claims, HRDM proof points or external factual claims about the candidate.
 
 ## Expected state outputs
 
-A profiled instance may maintain:
-
-- normalized sourced jobs
-- historic job vault
-- analysed-job records
-- application cases
-- deadlines
-- next actions
-- reminder history
-- status progression
-- generated artifacts
-- outcomes
+A profiled instance may maintain normalized sourced jobs, historic job vault, analysed-job records, application cases, deadlines, next actions, reminder history, status progression, generated artifacts and outcomes.
 
 ## Status vocabulary
 
 Canonical application progression:
 
-```text
-saved
-preparing
-ready
-applied
-contacted
-portfolio
-interview_1 ... interview_5
-meeting_1 ... meeting_5
-offer
-denied
-withdrawn
-archived
-```
-
-## Privacy and separation
-
-A profiled instance should normally be private. Direct contact details, national identifiers and unrelated personal data are not required in CareerHubZero.
+    saved
+    preparing
+    ready
+    applied
+    contacted
+    portfolio
+    interview_1 ... interview_5
+    meeting_1 ... meeting_5
+    offer
+    denied
+    withdrawn
+    archived
 
 ## User-facing rule
 
