@@ -1,0 +1,15 @@
+careerhub:
+  instance_id: example-person
+  engine:
+    repository: Motherpher/CareerHubZero
+    version: "0.1.0-alpha"
+
+profile:
+  path: profile/candidate.yaml
+
+search:
+  path: config/search_profile.yaml
+
+state:
+  job_vault: data/job_vault.json
+  applications: data/applications.json
