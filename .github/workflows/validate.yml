@@ -1,0 +1,56 @@
+name: Validate CareerHubZero
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile Python
+        run: |
+          find src -name '*.py' -print0 | xargs -0 -r -n1 python -m py_compile
+
+      - name: Validate JSON schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for p in [
+              Path("schemas/instance.schema.json"),
+              Path("core/hrdm/hrdm_result.schema.json"),
+          ]:
+              json.loads(p.read_text(encoding="utf-8"))
+              print("JSON OK", p)
+          PY
+
+      - name: Guard against profiled data in central repository
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          forbidden_paths = {
+              "data/applications.json",
+              "data/job_vault.json",
+              "profile/candidate.yaml",
+          }
+          present = [p for p in forbidden_paths if Path(p).exists()]
+          if present:
+              raise SystemExit("Profiled-state files must not live in CareerHubZero: " + ", ".join(present))
+          print("Central/profile separation OK")
+          PY
