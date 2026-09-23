@@ -2,16 +2,76 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CareerHub Search Profile",
   "type": "object",
-  "required": ["version", "intent", "geographies", "lanes", "triage_rule"],
+  "required": [
+    "version",
+    "intent",
+    "geographies",
+    "lanes",
+    "triage_rule"
+  ],
   "properties": {
-    "version": {"type": "string"},
-    "intent": {"type": "string"},
-    "geographies": {"type": "object", "additionalProperties": true},
-    "engagement_types": {"type": "array", "items": {"type": "string"}},
-    "salary": {"type": "object", "additionalProperties": true},
-    "lanes": {"type": "array", "items": {"type": "object", "required": ["lane_id", "name", "priority"], "additionalProperties": true}},
-    "negative_filters": {"type": "array", "items": {"type": "string"}},
-    "triage_rule": {"type": "string"}
+    "version": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string"
+    },
+    "geographies": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "engagement_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "salary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "lane_id",
+          "name",
+          "priority"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "negative_filters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "triage_rule": {
+      "type": "string"
+    },
+    "user_search_overlay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "scope",
+        "specific_wishes_or_needs"
+      ],
+      "properties": {
+        "source": {
+          "const": "user_input"
+        },
+        "scope": {
+          "const": "search_only"
+        },
+        "specific_wishes_or_needs": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    }
   },
   "additionalProperties": true
 }
