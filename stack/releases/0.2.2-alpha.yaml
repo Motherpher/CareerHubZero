@@ -1,0 +1,26 @@
+version: 0.2.2-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Harmonised stack version governance.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  version_governance:
+    - VERSION is the single canonical engine version
+    - package version is read from VERSION rather than separately hard-coded
+    - stack registry enumerates every active profiled hub
+    - one machine-readable release ledger entry is required for every version
+    - stack.lock.yaml is generated into each profiled hub
+    - release completion is blocked if a registered hub is unreachable, behind, or contains a local motor
+  automation:
+    - central sync script for profile version propagation
+    - stack verification script
+    - release workflow using CAREERHUB_STACK_TOKEN for cross-private-repository writes
+  drift_control:
+    - profile hubs may vary in profile, search configuration, state and artifacts only
+    - motor code remains central
+known_limitations:
+  - Hybrismannen/wpb currently contains a legacy local CareerHub motor and therefore remains a migration blocker until cut over to CareerHubZero
+compatibility:
+  stack_harmonised: conditional
+  release_gate: All active registry entries must pass remote alignment before stack release is considered complete.

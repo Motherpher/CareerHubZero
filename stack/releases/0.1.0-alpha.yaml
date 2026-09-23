@@ -1,0 +1,26 @@
+version: 0.1.0-alpha
+reconstructed: true
+status: historical
+period: 2026-09
+purpose: Establish central CareerHub repository and separation boundary.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  architecture:
+    - central operations vs profiled instance separation
+    - initial instance contract
+    - migration plan from Hybrismannen/wpb
+  motor:
+    - central repository skeleton
+    - HRDM canonical specification preserved
+    - reusable runtime extraction not yet complete
+  state_contract:
+    - job_vault
+    - applications
+  schemas:
+    - instance.schema.json
+known_limitations:
+  - WPB retained the working local motor
+  - runtime cutover had not begun
+compatibility:
+  stack_harmonised: false
+  reason: Profile hubs were not yet centrally version-synchronised.

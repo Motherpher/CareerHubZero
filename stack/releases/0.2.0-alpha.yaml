@@ -1,0 +1,23 @@
+version: 0.2.0-alpha
+reconstructed: true
+status: superseded
+period: 2026-09-24
+purpose: Profiled-instance expansion and experimental market-response layer.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  added:
+    - profiled-instance loader
+    - profile and search schemas
+    - evidence index support
+    - positioning surfaces
+    - dashboard renderer
+    - market-response analytics and response ledger
+  validation:
+    - unit tests
+    - privacy guards against profile state in CareerHubZero
+known_limitations:
+  - market-response/Napp layer extended beyond the canonical base contract
+  - WPB still contained a separate local motor
+compatibility:
+  stack_harmonised: false
+  reason: Engine capability expanded before all profile hubs shared one motor.

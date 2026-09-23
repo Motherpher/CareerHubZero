@@ -1,92 +1,68 @@
 # CareerHubZero
 
-**Central operations for CareerHub.**
+**Canonical central motor for CareerHub.**
 
-CareerHubZero is the reusable system layer behind profiled CareerHub instances. It contains the capability to source jobs, analyse selected roles with HRDM-R, generate evidence-bounded application material, track application state and outcomes, and render the user-facing CareerHub journey.
+CareerHubZero is the single reusable motor behind every profiled CareerHub instance. It owns sourcing/matching capability, HRDM-R, application generation, state contracts, rendering, reusable workflows, schemas and stack version governance.
 
-It deliberately does **not** contain a person's private profile, CV, job history or application history.
-
-## Two-part architecture
-
-```text
-                 CAREERHUB
-
-        CENTRAL OPERATIONS
-        Motherpher/CareerHubZero
-        ├── sourcing
-        ├── matching
-        ├── HRDM-R
-        ├── employer/role research
-        ├── application generation
-        ├── state contracts
-        ├── notifications
-        ├── rendering
-        └── reusable workflows
-                 │
-                 │ runs against
-                 ▼
-        PROFILED INSTANCE
-        e.g. a person's private repository
-        ├── candidate profile
-        ├── preferences
-        ├── evidence/CV
-        ├── job vault
-        ├── analysed jobs
-        ├── applications
-        └── outcomes
-```
-
-**Central CareerHub = capability.**  
-**Profiled CareerHub = context + state.**
+A profiled hub owns only its profile/evidence, search preferences, durable job/application state and generated artifacts. It must not fork or redefine the motor.
 
 ## User contract
 
-The profiled user should normally experience only:
+**1. Find jobs → 2. Analyse? → 3. Apply**
 
-**1. Find jobs → 2. Do you want to analyse this job? → YES → 3. Apply**
+Everything else is implementation behind that interface.
 
-Sourcing internals, HRDM, ranking, case creation, document generation and workflow machinery remain behind that interface.
+## Stack contract
 
-## Current state
+```text
+Motherpher/CareerHubZero       ← one canonical motor + VERSION
+        │
+        ├── CareerHub-LinusF   ← profile/config/state/artifacts
+        └── WPB CareerHub      ← profile/config/state/artifacts
+```
 
-**CareerHubZero 0.2.1-alpha — base-contract drift correction.**
+A CareerHub version is stack-current only when every active registered profile hub consumes the same central engine version and contains no local motor copy.
 
-The first working CareerHub implementation was developed inside `Hybrismannen/wpb`. CareerHubZero is the canonical central-operations repository. Generic capability is extracted without moving private candidate state into the engine.
+## Current version
 
-The migration principle remains **copy → generalize → validate → cut over**.
+**CareerHubZero 0.2.2-alpha — harmonised stack version governance.**
+
+Canonical version source: `VERSION`.
+
+Per-version content register: `stack/releases/`.
+
+Registered profile hubs: `stack/registry.yaml`.
+
+Versioning and release rules: `docs/VERSIONING.md`.
 
 ## Repository map
 
 ```text
 core/
-  hrdm/                canonical HRDM specification and result schema
+  hrdm/                 canonical HRDM specification and schema
 
 docs/
-  ARCHITECTURE.md      system boundary and component model
-  INSTANCE_CONTRACT.md contract between central operations and a profiled instance
-  MIGRATION.md         staged extraction from the WPB implementation
-  PRINCIPLES.md        non-negotiable design rules
+  ARCHITECTURE.md
+  INSTANCE_CONTRACT.md
+  MIGRATION.md
+  PRINCIPLES.md
+  VERSIONING.md
 
-src/
-  careerhub/
-    instance.py        profiled-instance loader and path validation
-    dashboard.py       application-state dashboard renderer
-
-scripts/
-  validate_instance.py
-  render_dashboard.py
-
-schemas/
-  instance.schema.json
-  profile.schema.json
-  search_profile.schema.json
-  candidate_profile.schema.json
+src/careerhub/           reusable central runtime
+scripts/                 central validation/version tooling
+schemas/                 canonical contracts
+stack/
+  registry.yaml          all active profile hubs
+  releases/              full content register per version
 ```
 
-## Status labels
+## Non-negotiable separation
 
-- **Central contracts:** active alpha
-- **Profiled-instance loader:** active alpha
-- **Dashboard renderer:** active alpha
-- **WPB profiled instance:** remains live during migration
-- **Full sourcing/application runtime cutover:** not yet complete
+**Central CareerHub = motor/capability.**  
+**Profiled CareerHub = context/state.**
+
+Motor changes are made only in CareerHubZero. Every motor/schema/workflow change requires a version bump and release-ledger entry. The release workflow propagates that version to registered profile hubs and fails rather than silently leaving a hub behind.
+
+## Migration status
+
+`Motherpher/CareerHub-LinusF` is structured as a profile node. `Hybrismannen/wpb/CareerHub` still contains the original legacy local motor; the stack registry deliberately treats that as a release blocker until the WPB cutover removes the duplicate motor.

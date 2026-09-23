@@ -1,0 +1,62 @@
+name: CareerHub — Release & Harmonise Stack
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "VERSION"
+      - "src/**"
+      - "core/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "stack/**"
+      - "requirements.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  harmonise:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CAREERHUB_STACK_TOKEN: ${{ secrets.CAREERHUB_STACK_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate canonical version ledger
+        run: python scripts/check_stack_version.py
+
+      - name: Require cross-repository stack credential
+        run: |
+          if [ -z "$CAREERHUB_STACK_TOKEN" ]; then
+            echo "::error::CAREERHUB_STACK_TOKEN is required to harmonise private profile hubs."
+            exit 1
+          fi
+
+      - name: Propagate canonical engine version
+        run: python scripts/sync_stack_versions.py
+
+      - name: Verify entire registered stack
+        run: python scripts/check_stack_version.py --remote
+
+      - name: Create release tag only after full alignment
+        run: |
+          VERSION="$(cat VERSION)"
+          TAG="v${VERSION}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists."
+          else
+            gh release create "$TAG" --title "CareerHubZero ${VERSION}" --notes-file "stack/releases/${VERSION}.yaml"
+          fi
