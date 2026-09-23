@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Secret-availability probe refreshed after repository-secret configuration.
 from __future__ import annotations
 
 import os
