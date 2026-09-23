@@ -1,21 +1,24 @@
-search:
-  geographies: []
-  work_modes: []
-  engagement_types: []
+version: "2.0"
+intent: "Find relevant opportunities from the verified career profile, with optional user search preferences."
+geographies: {}
+engagement_types: []
+salary: {}
 
 lanes:
-  core: []
-  adjacent: []
-  bridge: []
-  specialist: []
+  - lane_id: core
+    name: Core
+    priority: 1
+  - lane_id: adjacent
+    name: Adjacent
+    priority: 2
+  - lane_id: bridge
+    name: Bridge
+    priority: 3
 
-positioning_surfaces:
-  default: default
-  enabled:
-    - default
+negative_filters: []
+triage_rule: "Verified career evidence defines candidate fit. User wishes/needs may only modify search and ranking as a search-only overlay."
 
-filters:
-  salary:
-    mode: advisory
-    minimum: null
-  exclude_terms: []
+user_search_overlay:
+  source: user_input
+  scope: search_only
+  specific_wishes_or_needs: ""
