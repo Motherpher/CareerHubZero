@@ -2,7 +2,7 @@
 
 **Central operations for CareerHub.**
 
-CareerHubZero is the reusable system layer behind profiled CareerHub instances. It contains the capability to source jobs, analyse a selected role with HRDM-R, generate an evidence-bounded application pack, track deadlines and application state, and render the user-facing CareerHub journey.
+CareerHubZero is the reusable system layer behind profiled CareerHub instances. It contains the capability contract for sourcing jobs, analysing selected roles with HRDM-R, generating evidence-bounded application material, maintaining durable state, measuring market response and rendering the user-facing CareerHub journey.
 
 It deliberately does **not** contain a person's private profile, CV, job history or application history.
 
@@ -13,26 +13,28 @@ It deliberately does **not** contain a person's private profile, CV, job history
 
         CENTRAL OPERATIONS
         Motherpher/CareerHubZero
-        ├── sourcing
-        ├── matching
+        ├── sourcing / matching contracts
         ├── HRDM-R
         ├── employer/role research
         ├── application generation
-        ├── state contracts
-        ├── notifications
-        ├── rendering
-        └── reusable workflows
+        ├── instance + state contracts
+        ├── market-response analytics
+        ├── dashboard rendering
+        ├── notifications / reusable workflows
+        └── validation
                  │
                  │ runs against
                  ▼
         PROFILED INSTANCE
         e.g. a person's private repository
         ├── candidate profile
-        ├── preferences
-        ├── evidence/CV
+        ├── evidence index
+        ├── positioning surfaces
+        ├── search configuration
         ├── job vault
-        ├── analysed jobs
+        ├── analysed jobs / HRDM runs
         ├── applications
+        ├── response ledger / experiments
         └── outcomes
 ```
 
@@ -41,19 +43,19 @@ It deliberately does **not** contain a person's private profile, CV, job history
 
 ## User contract
 
-The profiled user should normally experience only:
+The primary user journey remains:
 
-**1. Find jobs → 2. Do you want to analyse this job? → YES → 3. Apply**
+**1. Find jobs → 2. Analyse? → 3. Apply**
 
-Sourcing internals, HRDM, ranking, case creation, document generation and workflow machinery remain behind that interface.
+Status and market-response views can be exposed as compact commands without surfacing implementation machinery.
 
 ## Current state
 
-**CareerHubZero 0.1.0-alpha — extraction and separation phase.**
+**CareerHubZero 0.2.0-alpha — profiled-instance contract and market-response layer.**
 
-The first working CareerHub implementation was developed inside `Hybrismannen/wpb`. CareerHubZero now becomes the canonical central-operations repository. WPB remains operational while generic capability is extracted and made instance-independent.
+The first working CareerHub implementation was developed inside `Hybrismannen/wpb`. CareerHubZero is the canonical central-operations repository. Generic capability is being extracted without moving private candidate state into the engine.
 
-The migration principle is **copy → generalize → validate → cut over**. We do not break the live profiled instance while building the central engine.
+The migration principle remains **copy → generalize → validate → cut over**.
 
 ## Repository map
 
@@ -63,24 +65,35 @@ core/
 
 docs/
   ARCHITECTURE.md      system boundary and component model
-  INSTANCE_CONTRACT.md contract between central operations and a profiled instance
+  INSTANCE_CONTRACT.md contract between engine and profiled instance
+  MARKET_RESPONSE.md   response-ledger and experiment rules
   MIGRATION.md         staged extraction from the WPB implementation
   PRINCIPLES.md        non-negotiable design rules
 
 src/
-  careerhub/           reusable runtime package
+  careerhub/
+    instance.py        profiled-instance loader and path validation
+    analytics.py       market-response aggregation
+    dashboard.py       minimal instance dashboard renderer
 
-examples/
-  instance.example.yaml
-  profile.example.yaml
+scripts/
+  validate_instance.py
+  render_dashboard.py
 
 schemas/
   instance.schema.json
+  profile.schema.json
+  search_profile.schema.json
+  response_event.schema.json
+  response_ledger.schema.json
+  candidate_profile.schema.json   legacy/minimal compatibility contract
 ```
 
 ## Status labels
 
-- **Central core:** being established
-- **WPB profiled instance:** live
-- **Runtime cutover:** not started
-- **Canonical source after cutover:** Motherpher/CareerHubZero
+- **Central contracts:** active alpha
+- **Profiled-instance loader:** active alpha
+- **Market-response analytics:** active alpha
+- **Dashboard renderer:** active alpha
+- **WPB profiled instance:** remains live during migration
+- **Full sourcing/application runtime cutover:** not yet complete
