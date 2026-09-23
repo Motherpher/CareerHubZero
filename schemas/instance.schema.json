@@ -17,31 +17,20 @@
             "version": {"type": "string"}
           },
           "additionalProperties": false
-        },
-        "instance_status": {"type": "string"},
-        "privacy": {"type": "string"}
+        }
       },
       "additionalProperties": false
     },
     "profile": {
       "type": "object",
       "required": ["path"],
-      "properties": {
-        "path": {"type": "string"},
-        "schema": {"type": "string"},
-        "evidence_index": {"type": "string"},
-        "surfaces_dir": {"type": "string"}
-      },
+      "properties": {"path": {"type": "string"}},
       "additionalProperties": false
     },
     "search": {
       "type": "object",
       "required": ["path"],
-      "properties": {
-        "path": {"type": "string"},
-        "schema": {"type": "string"},
-        "experiments": {"type": "string"}
-      },
+      "properties": {"path": {"type": "string"}},
       "additionalProperties": false
     },
     "state": {
@@ -49,20 +38,7 @@
       "required": ["job_vault", "applications"],
       "properties": {
         "job_vault": {"type": "string"},
-        "applications": {"type": "string"},
-        "response_ledger": {"type": "string"},
-        "experiments": {"type": "string"},
-        "response_events": {"type": "string"},
-        "verification_queue": {"type": "string"},
-        "analysed_jobs": {"type": "string"}
-      },
-      "additionalProperties": false
-    },
-    "dashboard": {
-      "type": "object",
-      "properties": {
-        "path": {"type": "string"},
-        "data": {"type": "string"}
+        "applications": {"type": "string"}
       },
       "additionalProperties": false
     }
