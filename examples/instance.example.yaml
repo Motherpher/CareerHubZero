@@ -2,11 +2,10 @@ careerhub:
   instance_id: example-person
   engine:
     repository: Motherpher/CareerHubZero
-    version: "0.1.0-alpha"
+    version: "0.2.1-alpha"
 
 profile:
   path: profile/candidate.yaml
-  schema: schemas/candidate_profile.schema.json
 
 search:
   path: config/search_profile.yaml
@@ -14,6 +13,3 @@ search:
 state:
   job_vault: data/job_vault.json
   applications: data/applications.json
-  response_events: data/response_events.json
-  verification_queue: data/verification_queue.json
-  analysed_jobs: data/analysed_jobs/
