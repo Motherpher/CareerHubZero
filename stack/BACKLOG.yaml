@@ -1,0 +1,45 @@
+schema_version: "1.0"
+current_engine_version: 0.2.2-alpha
+release_ledger: stack/releases/
+rule: "No planned version becomes stack-current until every active registry instance passes central-motor parity."
+
+planned_versions:
+  - version: 0.3.0-alpha
+    status: blocked
+    purpose: Complete central-motor cutover and remove the final profile-local runtime.
+    source_plan: docs/MIGRATION.md
+    required_content:
+      central_motor:
+        - extract/generalise reusable WPB runtime modules into CareerHubZero
+        - remove repository/person hard-coding
+        - centralise sourcing, matching, HRDM execution, application generation, state logic and rendering
+        - centralise reusable workflow/bootstrap logic
+      profile_contract:
+        - profile hubs retain only profile/evidence, search configuration, state and generated artifacts
+        - all profile hubs use canonical instance.yaml shape
+        - all profile hubs use generated stack.lock.yaml
+      migration:
+        - dual-run WPB legacy vs CareerHubZero on controlled cases
+        - verify HRDM structural parity
+        - verify application artifact parity
+        - verify state transition parity
+        - remove CareerHub/src/careerhub from WPB
+        - remove profile-local HRDM/runtime scripts from WPB
+      release_gate:
+        - Motherpher/CareerHub-LinusF aligned
+        - Weronika profile aligned
+        - no active registry entry contains forbidden motor paths
+        - remote stack verification passes
+    blockers:
+      - CAREERHUB_STACK_TOKEN is not configured in CareerHubZero Actions
+      - Hybrismannen/wpb still contains the legacy local CareerHub motor
+
+  - version: 1.0.0
+    status: milestone
+    purpose: First stable reusable CareerHub central-motor release.
+    entry_conditions:
+      - 0.x extraction and contract stabilisation complete
+      - all active profile hubs thin and centrally versioned
+      - reusable runtime cutover complete
+      - version governance and regression gates proven in live use
+    scheduled: false
