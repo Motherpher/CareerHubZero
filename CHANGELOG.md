@@ -2,6 +2,17 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.3-alpha — 2026-09-24
+**Verified-career evidence firewall + search-only user raster.**
+
+- Hard-block private-life fields from the matchable candidate profile.
+- Require every matchable claim to bind to a verified, permitted career source.
+- Separate user-entered "specific wishes or needs" into a search-only overlay.
+- Forbid the search overlay from becoming CV evidence, HRDM proof points or application claims.
+- Add runtime policy validation and regression tests.
+- Tighten candidate/search schemas and profiled-instance documentation.
+
+
 ## 0.2.2-alpha — 2026-09-24
 **Harmonised stack version governance.**
 
