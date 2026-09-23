@@ -2,13 +2,13 @@
 
 ## 1. System boundary
 
-CareerHub is split into two deliberately different layers.
+CareerHub is split into one canonical motor and multiple profiled instances.
 
-### A. Central Operations
+### A. Central motor — CareerHubZero
 
 Owned by **Motherpher/CareerHubZero**.
 
-This layer contains reusable capability:
+This layer contains all reusable capability:
 
 - job-source adapters
 - normalization and deduplication
@@ -16,58 +16,49 @@ This layer contains reusable capability:
 - HRDM-R
 - employer and role context research
 - evidence-bounded candidate positioning
-- application drafting
-- DOCX generation
+- application drafting and document generation
 - deadline logic
 - application-state contracts
-- dashboard rendering
+- dashboard/rendering logic
 - notifications
 - reusable automation/workflow definitions
-- validation and regression tests
+- schemas, validation and regression tests
+- stack version governance
 
-It must be able to operate without knowing the identity of any particular candidate.
+No profiled hub may maintain an authoritative fork of these capabilities.
 
-### B. Profiled Instance
+### B. Profiled instance
 
-A separate private repository or other state store for one person.
+A separate private repository or bounded folder for one person.
 
-It contains:
+It may contain only instance-specific material:
 
-- candidate identity and profile
-- verified evidence and CV material
-- career preferences
-- target geographies
-- languages
-- availability
-- search configuration overrides
-- job vault
-- analysed jobs
-- application history
-- interview/meeting progression
+- candidate identity/profile and evidence
+- career/search preferences
+- target geographies/languages/availability
+- search configuration values
+- job vault and analysed-job records
+- application history and progression
 - outcomes
-- private notes and documents
+- generated views/artifacts
+- private notes/documents
+- generated stack lock
 
 ## 2. Dependency direction
 
-The profiled instance depends on CareerHubZero.
-
-CareerHubZero must **not** depend on a specific profiled repository.
-
 ```text
 Profiled instance
-      │
-      │ supplies context/state
+      │ context/state
       ▼
-CareerHubZero
-      │
-      │ returns analysis/artifacts/state updates
+CareerHubZero @ canonical VERSION
+      │ analysis/artifacts/state updates
       ▼
 Profiled instance
 ```
 
-## 3. Interface rule
+CareerHubZero must not depend on a specific person. Profile hubs must not redefine CareerHubZero motor logic.
 
-The user-facing contract remains intentionally simple:
+## 3. Interface rule
 
 **Find → Analyse? → Apply**
 
@@ -75,41 +66,38 @@ Everything else is implementation.
 
 ## 4. Data classes
 
-### Capability data
-May live in CareerHubZero:
+### Capability data — CareerHubZero only
 - source definitions
 - schemas
 - canonical prompts/contracts
-- scoring logic
-- rendering logic
+- matching/scoring logic
+- HRDM implementation
+- application/rendering logic
 - workflow templates
+- version/release machinery
 
-### Profile data
-Must live outside CareerHubZero:
-- name
-- CV
-- employment history
-- contact details
+### Profile data — profiled hub only
+- candidate profile/evidence
 - personal preferences
-- private evidence
+- private source references
 
-### State data
-Must live outside CareerHubZero:
+### State data — profiled hub only
 - saved jobs
 - deadlines
 - application status
-- interview history
+- interview/meeting history
 - reminders already sent
+- outcomes
 
 ## 5. Versioning
 
-CareerHubZero will use explicit versions.
+`VERSION` in CareerHubZero is the single motor-version source.
 
-Profiled instances should eventually pin a compatible CareerHubZero release rather than track unreviewed development automatically.
+Every central motor/schema/workflow change requires:
+1. a new `VERSION`,
+2. `stack/releases/<version>.yaml`,
+3. successful central CI,
+4. propagation to every active hub in `stack/registry.yaml`,
+5. remote compatibility verification.
 
-Initial line:
-
-```text
-0.x  extraction / contract stabilization
-1.0  first stable reusable central operations release
-```
+Only after those checks may the release be tagged as stack-current. See `docs/VERSIONING.md`.
