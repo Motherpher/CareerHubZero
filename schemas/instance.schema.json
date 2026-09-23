@@ -24,7 +24,10 @@
     "profile": {
       "type": "object",
       "required": ["path"],
-      "properties": {"path": {"type": "string"}},
+      "properties": {
+        "path": {"type": "string"},
+        "schema": {"type": "string"}
+      },
       "additionalProperties": false
     },
     "search": {
@@ -38,7 +41,10 @@
       "required": ["job_vault", "applications"],
       "properties": {
         "job_vault": {"type": "string"},
-        "applications": {"type": "string"}
+        "applications": {"type": "string"},
+        "response_events": {"type": "string"},
+        "verification_queue": {"type": "string"},
+        "analysed_jobs": {"type": "string"}
       },
       "additionalProperties": false
     }
