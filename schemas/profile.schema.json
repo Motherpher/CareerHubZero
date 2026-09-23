@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub Candidate Profile",
+  "type": "object",
+  "required": ["schema_version", "identity", "positioning", "experience", "education", "capability_clusters", "claim_guardrails"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "identity": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string", "minLength": 1}}, "additionalProperties": true},
+    "positioning": {"type": "object", "required": ["master_headline", "functional_core"], "additionalProperties": true},
+    "experience": {"type": "array", "items": {"type": "object", "required": ["id", "organization", "role", "period", "status"], "additionalProperties": true}},
+    "education": {"type": "array", "items": {"type": "object", "required": ["institution", "credential", "period", "status"], "additionalProperties": true}},
+    "governance_and_voluntary": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "cultural_practice": {"type": "object", "additionalProperties": true},
+    "capability_clusters": {"type": "array", "items": {"type": "object", "required": ["id", "name", "evidence"], "additionalProperties": true}},
+    "tools_and_languages": {"type": "object", "additionalProperties": true},
+    "claim_guardrails": {"type": "array", "items": {"type": "string"}},
+    "verification_needed": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}
