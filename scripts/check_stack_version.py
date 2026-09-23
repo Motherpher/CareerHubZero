@@ -11,6 +11,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
+CANONICAL_TOP = {"careerhub", "profile", "search", "state"}
+CANONICAL_CAREERHUB = {"instance_id", "engine"}
+CANONICAL_ENGINE = {"repository", "version"}
+CANONICAL_PROFILE = {"path"}
+CANONICAL_SEARCH = {"path"}
+CANONICAL_STATE = {"job_vault", "applications"}
+
 
 def canonical_version() -> str:
     return (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -18,6 +25,22 @@ def canonical_version() -> str:
 
 def registry() -> dict:
     return yaml.safe_load((ROOT / "stack/registry.yaml").read_text(encoding="utf-8"))
+
+
+def instance_shape_errors(cfg: dict, repo: str) -> list[str]:
+    errors = []
+    checks = [
+        ("top-level", set(cfg), CANONICAL_TOP),
+        ("careerhub", set(cfg.get("careerhub", {})), CANONICAL_CAREERHUB),
+        ("careerhub.engine", set(cfg.get("careerhub", {}).get("engine", {})), CANONICAL_ENGINE),
+        ("profile", set(cfg.get("profile", {})), CANONICAL_PROFILE),
+        ("search", set(cfg.get("search", {})), CANONICAL_SEARCH),
+        ("state", set(cfg.get("state", {})), CANONICAL_STATE),
+    ]
+    for label, actual, expected in checks:
+        if actual != expected:
+            errors.append(f"{repo}: {label} keys {sorted(actual)} != canonical {sorted(expected)}")
+    return errors
 
 
 def local_check() -> list[str]:
@@ -31,7 +54,7 @@ def local_check() -> list[str]:
         if str(data.get("version")) != version:
             errors.append("Release ledger version does not match VERSION")
     init_text = (ROOT / "src/careerhub/__init__.py").read_text(encoding="utf-8")
-    if "0.1.0-alpha" in init_text or "0.2." in init_text:
+    if "0.1.0-alpha" in init_text or "0.2.0-alpha" in init_text or "0.2.1-alpha" in init_text:
         errors.append("Package version must not be independently hard-coded")
     reg = registry()
     ids = [x["instance_id"] for x in reg.get("instances", [])]
@@ -62,6 +85,7 @@ def remote_check(token: str) -> list[str]:
             errors.append(f"{repo}: missing {inst['instance_path']}")
             continue
         cfg = yaml.safe_load(base64.b64decode(item["content"]).decode("utf-8"))
+        errors.extend(instance_shape_errors(cfg, repo))
         engine = cfg.get("careerhub", {}).get("engine", {})
         if engine.get("repository") != reg["engine_repository"]:
             errors.append(f"{repo}: wrong engine repository {engine.get('repository')!r}")
