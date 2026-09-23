@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub HRDM-R v6.3 Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "process_id",
+    "job",
+    "signals",
+    "concept_clusters",
+    "hidden_need",
+    "field_logic",
+    "function_core",
+    "dod",
+    "assessment_zones",
+    "candidate_positioning",
+    "hcc",
+    "application_strategy"
+  ],
+  "properties": {
+    "process_id": {
+      "type": "string"
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "signal",
+          "evidence",
+          "confidence"
+        ],
+        "properties": {
+          "signal": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "concept_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cluster",
+          "items"
+        ],
+        "properties": {
+          "cluster": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "hidden_need": {
+      "type": "object",
+      "required": [
+        "statement",
+        "confidence",
+        "rationale"
+      ],
+      "properties": {
+        "statement": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "field_logic": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "function_core": {
+      "type": "object",
+      "required": [
+        "chain",
+        "summary"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dod": {
+      "type": "object",
+      "required": [
+        "alpha",
+        "zenith",
+        "dimensions",
+        "average",
+        "classification"
+      ],
+      "properties": {
+        "alpha": {
+          "type": "string"
+        },
+        "zenith": {
+          "type": "string"
+        },
+        "dimensions": {
+          "type": "object",
+          "required": [
+            "burden",
+            "scope_environment",
+            "function",
+            "signal_identity"
+          ],
+          "properties": {
+            "burden": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "scope_environment": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "function": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "signal_identity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            }
+          },
+          "additionalProperties": false
+        },
+        "average": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Moderate",
+            "High",
+            "Critical"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "assessment_zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "zone",
+          "importance",
+          "evidence_from_ad"
+        ],
+        "properties": {
+          "zone": {
+            "type": "string"
+          },
+          "importance": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "evidence_from_ad": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "candidate_positioning": {
+      "type": "object",
+      "required": [
+        "strong_matches",
+        "transferable_matches",
+        "gaps_unknowns",
+        "prohibited_claims",
+        "proof_points",
+        "cv_emphasis"
+      ],
+      "properties": {
+        "strong_matches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transferable_matches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gaps_unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prohibited_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "proof_points": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cv_emphasis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "hcc": {
+      "type": "object",
+      "required": [
+        "risks",
+        "commentary"
+      ],
+      "properties": {
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "commentary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "application_strategy": {
+      "type": "object",
+      "required": [
+        "positioning",
+        "opening",
+        "evidence_to_use",
+        "evidence_to_avoid",
+        "tone",
+        "interview_themes"
+      ],
+      "properties": {
+        "positioning": {
+          "type": "string"
+        },
+        "opening": {
+          "type": "string"
+        },
+        "evidence_to_use": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_to_avoid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tone": {
+          "type": "string"
+        },
+        "interview_themes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
