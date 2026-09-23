@@ -31,13 +31,6 @@ def load_instance(instance_file: str | Path) -> dict:
     loaded = {"instance": cfg, "root": root}
     for key, rel in required.items():
         loaded[key] = _load(root / rel)
-    for key in ("response_ledger", "experiments"):
-        rel = cfg.get("state", {}).get(key)
-        if rel:
-            loaded[key] = _load(root / rel)
-    evidence_rel = cfg.get("profile", {}).get("evidence_index")
-    if evidence_rel:
-        loaded["evidence_index"] = _load(root / evidence_rel)
     return loaded
 
 
@@ -51,8 +44,6 @@ def validate_instance_paths(instance_file: str | Path) -> list[str]:
         cfg.get("search", {}).get("path"),
         cfg.get("state", {}).get("job_vault"),
         cfg.get("state", {}).get("applications"),
-        cfg.get("state", {}).get("response_ledger"),
-        cfg.get("state", {}).get("experiments"),
     ]
     for rel in [x for x in checks if x]:
         if not (root / rel).exists():
