@@ -1,5 +1,5 @@
 schema_version: "1.0"
-current_version: 0.2.6-alpha
+current_version: 0.2.7-alpha
 release_ledger: stack/releases/
 rule: "CareerHub has one VERSION. 1.0 is permitted only after the unified body and all active profile-node compatibility checks pass."
 
@@ -41,6 +41,8 @@ planned_versions:
         - no active registry entry contains forbidden motor paths
         - remote stack verification passes
     blockers:
+      - GitHub private-action sharing from Motherpher/CareerHubZero to the other Motherpher repositories must be enabled so profile-side execution can use the central body
+      - central composite-action compatibility must pass on Linus, Weronika and Grace
       - Motherpher/wpb still contains the legacy local CareerHub motor
       - Motherpher/Gracey still contains the legacy local CareerHub motor
 
