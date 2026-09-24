@@ -67,38 +67,38 @@ def _rows(zf: zipfile.ZipFile, path: str, shared: list[str]) -> list[list[str]]:
     return out
 
 
-def _record(values: list[str], sheet_name: str) -> dict | None:
-    cleaned = [str(x).strip() for x in values]
-    la_idx = next((i for i, x in enumerate(cleaned) if re.fullmatch(r"LA\d{4,}", x, re.I)), None)
-    if la_idx is None:
-        return None
-
-    municipality_candidates = [
-        (i, x) for i, x in enumerate(cleaned)
-        if re.fullmatch(r"\d{4}", x) and not re.fullmatch(r"20(?:20|21|22|23|24)", x)
-    ]
-    if not municipality_candidates:
-        return None
-    municipality_idx, municipality_code = municipality_candidates[-1]
-
-    year_match = re.search(r"20(?:20|21|22|23|24)", sheet_name)
+def _records_from_sheet(rows: list[list[str]], sheet_name: str) -> list[dict]:
+    year_match = re.fullmatch(r"20(?:20|21|22|23|24)", str(sheet_name).strip())
     if not year_match:
-        year_match = next((re.search(r"20(?:20|21|22|23|24)", x) for x in cleaned if re.search(r"20(?:20|21|22|23|24)", x)), None)
-    year = int(year_match.group(0)) if year_match else None
+        return []
+    year = int(year_match.group(0))
+    out = []
+    current_la_code = ""
+    current_la_name = ""
 
-    def after(idx: int) -> str:
-        for value in cleaned[idx + 1:]:
-            if value and not re.fullmatch(r"\d+(?:\.\d+)?", value) and not re.fullmatch(r"LA\d+", value, re.I):
-                return value
-        return ""
+    for values in rows:
+        cells = [str(x).strip() for x in values]
+        if len(cells) < 4:
+            continue
 
-    return {
-        "year": year,
-        "la_code": cleaned[la_idx].upper(),
-        "la_name": after(la_idx),
-        "municipality_code": municipality_code,
-        "municipality_name": after(municipality_idx),
-    }
+        if re.fullmatch(r"LA\d{4,}", cells[0], re.I):
+            current_la_code = cells[0].upper()
+            current_la_name = cells[1]
+
+        municipality_raw = cells[2]
+        municipality_name = cells[3]
+        if not current_la_code or not re.fullmatch(r"\d{1,4}", municipality_raw) or not municipality_name:
+            continue
+
+        municipality_code = municipality_raw.zfill(4)
+        out.append({
+            "year": year,
+            "la_code": current_la_code,
+            "la_name": current_la_name,
+            "municipality_code": municipality_code,
+            "municipality_name": municipality_name,
+        })
+    return out
 
 
 def parse_xlsx(blob: bytes) -> dict:
@@ -110,17 +110,12 @@ def parse_xlsx(blob: bytes) -> dict:
             if not path:
                 continue
             rows_here = _rows(zf, path, shared)
-            sheet_records = []
-            for values in rows_here:
-                rec = _record(values, sheet_name)
-                if rec:
-                    records.append(rec)
-                    sheet_records.append(rec)
+            sheet_records = _records_from_sheet(rows_here, sheet_name)
+            records.extend(sheet_records)
             sheet_debug.append({
                 "sheet": sheet_name,
                 "row_count": len(rows_here),
-                "candidate_records": len(sheet_records),
-                "sample_rows": rows_here[:8],
+                "assignment_records": len(sheet_records),
                 "sample_records": sheet_records[:5],
             })
 
@@ -140,7 +135,7 @@ def parse_xlsx(blob: bytes) -> dict:
             "all_records": len(records),
             "latest_records": len(latest_rows),
             "unique_municipalities": len(rows),
-            "sample_latest": latest_rows[:20],
+            "sample_latest": latest_rows[:10],
             "sheets": sheet_debug,
         }, ensure_ascii=False))
         raise RuntimeError(f"Expected 290 municipality assignments for LA {latest}, found {len(rows)}.")
