@@ -109,7 +109,7 @@ def _domain_mismatch(job: Job, lane_name: str, positive_hits: list[str]) -> bool
     return False
 
 
-def _geo_fit(job: Job, profile: dict) -> tuple[float, list[str]]:
+def _geo_fit(job: Job, defaults: dict) -> tuple[float, list[str]]:
     flags = []
     location = (job.location or "").lower()
     blob = job.search_blob[:5000]
@@ -127,8 +127,8 @@ def _geo_fit(job: Job, profile: dict) -> tuple[float, list[str]]:
         flags.append("remote-eligibility-needs-verification")
         return 0.72, flags
 
-    targets = [x.lower() for x in profile.get("career_preferences", {}).get("target_geographies", []) if x]
-    if targets and any(t in location for t in targets if t not in {"sweden", "sverige", "remote europe"}):
+    targets = [str(x).lower() for x in defaults.get("target_geographies", []) if x]
+    if targets and any(t in location for t in targets if t not in {"sweden", "sverige", "remote europe", "europe"}):
         return 1.0, flags
 
     if job.source == "platsbanken":
@@ -178,7 +178,7 @@ def triage(job: Job, lane_name: str, lane_cfg: dict, profile: dict, defaults: di
     ]
     arrangement = 1.0 if any(x in blob for x in positive_arrangement) else 0.72
 
-    geo, geo_flags = _geo_fit(job, profile)
+    geo, geo_flags = _geo_fit(job, defaults)
     recency = _recency(job)
 
     overlay_fit = 0.0
