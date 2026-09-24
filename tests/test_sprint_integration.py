@@ -25,7 +25,8 @@ class SprintIntegrationTests(unittest.TestCase):
         self.assertEqual(enriched["adapter"], "scb")
         self.assertEqual(enriched["county_code"], "01")
         self.assertEqual(enriched["municipality_name"], "Stockholm")
-        self.assertFalse(enriched["completeness"]["municipality"])
+        self.assertEqual(enriched["municipality_code"], "0180")
+        self.assertTrue(enriched["completeness"]["municipality"])
 
     def test_case_binds_one_hrdm_and_application_artifact_set(self):
         with tempfile.TemporaryDirectory() as tmp:
