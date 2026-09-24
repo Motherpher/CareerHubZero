@@ -40,6 +40,8 @@ Versioning and release rules: `docs/VERSIONING.md`.
 
 Executable capability audit: `docs/CAPABILITY_AUDIT_0.2.7.md`.
 
+Active 1.0 contraction sprint: `docs/SPRINT_1_0_SILICON_10WP.md`.
+
 Repository ownership plan: `docs/REPOSITORY_OWNERSHIP.md`.
 
 ## Repository map
