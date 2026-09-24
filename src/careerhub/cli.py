@@ -10,6 +10,7 @@ from .country_adapters import enrich_country_matrix
 from .geography import GooglePlacesGeocoder, build_map_payload, geotag_vault
 from .hrdm import build_packet, fallback_hrdm, packet_prompt, run_ai_hrdm
 from .hrdm_reports import maintain_hrdm_reports, save_report_bundle
+from .hub import render_applications as render_hub_applications, render_control_room as render_hub_control_room, render_job_vault as render_hub_job_vault
 from .instance import load_profile_node, validate_profile_node_paths
 from .learning import collect_outcome_events, derive_hypotheses, learning_bonus
 from .matching import candidate_terms, rank_jobs
@@ -49,22 +50,28 @@ def _render_all(ctx: dict, jobs: list[Job] | None = None, lane: str = "all") -> 
     cases = load_cases(ctx["paths"]["applications"])
     vault = json.loads(ctx["paths"]["job_vault"].read_text(encoding="utf-8"))
 
-    if _language(ctx) == "en":
-        from . import runtime_dashboard_en as surface
-    else:
-        from . import runtime_dashboard as surface
-        surface.PROFILE_NAME = profile_name
-
-    surface.save_public_jobs(root / "data/latest_jobs.json", jobs)
-    surface.render_visual(root / "visuals/careerhub-journey.svg", jobs, cases, vault)
-    surface.render_job_vault(root / "JOB_VAULT.md", vault, cases)
-    surface.render_applications(root / "APPLICATIONS.md", cases)
-    surface.render_control_room(root / "CONTROL_ROOM.md", jobs, lane, cases, vault)
+    latest_path = root / "data/latest_jobs.json"
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(
+        json.dumps({"jobs": [j.public_dict() for j in jobs]}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
     maintain_hrdm_reports(
         root,
         ctx["paths"]["hrdm_ledger"],
-        control_room=root / "CONTROL_ROOM.md",
+        control_room=None,
+    )
+    ledger = json.loads(ctx["paths"]["hrdm_ledger"].read_text(encoding="utf-8"))
+    render_hub_job_vault(root / "JOB_VAULT.md", vault)
+    render_hub_applications(root / "APPLICATIONS.md", cases)
+    render_hub_control_room(
+        root / "CONTROL_ROOM.md",
+        profile_name=profile_name,
+        language=_language(ctx),
+        vault=vault,
+        cases=cases,
+        hrdm_ledger=ledger,
     )
 
 
