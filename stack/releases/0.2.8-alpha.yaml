@@ -1,6 +1,7 @@
 version: 0.2.8-alpha
 reconstructed: false
 status: current
+development_open: true
 date: 2026-09-24
 purpose: Silicon Sprint integration of Household clearance, bounded career learning, unified case events, country adapters and one hub surface.
 user_contract: "Find jobs -> Analyse? -> Apply"
