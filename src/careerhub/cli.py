@@ -10,6 +10,7 @@ from .geography import GooglePlacesGeocoder, build_map_payload, geotag_vault
 from .hrdm import build_packet, fallback_hrdm, packet_prompt, run_ai_hrdm
 from .hrdm_reports import maintain_hrdm_reports, save_report_bundle
 from .instance import load_profile_node, validate_profile_node_paths
+from .learning import collect_outcome_events, derive_hypotheses, learning_bonus
 from .matching import candidate_terms, rank_jobs
 from .models import Job
 from .search_contract import lane_queries, normalize_search
@@ -86,6 +87,9 @@ def cmd_scan(args):
     overlay = (args.search_overlay or runtime["search_overlay"] or "").strip()
     selected = [x.strip() for x in args.lane.split(",")] if args.lane != "all" else []
     cterms = candidate_terms(profile)
+    cases_data = load_cases(ctx["paths"]["applications"])
+    outcome_events = collect_outcome_events(cases_data)
+    hypotheses = derive_hypotheses(outcome_events)
     all_jobs: list[Job] = []
 
     for lane in runtime["lanes"]:
@@ -101,6 +105,17 @@ def cmd_scan(args):
         for job in ranked:
             job.provider_meta["search_lane_id"] = lane_id
             job.provider_meta["search_lane_name"] = lane.get("name") or lane_id
+            job.provider_meta["query_provenance"] = {
+                "lane_id": lane_id,
+                "queries": queries,
+                "matched_query": job.matched_query,
+                "search_overlay_used": bool(overlay),
+            }
+            bonus, learning_reasons = learning_bonus(job, hypotheses)
+            if bonus:
+                job.triage_score = round(max(0.0, min(100.0, job.triage_score + bonus)), 1)
+                job.triage_reasons.extend(learning_reasons)
+                job.provider_meta["learning_bonus"] = bonus
         all_jobs.extend(ranked)
 
     best: dict[str, Job] = {}
@@ -132,6 +147,7 @@ def cmd_scan(args):
         "jobs_ever_seen": vault.get("total_jobs_ever_seen", len(ranked)),
         "geotagging": bool(maps_key),
         "search_overlay_used": bool(overlay),
+        "learning_event_count": len(outcome_events),
     }, ensure_ascii=False, indent=2))
 
 
