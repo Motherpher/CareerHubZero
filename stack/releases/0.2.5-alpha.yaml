@@ -26,4 +26,9 @@ contents:
     - Google-specific IDs do not replace country-matrix identifiers
 compatibility:
   migration_required: true
-  note: Profile hubs must record engine 0.2.5-alpha. Grace and Weronika remain blocked by legacy local motors pending 0.3 cutover.
+  profile_bindings:
+    - Motherpher/CareerHub-LinusF: 0.2.5-alpha
+    - Motherpher/wpb: 0.2.5-alpha
+    - Motherpher/Gracey: 0.2.5-alpha
+  sync_status: manually_harmonised
+  note: All active profile hubs record engine 0.2.5-alpha. Linus is aligned; Grace and Weronika remain blocked only by legacy local motors pending 0.3 cutover. Automated cross-repository harmonisation still requires CAREERHUB_STACK_TOKEN.
