@@ -14,6 +14,7 @@ from .state import STATUS_LABELS, TERMINAL_STATUSES, case_counts, rank_label
 
 
 REPO = os.getenv("GITHUB_REPOSITORY", "")
+PROFILE_NAME = os.getenv("CAREERHUB_PROFILE_NAME", "CareerHub")
 PALETTE = {
     "paper": "#F4D59B",
     "ink": "#1B2220",
@@ -154,7 +155,7 @@ def render_visual(path: Path, jobs: list[Job], cases_data: dict, vault: dict):
     applied = counts["applied"]
     total_seen = int(vault.get("total_jobs_ever_seen") or found)
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="640" viewBox="0 0 1400 640" role="img" aria-label="Grace Karriärhubben">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="640" viewBox="0 0 1400 640" role="img" aria-label="{PROFILE_NAME} Karriärhubben">
 <rect width="1400" height="640" fill="{PALETTE["paper"]}"/>
 <rect width="390" height="640" fill="{PALETTE["cobalt"]}"/>
 <circle cx="785" cy="245" r="220" fill="{PALETTE["sun"]}"/>
@@ -162,7 +163,7 @@ def render_visual(path: Path, jobs: list[Job], cases_data: dict, vault: dict):
 <rect x="1090" y="420" width="310" height="220" fill="{PALETTE["coral"]}"/>
 <path d="M85 525 C250 385 365 350 535 365 C700 380 825 480 1015 420" fill="none" stroke="{PALETTE["white"]}" stroke-width="11" opacity=".86"/>
 
-<text x="62" y="112" font-family="Arial, Helvetica, sans-serif" font-size="91" font-weight="300" letter-spacing="7" fill="{PALETTE["paper"]}">GRACE</text>
+<text x="62" y="112" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="300" letter-spacing="4" fill="{PALETTE["paper"]}">{PROFILE_NAME.upper()}</text>
 <text x="65" y="173" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="8" fill="{PALETTE["sun"]}">KARRIÄRHUBBEN</text>
 <text x="65" y="565" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="{PALETTE["paper"]}">TYDLIGT · VARMT · FRAMÅT</text>
 
@@ -338,8 +339,8 @@ def render_control_room(path: Path, jobs: list[Job], lane: str, cases_data: dict
     active_cases = [c for c in cases if c.get("status") not in TERMINAL_STATUSES]
     active_cases.sort(key=lambda c: (-int(c.get("priority") or 3), c.get("deadline") or "9999"))
     lines = [
-        "![Grace · Karriärhubben](visuals/careerhub-journey.svg)", "",
-        "# Grace · Karriärhubben", "",
+        "![{PROFILE_NAME} · Karriärhubben](visuals/careerhub-journey.svg)", "",
+        "# {PROFILE_NAME} · Karriärhubben", "",
         "## 1 · HITTA JOBB → 2 · VÄLJ JOBB → 3 · SÖK", "",
         "Välkommen. Här är dina aktuella möjligheter, samlade och förberedda. Du väljer tempot. Vi håller ordning på resten.", "",
         "---", "",
