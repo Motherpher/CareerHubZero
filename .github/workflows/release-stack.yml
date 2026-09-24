@@ -1,4 +1,4 @@
-name: CareerHub — Release & Harmonise Stack
+name: CareerHub — Validate Unified Body
 
 on:
   workflow_dispatch:
@@ -11,18 +11,15 @@ on:
       - "schemas/**"
       - "scripts/**"
       - "stack/**"
+      - "docs/BODY_ARCHITECTURE.md"
       - "requirements.txt"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  harmonise:
+  validate-body:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-      CAREERHUB_STACK_TOKEN: ${{ secrets.CAREERHUB_STACK_TOKEN }}
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,28 +32,30 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Validate canonical version ledger
-        run: python scripts/check_stack_version.py
+      - name: Validate unified CareerHub body
+        run: python scripts/check_body_version.py
 
-      - name: Require cross-repository stack credential
-        run: |
-          if [ -z "$CAREERHUB_STACK_TOKEN" ]; then
-            echo "::error::CAREERHUB_STACK_TOKEN is required to harmonise private profile hubs."
-            exit 1
-          fi
+      - name: Run regression suite
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p 'test_*.py'
 
-      - name: Propagate canonical engine version
-        run: python scripts/sync_stack_versions.py
-
-      - name: Verify entire registered stack
-        run: python scripts/check_stack_version.py --remote
-
-      - name: Create release tag only after full alignment
+      - name: Stable-release guard
         run: |
           VERSION="$(cat VERSION)"
-          TAG="v${VERSION}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists."
+          if [ "$VERSION" = "1.0.0" ]; then
+            if [ ! -f stack/FULL_AUDIT_PASS.yaml ]; then
+              echo "::error::CareerHub 1.0.0 requires stack/FULL_AUDIT_PASS.yaml."
+              exit 1
+            fi
+            python - <<'PY'
+          import yaml
+          from pathlib import Path
+          data=yaml.safe_load(Path("stack/FULL_AUDIT_PASS.yaml").read_text(encoding="utf-8")) or {}
+          if data.get("status") != "PASS":
+              raise SystemExit("FULL_AUDIT_PASS.yaml does not record status: PASS")
+          print("Full Audit Lock PASS recorded.")
+          PY
           else
-            gh release create "$TAG" --title "CareerHubZero ${VERSION}" --notes-file "stack/releases/${VERSION}.yaml"
+            echo "Pre-1.0 body validation complete; no stable release tag created."
           fi
