@@ -1,5 +1,5 @@
 schema_version: "1.0"
-current_engine_version: 0.2.6-alpha
+current_version: 0.2.6-alpha
 release_ledger: stack/releases/
 rule: "CareerHub has one VERSION. 1.0 is permitted only after the unified body and all active profile-node compatibility checks pass."
 
@@ -22,7 +22,7 @@ planned_versions:
         - centralise sourcing, matching, HRDM execution, application generation, state logic and rendering
         - centralise reusable workflow/bootstrap logic
       profile_contract:
-        - profile hubs retain only profile/evidence, search configuration, state and generated artifacts
+        - profile nodes retain only profile/evidence, search configuration, state and generated artifacts
         - all profile nodes use canonical careerhub.yaml manifests
         - profile nodes contain no engine/version pin and no stable stack.lock requirement
       migration:
@@ -49,7 +49,7 @@ planned_versions:
     purpose: First stable reusable CareerHub central-motor release after full stack audit.
     entry_conditions:
       - 0.x extraction and contract stabilisation complete
-      - all active profile hubs thin and centrally versioned
+      - all active profile nodes thin and centrally versioned
       - all CareerHub repositories owned by Motherpher
       - reusable runtime cutover complete
       - verified-career evidence firewall passes on every hub
