@@ -61,6 +61,32 @@ class LearningLoopTests(unittest.TestCase):
             self.assertTrue(any(x.get("event_type") == "applied" for x in history))
             self.assertTrue(any(x.get("event_type") == "interview" for x in history))
 
+    def test_case_full_outcome_lifecycle_is_one_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "applications.json"
+            job = Job(source="x", title="Strategist", company="Org", url="https://example.org/job")
+            choose_case(path, job, 7, "https://example.org/issue/7", 4)
+            from careerhub.state import bind_analysis
+            bind_analysis(
+                path,
+                7,
+                "HRDM-R-20260924-0001-S09-A-R01-FINAL",
+                external_use_allowed=True,
+                report_paths={"pdf": "reports/r.pdf"},
+                application_paths={"docx": "output/a.docx"},
+            )
+            update_case(path, 7, "applied")
+            update_case(path, 7, "interview_1")
+            update_case(path, 7, "offer")
+            case = load_cases(path)["cases"][0]
+            self.assertEqual(case["status"], "offer")
+            events = [x.get("event_type") for x in case["history"]]
+            self.assertIn("selected_hrdm", events)
+            self.assertIn("applied", events)
+            self.assertIn("interview", events)
+            self.assertIn("offer", events)
+            self.assertEqual(case["hrdm_process_id"], "HRDM-R-20260924-0001-S09-A-R01-FINAL")
+
 
 if __name__ == "__main__":
     unittest.main()
