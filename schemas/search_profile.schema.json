@@ -55,6 +55,35 @@
           "items": {
             "type": "string"
           }
+        },
+        "travel_time": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "mode",
+            "max_minutes"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "DRIVE",
+                "TRANSIT",
+                "WALK",
+                "BICYCLE",
+                "TWO_WHEELER"
+              ]
+            },
+            "max_minutes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 360
+            }
+          }
         }
       }
     },
