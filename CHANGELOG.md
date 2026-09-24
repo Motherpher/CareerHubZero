@@ -9,7 +9,7 @@ The authoritative per-version content register is `stack/releases/<version>.yaml
 - Correct stale central engine metadata from 0.2.2-alpha to the current line.
 - Require Grace pre-firewall application artifacts to be revalidated before external use.
 - Expand 0.3.0-alpha cutover scope to both WPB and Grace legacy motors.
-- Set Motherpher ownership as the target repository boundary for all CareerHub repositories.
+- Set Motherpher ownership as the repository boundary for all CareerHub repositories; ownership migration completed for Linus, Weronika and Grace.
 - Define CareerHubZero 1.0.0 as the Full Audit Lock release, not a feature-count milestone.
 - Correct the example candidate profile to use the canonical `verification_queue` field.
 
