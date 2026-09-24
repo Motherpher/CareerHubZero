@@ -12,7 +12,7 @@ BUILTIN={"dependency_pass","required_paths_exist","no_unresolved_machine_errors"
 
 class Director:
     def __init__(self,root:Path,manifest:Path,audit:Path,state:Path,repair:bool=False):
-        self.root=root.resolve(); self.manifest_path=manifest; self.audit=audit; self.state_path=state; self.repair=repair; self.m=load_json(manifest); self.state=load_json(state,{}) or {}
+        self.root=root.resolve(); self.manifest_path=manifest.resolve(); self.audit=audit.resolve(); self.state_path=state.resolve(); self.repair=repair; self.m=load_json(manifest); self.state=load_json(state,{}) or {}
         if not self.m or not self.m.get("sequence"): raise ValueError("invalid manifest")
         self._validate_manifest()
     def _validate_manifest(self):
