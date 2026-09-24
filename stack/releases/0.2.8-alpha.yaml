@@ -1,6 +1,7 @@
 version: 0.2.8-alpha
 reconstructed: false
-status: current
+development_open: false
+status: superseded
 date: 2026-09-25
 purpose: Execute the CareerHub 1.0 Silicon Sprint under Household family clearance with fixed WP01-WP10 audit order.
 contents:
