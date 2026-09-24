@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub Case",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "job_id",
+    "status",
+    "history"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "saved",
+        "preparing",
+        "ready",
+        "applied",
+        "contacted",
+        "portfolio",
+        "interview_1",
+        "interview_2",
+        "interview_3",
+        "interview_4",
+        "interview_5",
+        "meeting_1",
+        "meeting_2",
+        "meeting_3",
+        "meeting_4",
+        "meeting_5",
+        "offer",
+        "denied",
+        "withdrawn",
+        "archived"
+      ]
+    },
+    "hrdm_process_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_use_allowed": {
+      "type": "boolean"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  }
+}
