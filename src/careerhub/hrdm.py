@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 
-from .hrdm_trace import create_reverse_trace
+from .hrdm_trace import create_reverse_trace, finalize_reverse_trace
 from .hybridianesque import empty_hyfilter, finalize_hyfilter, normalize_decision
 from .models import Job
 
@@ -158,13 +158,14 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
         },
     )
     result = json.loads(response.output_text)
-    result["process_id"] = packet["process_id"]
-    result["trace"] = packet["trace"]
     result["hybridianesque"] = finalize_hyfilter(
         result.get("hybridianesque"),
         packet.get("hy_filter_decision"),
     )
-    result["trace"]["hy_filter_usage"] = result["hybridianesque"]["status"] == "active"
+    trace = finalize_reverse_trace(packet["trace"], success=True, warnings=[])
+    trace["hy_filter_usage"] = result["hybridianesque"]["status"] == "active"
+    result["trace"] = trace
+    result["process_id"] = trace["process_id"]
     return result
 
 
@@ -172,10 +173,9 @@ def fallback_hrdm(packet: dict) -> dict:
     job = packet["job"]
     hy = empty_hyfilter(packet.get("hy_filter_decision"))
     warnings = ["Automated HRDM analysis not run."]
-    trace = dict(packet["trace"])
-    trace["outstanding_warnings"] = warnings
+    trace = finalize_reverse_trace(packet["trace"], success=False, warnings=warnings)
     return {
-        "process_id": packet["process_id"],
+        "process_id": trace["process_id"],
         "job": job,
         "ai_status": "not_run",
         "note": "OPENAI_API_KEY not configured. The HRDM run was registered but semantic analysis was not completed.",
