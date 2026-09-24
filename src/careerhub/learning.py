@@ -174,3 +174,47 @@ def apply_learning_to_jobs(jobs: list[dict], learning: dict, max_adjustment: flo
 
     result.sort(key=lambda x: (-float(x.get("triage_score") or 0.0), x.get("deadline") or "9999"))
     return result
+
+
+def collect_outcome_events(cases_data: dict) -> list[dict]:
+    """Project the canonical case histories into a flat event stream for views/tests."""
+    events = []
+    for case in cases_data.get("cases", []):
+        dims = _case_dimensions(case)
+        case_ref = str(case.get("job_id") or case.get("issue_number") or case.get("title") or "case")
+        for event in list(case.get("history") or []):
+            row = dict(event)
+            row["case_ref"] = case_ref
+            row.update({k: v for k, v in dims.items() if v})
+            events.append(row)
+    return events
+
+
+def derive_hypotheses(events: list[dict]) -> dict:
+    """Compatibility projection for the hub; still one learning model underneath."""
+    cases = {}
+    for event in events:
+        ref = str(event.get("case_ref") or "case")
+        case = cases.setdefault(ref, {"job_id": ref, "history": []})
+        for dim in DIMENSIONS:
+            if event.get(dim):
+                case[dim] = event[dim]
+        case["history"].append({
+            "at": event.get("at", ""),
+            "event_type": event.get("event_type", ""),
+            "source": event.get("source", "system"),
+        })
+    learning = derive_learning_signals({"cases": list(cases.values())})
+    dimensions: dict[str, dict[str, dict]] = defaultdict(dict)
+    for signal in learning.get("signals", []):
+        dimensions[signal["dimension"]][signal["key"]] = {
+            "score": signal["score"],
+            "sample_size": signal["observations"],
+            "confidence": signal["confidence"],
+            "provenance": signal["provenance"],
+        }
+    return {
+        "event_count": len(events),
+        "policy": learning.get("policy", {}),
+        "dimensions": dict(dimensions),
+    }
