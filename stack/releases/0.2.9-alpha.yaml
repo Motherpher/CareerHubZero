@@ -1,0 +1,23 @@
+version: 0.2.9-alpha
+reconstructed: false
+development_open: true
+status: current
+date: 2026-09-25
+purpose: Open integration envelope for the CareerHub 1.0 Silicon Sprint under Household family clearance.
+audit_order: docs/HOUSEHOLD_AUDIT_STATE_ORDER.md
+sprint: stack/sprints/CH-1.0-SILICON.yaml
+contents:
+  - portable Household family installed with CareerHub path adaptation
+  - fixed WP01-WP10 Director clearance order
+  - Janitor deep surveillance and bounded Handyman repair separation
+  - one canonical outcome-event model shared by learning and case state
+  - bounded Career Learning Loop integrated after normal triage
+  - one canonical country-adapter geography path; duplicate geo adapter removed
+  - canonical HRDM OPEN-to-FINAL trace lifecycle and Hybridianesque gate
+  - Household CI produces audit artifacts and enforces recorded Director states
+known_external_blockers:
+  - private CareerHubZero Action access to profile repositories
+  - live Google Maps/routing and full geography end-to-end proof
+  - live OpenAI HRDM/application execution after previous credit exhaustion
+  - Grace and Weronika local-motor cutover pending central action parity
+closure_rule: Close development_open only when the S00-S13 Household end audit is committed.
