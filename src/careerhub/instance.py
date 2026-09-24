@@ -201,3 +201,82 @@ def validate_instance_paths(instance_file: str | Path) -> list[str]:
             errors.append(str(exc))
 
     return errors
+
+
+def load_profile_node(manifest_file: str | Path) -> dict:
+    """Load the stable versionless careerhub.yaml profile-node contract."""
+    manifest_file = Path(manifest_file).resolve()
+    cfg = _load(manifest_file)
+    root = manifest_file.parent
+
+    required = {
+        "profile": cfg["profile"]["path"],
+        "search": cfg["search"]["path"],
+        "job_vault": cfg["state"]["job_vault"],
+        "applications": cfg["state"]["applications"],
+        "hrdm_ledger": cfg["state"]["hrdm_ledger"],
+    }
+    loaded = {"manifest": cfg, "root": root}
+    for key, rel in required.items():
+        path = root / rel
+        if key == "hrdm_ledger" and not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                json.dumps({"schema_version": "1.0", "updated_at": None, "runs": []}, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        loaded[key] = _load(path)
+
+    policy_errors = validate_profile_policy(loaded["profile"], loaded["search"])
+    if policy_errors:
+        raise InstanceError("Candidate-profile policy violation:\n- " + "\n- ".join(policy_errors))
+
+    loaded["paths"] = {
+        "profile": root / cfg["profile"]["path"],
+        "search": root / cfg["search"]["path"],
+        "job_vault": root / cfg["state"]["job_vault"],
+        "applications": root / cfg["state"]["applications"],
+        "hrdm_ledger": root / cfg["state"]["hrdm_ledger"],
+        "hrdm_reports": root / cfg["artifacts"]["hrdm_reports"],
+        "hrdm_history": root / cfg["artifacts"]["hrdm_history"],
+    }
+    return loaded
+
+
+def validate_profile_node_paths(manifest_file: str | Path) -> list[str]:
+    manifest_file = Path(manifest_file).resolve()
+    cfg = _load(manifest_file)
+    root = manifest_file.parent
+    errors: list[str] = []
+
+    if cfg.get("schema_version") != "1.0":
+        errors.append("careerhub.yaml schema_version must be 1.0")
+    if not cfg.get("profile_id"):
+        errors.append("careerhub.yaml requires profile_id")
+
+    checks = [
+        cfg.get("profile", {}).get("path"),
+        cfg.get("search", {}).get("path"),
+        cfg.get("state", {}).get("job_vault"),
+        cfg.get("state", {}).get("applications"),
+    ]
+    for rel in [x for x in checks if x]:
+        if not (root / rel).exists():
+            errors.append(f"Missing configured path: {rel}")
+
+    ledger = cfg.get("state", {}).get("hrdm_ledger")
+    if not ledger:
+        errors.append("Missing state.hrdm_ledger")
+    artifacts = cfg.get("artifacts", {})
+    for key in ("hrdm_reports", "hrdm_history"):
+        if not artifacts.get(key):
+            errors.append(f"Missing artifacts.{key}")
+
+    if not errors:
+        try:
+            profile = _load(root / cfg["profile"]["path"])
+            search = _load(root / cfg["search"]["path"])
+            errors.extend(validate_profile_policy(profile, search))
+        except InstanceError as exc:
+            errors.append(str(exc))
+    return errors
