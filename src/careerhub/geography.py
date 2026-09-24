@@ -9,6 +9,7 @@ import requests
 
 
 PLACES_TEXT_SEARCH_URL = "https://places.googleapis.com/v1/places:searchText"
+ROUTE_MATRIX_URL = "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix"
 
 PRECISION_RANK = {
     "unknown": 0,
@@ -158,6 +159,173 @@ class GooglePlacesGeocoder:
         places = response.json().get("places", [])
         return places[0] if places else None
 
+
+
+def _duration_seconds(value: Any) -> float | None:
+    text = str(value or "").strip()
+    if not text.endswith("s"):
+        return None
+    try:
+        return float(text[:-1])
+    except ValueError:
+        return None
+
+
+class GoogleRoutesMatrix:
+    """Routes API v2 adapter for commute/travel-time enrichment.
+
+    Results enrich the canonical job geo object; they do not create a parallel
+    geography store.
+    """
+
+    def __init__(self, api_key: str, timeout: int = 25):
+        if not api_key:
+            raise GeographyError("GOOGLE_MAPS_API_KEY is required")
+        self.api_key = api_key
+        self.timeout = timeout
+
+    @staticmethod
+    def _waypoint(point: dict) -> dict:
+        if not isinstance(point, dict) or not _valid_coordinates(point.get("lat"), point.get("lng")):
+            raise GeographyError("Route Matrix requires valid lat/lng points")
+        return {
+            "waypoint": {
+                "location": {
+                    "latLng": {
+                        "latitude": float(point["lat"]),
+                        "longitude": float(point["lng"]),
+                    }
+                }
+            }
+        }
+
+    def compute(
+        self,
+        origin: dict,
+        destinations: list[dict],
+        *,
+        travel_mode: str = "DRIVE",
+        region_code: str | None = None,
+    ) -> list[dict]:
+        if not destinations:
+            return []
+        if len(destinations) > 100:
+            raise GeographyError("CareerHub route-matrix batches are capped at 100 destinations.")
+        mode = str(travel_mode or "DRIVE").upper()
+        if mode not in {"DRIVE", "TRANSIT", "WALK", "BICYCLE", "TWO_WHEELER"}:
+            raise GeographyError(f"Unsupported travel mode: {mode}")
+
+        body = {
+            "origins": [self._waypoint(origin)],
+            "destinations": [self._waypoint(x) for x in destinations],
+            "travelMode": mode,
+            "units": "METRIC",
+        }
+        if region_code:
+            body["regionCode"] = str(region_code).upper()
+        if mode == "DRIVE":
+            body["routingPreference"] = "TRAFFIC_AWARE"
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": self.api_key,
+            "X-Goog-FieldMask": "originIndex,destinationIndex,status,condition,distanceMeters,duration",
+        }
+        response = requests.post(ROUTE_MATRIX_URL, json=body, headers=headers, timeout=self.timeout)
+        response.raise_for_status()
+        payload = response.json()
+        rows = payload if isinstance(payload, list) else []
+        normalized = []
+        for row in rows:
+            status = row.get("status") or {}
+            normalized.append({
+                "origin_index": int(row.get("originIndex") or 0),
+                "destination_index": int(row.get("destinationIndex") or 0),
+                "condition": row.get("condition"),
+                "status_code": int(status.get("code") or 0),
+                "distance_meters": row.get("distanceMeters"),
+                "duration_seconds": _duration_seconds(row.get("duration")),
+            })
+        return normalized
+
+
+def geocode_anchor(geocoder: Any, anchor: str, region_code: str | None = None) -> dict | None:
+    query = _clean(anchor)
+    if not query:
+        return None
+    place = geocoder.search(query, region_code=region_code)
+    if not place:
+        return None
+    location = place.get("location") or {}
+    if not _valid_coordinates(location.get("latitude"), location.get("longitude")):
+        return None
+    return {
+        "label": query,
+        "place_id": place.get("id"),
+        "point": {
+            "lat": float(location["latitude"]),
+            "lng": float(location["longitude"]),
+        },
+    }
+
+
+def enrich_travel_time(
+    vault: dict,
+    *,
+    origin: dict,
+    router: Any,
+    travel_mode: str = "DRIVE",
+    max_minutes: int | None = None,
+    region_code: str | None = None,
+) -> dict:
+    """Attach one reach projection to each canonical job geo object.
+
+    Jobs without a defensible point remain untouched. Results are derived route
+    data and can be regenerated; job geography remains authoritative.
+    """
+    result = deepcopy(vault)
+    jobs = result.get("jobs", [])
+    indexed: list[tuple[int, dict]] = []
+    for idx, job in enumerate(jobs):
+        point = (job.get("geo") or {}).get("point")
+        if isinstance(point, dict) and _valid_coordinates(point.get("lat"), point.get("lng")):
+            indexed.append((idx, point))
+
+    for start in range(0, len(indexed), 100):
+        batch = indexed[start:start + 100]
+        routes = router.compute(
+            origin["point"],
+            [point for _, point in batch],
+            travel_mode=travel_mode,
+            region_code=region_code,
+        )
+        by_dest = {int(row["destination_index"]): row for row in routes}
+        for local_index, (job_index, _) in enumerate(batch):
+            row = by_dest.get(local_index)
+            if not row:
+                continue
+            duration_seconds = row.get("duration_seconds")
+            reach = {
+                "anchor_label": origin.get("label"),
+                "anchor_place_id": origin.get("place_id"),
+                "travel_mode": str(travel_mode).upper(),
+                "distance_meters": row.get("distance_meters"),
+                "duration_seconds": duration_seconds,
+                "duration_minutes": round(float(duration_seconds) / 60.0, 1) if duration_seconds is not None else None,
+                "condition": row.get("condition"),
+                "status_code": row.get("status_code"),
+                "within_threshold": (
+                    duration_seconds is not None
+                    and max_minutes is not None
+                    and float(duration_seconds) <= float(max_minutes) * 60.0
+                ) if max_minutes is not None else None,
+                "threshold_minutes": max_minutes,
+                "computed_at": utc_now_iso(),
+            }
+            jobs[job_index].setdefault("geo", {})["reach"] = reach
+
+    result["travel_time_updated_at"] = utc_now_iso()
+    return result
 
 def normalize_google_place(place: dict, query: str, basis: str) -> dict:
     location = place.get("location") or {}
