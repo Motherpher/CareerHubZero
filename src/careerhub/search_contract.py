@@ -53,7 +53,12 @@ def normalize_search(search: dict) -> dict:
 
     location = ""
     if isinstance(geographies, dict):
-        location = str(geographies.get("location") or "").strip()
+        anchors = geographies.get("anchors")
+        if isinstance(anchors, list) and anchors:
+            location = str(anchors[0]).strip()
+        # Migration fallback only; removed when legacy instance files are deleted.
+        if not location:
+            location = str(geographies.get("location") or "").strip()
         primary = geographies.get("primary")
         if not location and isinstance(primary, list) and primary:
             first = str(primary[0]).strip()
@@ -72,7 +77,8 @@ def normalize_search(search: dict) -> dict:
     elif isinstance(raw_lanes, list):
         for lane in raw_lanes:
             row = dict(lane or {})
-            row["bucket"] = lane_bucket(row)
+            row["bucket"] = str(row.get("bucket") or lane_bucket(row))
+            # "titles" is a migration fallback for pre-2.1 search files.
             row["queries"] = list(row.get("queries") or row.get("titles") or [])
             normalized_lanes.append(row)
 
@@ -81,7 +87,10 @@ def normalize_search(search: dict) -> dict:
         "country": country,
         "location": location,
         "target_geographies": geo_terms,
+        "anchors": list(geographies.get("anchors") or []) if isinstance(geographies, dict) else [],
         "remote_allowed": bool(geographies.get("remote_allowed", True)) if isinstance(geographies, dict) else True,
+        "remote_scopes": list(geographies.get("remote_scopes") or []) if isinstance(geographies, dict) else [],
+        "progressive_widening": list(geographies.get("progressive_widening") or []) if isinstance(geographies, dict) else [],
         "max_per_query": int(search.get("max_per_query") or 20),
         "max_total": int(search.get("max_total") or 120),
         "lanes": normalized_lanes,
