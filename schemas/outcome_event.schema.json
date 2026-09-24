@@ -40,25 +40,29 @@
       "enum": [
         "system",
         "user",
-        "employer"
+        "employer",
+        "import"
       ]
+    },
+    "event": {
+      "type": "string"
+    },
+    "process_id": {
+      "type": "string"
     },
     "role_family": {
       "type": "string"
     },
-    "function_tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "function_family": {
+      "type": "string"
     },
     "employer_type": {
       "type": "string"
     },
-    "geography_key": {
+    "arrangement": {
       "type": "string"
     },
-    "search_lane": {
+    "geography": {
       "type": "string"
     },
     "notes": {
