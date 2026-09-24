@@ -123,6 +123,14 @@ def parse_xlsx(blob: bytes) -> dict:
         by_municipality[row["municipality_code"]] = row
     rows = sorted(by_municipality.values(), key=lambda x: x["municipality_code"])
     if len(rows) != 290:
+        print("SCB_PARSE_DIAGNOSTIC", json.dumps({
+            "years": years,
+            "latest": latest,
+            "all_records": len(records),
+            "latest_records": len(latest_rows),
+            "unique_municipalities": len(rows),
+            "sample_latest": latest_rows[:20],
+        }, ensure_ascii=False))
         raise RuntimeError(f"Expected 290 municipality assignments for LA {latest}, found {len(rows)}.")
     return {
         "schema_version": "1.0",
