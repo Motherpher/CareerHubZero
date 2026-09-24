@@ -176,8 +176,7 @@
     },
     "WP05": {
       "depends_on": [
-        "WP04",
-        "WP08"
+        "WP04"
       ],
       "required_paths": [
         "src/careerhub/learning.py",
