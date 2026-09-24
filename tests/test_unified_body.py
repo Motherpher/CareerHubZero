@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 
 from careerhub.hrdm_reports import archive_expired_reports, render_report_indexes, write_ledger
-from careerhub.hrdm_trace import create_reverse_trace, validate_process_id
+from careerhub.hrdm_trace import create_reverse_trace, finalize_reverse_trace, validate_process_id
 from careerhub.hybridianesque import finalize_hyfilter
 from careerhub.instance import load_profile_node, validate_profile_node_paths
 from careerhub.search_contract import normalize_search
@@ -122,8 +122,15 @@ class UnifiedBodyTests(unittest.TestCase):
             )
             self.assertTrue(trace["process_id_validation_status"])
             self.assertTrue(validate_process_id(trace["process_id"]))
-            self.assertTrue(trace["process_id"].endswith("-S09-A-R01-FINAL"))
+            self.assertTrue(trace["process_id"].endswith("-S09-A-R01-OPEN"))
+            self.assertEqual(trace["final_output_state"], "OPEN")
             self.assertEqual(len(trace["step_process_ids"]), 9)
+            final = finalize_reverse_trace(trace, success=True)
+            self.assertTrue(final["process_id"].endswith("-S09-A-R01-FINAL"))
+            self.assertEqual(final["final_output_state"], "FINAL")
+            incomplete = finalize_reverse_trace(trace, success=False, warnings=["analysis unavailable"])
+            self.assertTrue(incomplete["process_id"].endswith("-S09-A-R01-WARN"))
+            self.assertEqual(incomplete["bank_eligible_outputs"], [])
 
     def test_hybridianesque_requires_explicit_yes_for_deep_filter(self):
         candidate = {
