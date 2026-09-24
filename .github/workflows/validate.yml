@@ -44,6 +44,7 @@ jobs:
               Path("schemas/candidate_profile.schema.json"),
               Path("schemas/search_profile.schema.json"),
               Path("schemas/job_geo.schema.json"),
+              Path("schemas/careerhub_manifest.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
@@ -51,7 +52,7 @@ jobs:
           PY
 
       - name: Validate canonical version and release ledger
-        run: python scripts/check_stack_version.py
+        run: python scripts/check_body_version.py
 
       - name: Enforce version bump for central changes
         run: |
