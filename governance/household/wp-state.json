@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "sprint": "CH-1.0-SILICON",
+  "updated_at": "2026-09-24T22:15:00+02:00",
+  "order": [
+    "DISPATCHED",
+    "JANITOR_SCAN",
+    "HANDYMAN_PLAN",
+    "HANDYMAN_J1_APPLIED_OR_SKIPPED",
+    "JANITOR_RESCAN",
+    "DIRECTOR_RECONCILIATION",
+    "PASS_OR_BLOCKED",
+    "CLOSED_OR_HELD"
+  ],
+  "work_packages": {
+    "WP01": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP02": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP03": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP04": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP05": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP06": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP07": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP08": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP09": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    },
+    "WP10": {
+      "state": "DISPATCHED",
+      "household": {
+        "janitor": "PENDING",
+        "handyman": "PENDING",
+        "director": "PENDING"
+      },
+      "clearance": "PENDING",
+      "audit_refs": []
+    }
+  }
+}
