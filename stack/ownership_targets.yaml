@@ -7,33 +7,31 @@ connector_installation:
   visible_repositories:
     - Motherpher/CareerHubZero
     - Motherpher/CareerHub-LinusF
-  status: blocked_new_repositories_not_selected
+    - Motherpher/wpb
+    - Motherpher/Gracey
+  status: complete
 
 repositories:
   - instance_id: central
     current: Motherpher/CareerHubZero
-    target: Motherpher/CareerHubZero
     strategy: already_canonical
     status: complete
 
   - instance_id: linus-fast
     current: Motherpher/CareerHub-LinusF
-    target: Motherpher/CareerHub-LinusF
     strategy: already_canonical
     status: complete
 
   - instance_id: weronika-perez-borjas
     previous: Hybrismannen/wpb
-    target: Motherpher/CareerHub-Weronika
-    strategy: extract_profile_subtree_to_dedicated_repository
-    user_reported_move_complete: true
-    status: blocked_connector_visibility
-    note: "Old Hybrismannen/wpb location no longer resolves through the connector. Exact Motherpher repository name/path must be verified after the GitHub installation is granted access."
+    current: Motherpher/wpb
+    current_path: CareerHub
+    strategy: transferred_repository_preserving_history
+    status: complete
 
   - instance_id: grace
     previous: Hybrismannen/Gracey
-    target: Motherpher/CareerHub-Grace
-    strategy: transfer_or_relocate_dedicated_repository_preserving_history
-    user_reported_move_complete: true
-    status: blocked_connector_visibility
-    note: "Old Hybrismannen/Gracey location no longer resolves through the connector. Exact Motherpher repository name/path must be verified after the GitHub installation is granted access."
+    current: Motherpher/Gracey
+    current_path: CareerHub
+    strategy: transferred_repository_preserving_history
+    status: complete
