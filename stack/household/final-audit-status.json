@@ -1,48 +1,91 @@
 {
   "schema_version": "1.0",
+  "audit_order_id": "CH-HH-ORDER-2026-09-25-01",
+  "snapshot_version": "0.2.9-alpha",
+  "snapshot_commit": "3a32f03c68110c951c9236828d3bc21fa76ea768",
+  "household_run_id": 36073576772,
+  "validation_run_id": 36073576839,
   "status": "BLOCKED",
-  "updated_at": "2026-09-25",
-  "reason": "Household sprint execution is active; WP02/WP03 and live external gates prevent Full Audit Lock.",
+  "janitor": {
+    "status": "PASS",
+    "findings_total": 6,
+    "blocking_findings": 0,
+    "note": "Deep scan completed with nonblocking hygiene/advisory findings only."
+  },
   "work_packages": [
     {
       "id": "WP01",
-      "status": "OPEN"
+      "issue": 1,
+      "status": "PASS",
+      "clearance": "C01"
     },
     {
       "id": "WP02",
-      "status": "BLOCKED"
+      "issue": 3,
+      "status": "BLOCKED",
+      "clearance": "C02",
+      "blocker": "Private CareerHubZero Action sharing to profile repositories is not enabled."
     },
     {
       "id": "WP03",
-      "status": "BLOCKED"
+      "issue": 4,
+      "status": "BLOCKED",
+      "clearance": "C03",
+      "blocker": "Depends on WP02; Grace and Weronika legacy motors remain pending central-action parity."
     },
     {
       "id": "WP04",
-      "status": "OPEN"
+      "issue": 16,
+      "status": "PASS",
+      "clearance": "C04"
     },
     {
       "id": "WP05",
-      "status": "OPEN"
+      "issue": 17,
+      "status": "PASS",
+      "clearance": "C05"
     },
     {
       "id": "WP06",
-      "status": "BLOCKED"
+      "issue": 15,
+      "status": "BLOCKED",
+      "clearance": "C06",
+      "blocker": "Live Google Maps/routing and complete geography end-to-end gate remains unproven."
     },
     {
       "id": "WP07",
-      "status": "OPEN"
+      "issue": 18,
+      "status": "PASS",
+      "clearance": "C07"
     },
     {
       "id": "WP08",
-      "status": "OPEN"
+      "issue": 19,
+      "status": "PASS",
+      "clearance": "C08"
     },
     {
       "id": "WP09",
-      "status": "OPEN"
+      "issue": 20,
+      "status": "BLOCKED",
+      "clearance": "C09",
+      "blocker": "Depends on WP06; unified hub cannot clear until live geography surface is proven."
     },
     {
       "id": "WP10",
-      "status": "BLOCKED"
+      "issue": 14,
+      "status": "BLOCKED",
+      "clearance": "C10",
+      "blocker": "Upstream blockers remain; Full Audit Lock cannot pass."
     }
+  ],
+  "final_janitor_state": "PASS_WITH_NONBLOCKING_FINDINGS",
+  "director_final_reconciliation": "BLOCKED",
+  "release_1_0_allowed": false,
+  "development_line_open": true,
+  "residual_external_gates": [
+    "private_action_profile_access",
+    "geo_runtime_complete",
+    "live_ai_execution"
   ]
 }
