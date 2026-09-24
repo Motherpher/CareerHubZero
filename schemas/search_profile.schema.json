@@ -1,24 +1,62 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CareerHub Search Profile",
+  "title": "CareerHub Search Profile 2.1",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "version",
     "intent",
     "geographies",
     "lanes",
-    "triage_rule"
+    "negative_filters",
+    "triage_rule",
+    "user_search_overlay"
   ],
   "properties": {
     "version": {
-      "type": "string"
+      "const": "2.1"
     },
     "intent": {
       "type": "string"
     },
     "geographies": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": false,
+      "required": [
+        "country",
+        "anchors",
+        "remote_allowed",
+        "remote_scopes",
+        "progressive_widening"
+      ],
+      "properties": {
+        "country": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remote_allowed": {
+          "type": "boolean"
+        },
+        "remote_scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "progressive_widening": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "engagement_types": {
       "type": "array",
@@ -34,12 +72,43 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "lane_id",
           "name",
-          "priority"
+          "bucket",
+          "priority",
+          "queries"
         ],
-        "additionalProperties": true
+        "properties": {
+          "lane_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bucket": {
+            "type": "string",
+            "enum": [
+              "core",
+              "adjacent",
+              "bridge"
+            ]
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "negative_filters": {
@@ -72,6 +141,5 @@
         }
       }
     }
-  },
-  "additionalProperties": true
+  }
 }
