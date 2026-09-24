@@ -230,3 +230,85 @@ Before 0.3 can claim a complete geographical drill:
 - geo settings are consumable by sourcing/ranking,
 - unsupported countries fall back cleanly to Google-only operation,
 - tests prove that the same search engine works with and without a country adapter.
+
+
+## 10. Job-ad geotagging and zoom clustering
+
+Every sourced vacancy must receive a normalized `geo` object before map rendering.
+
+Resolution order:
+
+1. source-native coordinates, if the vacancy source provides them,
+2. explicit workplace/street address from the vacancy,
+3. explicit locality/municipality/region string from the vacancy,
+4. optional employer + location Google lookup only when explicitly enabled,
+5. unresolved/remote state when no defensible spatial anchor exists.
+
+CareerHub must never fabricate street-level precision. A vacancy that only says `Stockholm, Stockholms län` is tagged at **locality precision** and remains grouped at Stockholm. A vacancy that contains a defensible workplace address may become a precise map point.
+
+### Map behaviour
+
+The map is zoom-aware.
+
+```text
+WORLD / COUNTRY VIEW
+Sweden 412
+   ↓ zoom
+
+REGIONAL VIEW
+Stockholms län 183
+Uppsala län 61
+Skåne län 47
+   ↓ zoom
+
+CITY VIEW
+Stockholm 153
+Solna 18
+Sundbyberg 7
+Uppsala 49
+   ↓ zoom
+
+CLOSE CITY VIEW
+precise vacancy points spread to their real geotagged positions
++
+coarse city-only vacancies remain as a Stockholm locality cluster
+```
+
+A cluster exposes both:
+- `count`: all represented jobs,
+- `new_count`: jobs first discovered in the latest scan.
+
+So a Stockholm hover can show, for example:
+
+```text
+Stockholm
+153 jobs
+18 newly sourced
+```
+
+Zooming in does not randomly scatter those 153 jobs. Only ads with sufficiently precise evidence split into individual points. The remainder stay visibly grouped as city-level vacancies.
+
+### Runtime
+
+Central implementation:
+- `src/careerhub/geography.py`
+- `scripts/geotag_jobs.py`
+- `schemas/job_geo.schema.json`
+
+Example:
+
+```bash
+GOOGLE_MAPS_API_KEY=... \
+python scripts/geotag_jobs.py data/job_vault.json \
+  --region-code SE \
+  --map-output data/map.json \
+  --zoom 8 \
+  --latest-only
+```
+
+At high zoom the map payload switches to mixed mode:
+- precise point features are emitted individually,
+- locality-only jobs remain grouped,
+- unresolved jobs are not given invented coordinates.
+
+Country-matrix enrichment is a separate step on top of the geotag and will populate `geo.country_matrix`.
