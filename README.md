@@ -26,7 +26,7 @@ A CareerHub version is stack-current only when every active registered profile h
 
 ## Current version
 
-**CareerHubZero 0.2.4-alpha — Grace stack recovery + Motherpher ownership and 1.0 audit-lock governance.**
+**CareerHubZero 0.2.5-alpha — precision-aware vacancy geotagging and zoom-aware geographic aggregation.**
 
 Canonical version source: `VERSION`.
 
@@ -72,9 +72,9 @@ Motor changes are made only in CareerHubZero. The matchable profile is hard-boun
 
 ## Migration status
 
-- `Motherpher/CareerHub-LinusF` is already a thin Motherpher profile repository but its candidate profile still requires migration to the current verified-career schema.
+- `Motherpher/CareerHub-LinusF` is a thin Motherpher profile using the current verified-career schema.
 - `Motherpher/wpb/CareerHub` remains the Weronika legacy implementation and contains local motor code. Stable target: `Motherpher/wpb`.
-- `Motherpher/Gracey/CareerHub` is now registered, policy-normalised and bound to CareerHubZero 0.2.4-alpha, but still contains a temporary local motor. Stable target: `Motherpher/Gracey`.
+- `Motherpher/Gracey/CareerHub` is now registered, policy-normalised and bound to CareerHubZero 0.2.5-alpha, but still contains a temporary local motor. Stable target: `Motherpher/Gracey`.
 - Grace's pre-firewall Region Stockholm application artifact is quarantined until verified career sources are added and the case is rerun.
 
 ## Stable release rule
