@@ -103,7 +103,7 @@ def create_reverse_trace(
             mode="R", rundate=rundate, runseq=runseq, step=step, state="LOCK"
         )
     step_pids["S09"] = generate_process_id(
-        mode="R", rundate=rundate, runseq=runseq, step=9, state="FINAL"
+        mode="R", rundate=rundate, runseq=runseq, step=9, state="OPEN"
     )
     final_pid = step_pids["S09"]
     return {
@@ -115,17 +115,55 @@ def create_reverse_trace(
         "hy_filter_usage": bool(hy_filter_usage),
         "hcc_authority": hcc_authority,
         "downing_street_loop_count": 0,
-        "final_output_state": "FINAL",
+        "final_output_state": "OPEN",
         "process_id_validation_status": all(validate_process_id(x) for x in step_pids.values()),
         "last_pid_rev": final_pid,
         "process_id": final_pid,
         "runseq": runseq,
         "step_process_ids": step_pids,
         "outstanding_warnings": list(warnings or []),
-        "bank_eligible_outputs": [
+        "bank_eligible_outputs": [],
+    }
+
+
+def finalize_reverse_trace(
+    trace: dict,
+    *,
+    success: bool,
+    warnings: list[str] | None = None,
+) -> dict:
+    """Finalize the S09 state after semantic execution has actually completed."""
+    result = dict(trace)
+    current = str(result.get("process_id") or "")
+    parts = current.split("-")
+    if len(parts) != 8:
+        raise ValueError(f"Cannot finalize malformed Process-ID: {current}")
+    _, mode, rundate, runseq, step_token, sub, rev_token, _ = parts
+    state = "FINAL" if success else "WARN"
+    final_pid = generate_process_id(
+        mode=mode,
+        rundate=rundate,
+        runseq=int(runseq),
+        step=int(step_token.lstrip("S")),
+        sub=sub,
+        rev=int(rev_token.lstrip("R")),
+        state=state,
+    )
+    step_ids = dict(result.get("step_process_ids") or {})
+    step_ids["S09"] = final_pid
+    result["step_process_ids"] = step_ids
+    result["process_id"] = final_pid
+    result["last_pid_rev"] = final_pid
+    result["final_output_state"] = state
+    result["process_id_validation_status"] = all(validate_process_id(x) for x in step_ids.values())
+    result["outstanding_warnings"] = list(warnings or [])
+    result["bank_eligible_outputs"] = (
+        [
             "Final deconstructed ad map",
             "Final candidate positioning map",
             "Final DoD flagged meta-report",
             "Final HCC commentary",
-        ],
-    }
+        ]
+        if success else []
+    )
+    return result
