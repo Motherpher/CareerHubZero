@@ -17,7 +17,7 @@ from .matching import candidate_terms, rank_jobs
 from .models import Job
 from .search_contract import lane_queries, normalize_search
 from .sources import fetch_public_job, load_yaml as load_source_yaml, source_lane
-from .state import choose_case, load_cases, merge_job_vault, update_case, update_priority, write_json
+from .state import append_case_event, bind_analysis, choose_case, load_cases, merge_job_vault, update_case, update_priority, write_json
 
 CENTRAL_ROOT = Path(__file__).resolve().parents[2]
 
@@ -203,18 +203,38 @@ def cmd_drill(args):
 
     report_entry = save_report_bundle(root, hrdm, ctx["paths"]["hrdm_ledger"])
 
-    app = run_ai_application(job.full_dict(), ctx["profile"], hrdm, args.lane) or fallback_application(job.full_dict(), ctx["profile"], hrdm)
-    (outdir / "application_package.json").write_text(json.dumps(app, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    ai_app = run_ai_application(job.full_dict(), ctx["profile"], hrdm, args.lane)
+    app = ai_app or fallback_application(job.full_dict(), ctx["profile"], hrdm)
+    app_json = outdir / "application_package.json"
+    app_json.write_text(json.dumps(app, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     app_doc = write_application_docx(outdir, job.full_dict(), ctx["profile"], app)
 
-    maintain_hrdm_reports(root, ctx["paths"]["hrdm_ledger"], control_room=root / "CONTROL_ROOM.md")
+    ai_hrdm_used = hrdm.get("ai_status") != "not_run"
+    external_use_allowed = bool(ai_hrdm_used and ai_app is not None)
+    if int(args.issue_number or 0) > 0:
+        bind_analysis(
+            ctx["paths"]["applications"],
+            int(args.issue_number),
+            packet["process_id"],
+            external_use_allowed=external_use_allowed,
+            report_paths=report_entry["paths"],
+            application_paths={
+                "json": str(app_json.relative_to(root)),
+                "docx": str(app_doc.relative_to(root)),
+            },
+        )
+
+    maintain_hrdm_reports(root, ctx["paths"]["hrdm_ledger"], control_room=None)
+    _render_all(ctx)
 
     print(json.dumps({
         "process_id": packet["process_id"],
         "application_docx": str(app_doc),
         "hrdm_report": report_entry["paths"],
         "hy_filter": (hrdm.get("hybridianesque") or {}).get("status"),
-        "ai_used": hrdm.get("ai_status") != "not_run",
+        "ai_used": ai_hrdm_used,
+        "application_ai_used": ai_app is not None,
+        "external_use_allowed": external_use_allowed,
     }, ensure_ascii=False, indent=2))
 
 
@@ -237,6 +257,15 @@ def cmd_track(args):
         case = update_case(cases_path, args.issue_number, args.status, args.date, args.next_action, args.next_action_date)
     elif args.action == "priority":
         case = update_priority(cases_path, args.issue_number, args.priority)
+    elif args.action == "event":
+        case = append_case_event(
+            cases_path,
+            args.issue_number,
+            args.event_type,
+            source=args.event_source,
+            note=args.note,
+            at=args.date,
+        )
     else:
         raise SystemExit(f"Unsupported action: {args.action}")
 
@@ -284,10 +313,11 @@ def build_parser():
     drill.add_argument("--lane", choices=["core", "adjacent", "bridge"], default="core")
     drill.add_argument("--hy-filter", choices=["Yes", "No"], default="")
     drill.add_argument("--out", default="output")
+    drill.add_argument("--issue-number", type=int, default=0)
     drill.set_defaults(func=cmd_drill)
 
     track = sub.add_parser("track")
-    track.add_argument("--action", choices=["choose", "status", "priority"], required=True)
+    track.add_argument("--action", choices=["choose", "status", "priority", "event"], required=True)
     track.add_argument("--job-json", default="")
     track.add_argument("--issue-number", type=int, required=True)
     track.add_argument("--issue-url", default="")
@@ -297,6 +327,9 @@ def build_parser():
     track.add_argument("--next-action", default="")
     track.add_argument("--next-action-date", default="")
     track.add_argument("--analysis-complete", action="store_true")
+    track.add_argument("--event-type", default="")
+    track.add_argument("--event-source", choices=["user", "system", "employer"], default="user")
+    track.add_argument("--note", default="")
     track.set_defaults(func=cmd_track)
 
     render = sub.add_parser("render")
