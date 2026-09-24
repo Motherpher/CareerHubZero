@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-09-24T22:15:00+02:00",
+  "controls": {
+    "private_action_profile_execution": {
+      "state": "BLOCKED_EXTERNAL",
+      "repairability": "J2",
+      "evidence": [
+        "Motherpher/wpb unified-body compatibility run 36052385689 failed during job setup before CareerHub code execution.",
+        "Linus and Grace compatibility workflows showed the same private-action consumption barrier."
+      ],
+      "required_action": "Enable Motherpher/CareerHubZero private Actions access for the profile repositories."
+    },
+    "profile_cutover": {
+      "state": "BLOCKED_DEPENDENCY",
+      "repairability": "J2",
+      "evidence": [
+        "Grace and Weronika still contain local motors because WP02 central-action invocation has not passed."
+      ]
+    },
+    "live_ai": {
+      "state": "UNVERIFIED_EXTERNAL",
+      "repairability": "J2",
+      "evidence": [
+        "OpenAI execution depends on valid API key and available API credit."
+      ]
+    },
+    "google_maps": {
+      "state": "UNVERIFIED_EXTERNAL",
+      "repairability": "J2",
+      "evidence": [
+        "Live Maps/Places execution depends on GOOGLE_MAPS_API_KEY."
+      ]
+    }
+  }
+}
