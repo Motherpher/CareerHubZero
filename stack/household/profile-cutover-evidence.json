@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-25",
+  "profiles": {
+    "linus-fast": {
+      "repository": "Motherpher/CareerHub-LinusF",
+      "central_body": true,
+      "local_motor_present": false,
+      "compatibility": "BLOCKED_ACTION_ACCESS",
+      "evidence": "Thin profile node; central composite-action compatibility workflow cannot start because private-action access is not enabled."
+    },
+    "weronika-perez-borjas": {
+      "repository": "Motherpher/wpb",
+      "central_body": false,
+      "local_motor_present": true,
+      "compatibility": "BLOCKED_ACTION_ACCESS",
+      "evidence": "Unified manifest exists; legacy local motor remains until central action can execute and parity passes."
+    },
+    "grace": {
+      "repository": "Motherpher/Gracey",
+      "central_body": false,
+      "local_motor_present": true,
+      "compatibility": "BLOCKED_ACTION_ACCESS",
+      "evidence": "Unified manifest exists; legacy local motor remains until central action can execute and parity passes."
+    }
+  }
+}
