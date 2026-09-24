@@ -105,13 +105,24 @@ def parse_xlsx(blob: bytes) -> dict:
     with zipfile.ZipFile(io.BytesIO(blob)) as zf:
         shared = _shared_strings(zf)
         records = []
+        sheet_debug = []
         for sheet_name, path in _sheet_files(zf):
             if not path:
                 continue
-            for values in _rows(zf, path, shared):
+            rows_here = _rows(zf, path, shared)
+            sheet_records = []
+            for values in rows_here:
                 rec = _record(values, sheet_name)
                 if rec:
                     records.append(rec)
+                    sheet_records.append(rec)
+            sheet_debug.append({
+                "sheet": sheet_name,
+                "row_count": len(rows_here),
+                "candidate_records": len(sheet_records),
+                "sample_rows": rows_here[:8],
+                "sample_records": sheet_records[:5],
+            })
 
     years = sorted({r["year"] for r in records if r["year"]})
     if not years:
@@ -130,6 +141,7 @@ def parse_xlsx(blob: bytes) -> dict:
             "latest_records": len(latest_rows),
             "unique_municipalities": len(rows),
             "sample_latest": latest_rows[:20],
+            "sheets": sheet_debug,
         }, ensure_ascii=False))
         raise RuntimeError(f"Expected 290 municipality assignments for LA {latest}, found {len(rows)}.")
     return {
