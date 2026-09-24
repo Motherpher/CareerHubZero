@@ -16,7 +16,7 @@ instances:
       - core/hrdm
 
   - instance_id: weronika-perez-borjas
-    repository: Hybrismannen/wpb
+    repository: Motherpher/wpb
     instance_path: CareerHub/instance.yaml
     lock_path: CareerHub/stack.lock.yaml
     status: active
@@ -27,7 +27,7 @@ instances:
       - CareerHub/hrdm/HRDM_R_v6.3.md
 
   - instance_id: grace
-    repository: Hybrismannen/Gracey
+    repository: Motherpher/Gracey
     instance_path: CareerHub/instance.yaml
     lock_path: CareerHub/stack.lock.yaml
     status: active
