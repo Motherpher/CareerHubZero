@@ -20,14 +20,14 @@ Repository ownership migration is complete.
 ## Current profile-contract state
 
 ### Linus
-- canonical `0.2.4-alpha` engine binding,
+- canonical `0.2.5-alpha` engine binding,
 - canonical verified-evidence profile,
 - canonical search-only overlay,
 - no profile-local CareerHub motor,
 - stack lock: aligned.
 
 ### Weronika
-- canonical `0.2.4-alpha` engine binding,
+- canonical `0.2.5-alpha` engine binding,
 - parallel verified-evidence profile at `CareerHub/profile/candidate_verified.yaml`,
 - canonical search profile at `CareerHub/config/search_profile.yaml`,
 - legacy candidate/profile files retained only for the temporary local runtime,
@@ -35,7 +35,7 @@ Repository ownership migration is complete.
 - stack lock: blocked pending central-motor cutover.
 
 ### Grace
-- canonical `0.2.4-alpha` engine binding,
+- canonical `0.2.5-alpha` engine binding,
 - canonical verified-evidence profile,
 - canonical search profile,
 - 159-job historical vault preserved,
