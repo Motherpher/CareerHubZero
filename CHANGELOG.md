@@ -2,6 +2,20 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.7-alpha — 2026-09-24
+**Integrated execution spine + HRDM report/ledger lifecycle.**
+
+- Add one manifest-driven central CLI spanning sourcing through rendering.
+- Add central composite GitHub Action for profile-side execution.
+- Add canonical HRDM Process-ID/run-registry support.
+- Add HRDM active report shelf and immutable historical ledger.
+- Archive reports from the active shelf after vacancy deadline while retaining history.
+- Add HRDM Markdown, DOCX and PDF artifacts.
+- Install Hybridianesque Hy-Filter as an optional, explicitly gated HRDM depth filter.
+- Preserve precise vacancy address/coordinates for geotagging.
+- Add search-profile normalization across all active profile-node shapes.
+- Add executable capability audit and explicit remaining 1.0 blockers.
+
 ## 0.2.6-alpha — 2026-09-24
 **Unified CareerHub body architecture.**
 
