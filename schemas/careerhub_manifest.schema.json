@@ -2,34 +2,88 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CareerHub Profile Manifest",
   "type": "object",
-  "required": ["schema_version", "profile_id", "profile", "search", "state"],
+  "required": [
+    "schema_version",
+    "profile_id",
+    "profile",
+    "search",
+    "state",
+    "artifacts"
+  ],
   "properties": {
-    "schema_version": {"const": "1.0"},
-    "profile_id": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "const": "1.0"
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
     "profile": {
       "type": "object",
-      "required": ["path"],
-      "properties": {"path": {"type": "string", "minLength": 1}},
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
       "additionalProperties": false
     },
     "search": {
       "type": "object",
-      "required": ["path"],
-      "properties": {"path": {"type": "string", "minLength": 1}},
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
       "additionalProperties": false
     },
     "state": {
       "type": "object",
-      "required": ["job_vault", "applications"],
+      "required": [
+        "job_vault",
+        "applications",
+        "hrdm_ledger"
+      ],
       "properties": {
-        "job_vault": {"type": "string", "minLength": 1},
-        "applications": {"type": "string", "minLength": 1}
+        "job_vault": {
+          "type": "string",
+          "minLength": 1
+        },
+        "applications": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hrdm_ledger": {
+          "type": "string",
+          "minLength": 1
+        }
       },
       "additionalProperties": false
     },
     "artifacts": {
       "type": "object",
-      "additionalProperties": {"type": "string"}
+      "additionalProperties": false,
+      "required": [
+        "hrdm_reports",
+        "hrdm_history"
+      ],
+      "properties": {
+        "hrdm_reports": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hrdm_history": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   },
   "additionalProperties": false
