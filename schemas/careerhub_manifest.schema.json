@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub Profile Manifest",
+  "type": "object",
+  "required": ["schema_version", "profile_id", "profile", "search", "state"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "profile": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {"path": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "search": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {"path": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "required": ["job_vault", "applications"],
+      "properties": {
+        "job_vault": {"type": "string", "minLength": 1},
+        "applications": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
