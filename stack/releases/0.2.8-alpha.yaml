@@ -1,42 +1,28 @@
 version: 0.2.8-alpha
 reconstructed: false
 status: current
-development_open: true
-date: 2026-09-24
-purpose: Silicon Sprint integration of Household clearance, bounded career learning, unified case events, country adapters and one hub surface.
-user_contract: "Find jobs -> Analyse? -> Apply"
-
+date: 2026-09-25
+purpose: Execute the CareerHub 1.0 Silicon Sprint under Household family clearance with fixed WP01-WP10 audit order.
 contents:
   household:
-    - WP01-WP10 Household governance contract and immutable audit state order
-    - Janitor/Handyman/Director clearance workflow
-    - explicit external-control ledger for non-fabricable blockers
-  search_and_learning:
-    - one normalized search runtime remains authoritative
-    - deterministic query provenance on sourced jobs
-    - outcome learning is projected from canonical case history
-    - learned signals affect ranking only and never mutate candidate evidence
-  geography:
-    - one normalized job geo object remains authoritative
-    - country-adapter registry added
-    - Sweden/SCB first adapter added
-    - Google geotag enrichment routes through the country adapter
-  hrdm_and_cases:
-    - HRDM/application artifacts bind to the canonical case
-    - case history is the single outcome-event stream
-    - external-use state remains explicit
-  surface:
-    - one generic hub renderer becomes the authoritative user-facing projection
-    - learning, geography, HRDM and application state are derived from canonical backend state
-
+    - portable Household family runtime installed with CareerHub path adaptation only
+    - Director progression/acceptance authority
+    - Handyman bounded J1 repair authority
+    - Janitor drift/contradiction/security/hygiene surveillance
+    - fixed audit state order from baseline through WP10 and final report
+    - machine-readable external gates and profile-cutover evidence
+  sprint:
+    - search-kernel regression gates
+    - bounded Career Learning Loop over canonical case events
+    - country-adapter registry and Sweden adapter contract
+    - HRDM/Hybridianesque regression gates
+    - unified application/outcome state-machine gates
+    - hub-surface gates
+  governance:
+    - Household may operationally clear WPs under user authority
+    - Household cannot fabricate CareerHub 1.0 Full Audit Lock
 known_blockers:
-  - Motherpher private-action sharing is still blocked externally for profile-side central execution
-  - Grace and Weronika local-motor cutover therefore cannot yet be cleared
-  - Sweden adapter does not yet have complete municipality/RegSO/DeSO/local-labour-market enrichment
-  - live Google Maps execution requires GOOGLE_MAPS_API_KEY
-  - live AI HRDM/application execution requires working OpenAI API credit
-  - full three-profile controlled parity has not yet passed
-
-sprint:
-  id: CH-1.0-SILICON
-  state: ACTIVE_HOUSEHOLD_GOVERNED
+  - private CareerHubZero Action sharing to profile repositories is not enabled
+  - Grace and Weronika legacy motors remain until central compatibility/parity succeeds
+  - live Google routing/full Sweden matrix execution is not yet proven
+  - live OpenAI HRDM/application execution is not revalidated after prior credit exhaustion
