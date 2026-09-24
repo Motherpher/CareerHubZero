@@ -1,0 +1,29 @@
+version: 0.2.6-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Unify CareerHub as one software body with one version and profile manifests as data/context nodes.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  architecture:
+    - CareerHubZero VERSION is the only software version
+    - profile repositories no longer belong to a separately versioned engine/stack model
+    - careerhub.yaml becomes the stable profile-node contract
+    - instance.yaml and stack.lock.yaml are migration-only artifacts
+  distribution:
+    - stable profile execution will call centrally released CareerHub actions/workflows
+    - each profile repository writes its own state with its repository-scoped GITHUB_TOKEN
+    - central cross-repository version propagation is deprecated
+    - CAREERHUB_STACK_TOKEN is removed from the stable architecture
+  runtime_migration:
+    - reusable legacy runtime modules are being centralized in CareerHubZero
+    - Grace and Weronika local motors remain temporary until central cutover is proven
+  release:
+    - CareerHub 1.0.0 will represent the entire audited software body
+    - no independent profile or engine release exists at 1.0
+compatibility:
+  migration_required: true
+  manifests:
+    - Motherpher/CareerHub-LinusF: careerhub.yaml
+    - Motherpher/wpb: CareerHub/careerhub.yaml
+    - Motherpher/Gracey: CareerHub/careerhub.yaml
