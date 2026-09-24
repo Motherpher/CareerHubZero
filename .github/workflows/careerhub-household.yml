@@ -55,13 +55,24 @@ jobs:
         run: |
           set +e
           mkdir -p .ffos-household/audit
-          BLOCKED=0
           for WP in WP01 WP02 WP03 WP04 WP05 WP06 WP07 WP08 WP09 WP10; do
-            python .ffos-household/director.py               --root .               --manifest .ffos-household/wp-manifest.json               --audit-dir .ffos-household/audit               --state .ffos-household/audit/director-state.json               --wp "$WP"
-            RC=$?
-            if [ "$RC" -ne 0 ]; then BLOCKED=1; fi
+            python .ffos-household/director.py \
+              --root . \
+              --manifest .ffos-household/wp-manifest.json \
+              --audit-dir .ffos-household/audit \
+              --state .ffos-household/audit/director-state.json \
+              --wp "$WP" || true
           done
-          echo "blocked=$BLOCKED" >> "$GITHUB_OUTPUT"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          p=Path(".ffos-household/audit/director-state.json")
+          data=json.loads(p.read_text()) if p.exists() else {}
+          states={f"WP{i:02d}":(data.get(f"WP{i:02d}") or {}).get("status","NO_RECORD") for i in range(1,11)}
+          blocked=any(value != "PASS" for value in states.values())
+          print(f"blocked={1 if blocked else 0}")
+          print("director_states="+json.dumps(states,separators=(",",":")))
+          PY
           exit 0
 
       - name: Write clearance summary
