@@ -1,6 +1,6 @@
 version: 0.2.6-alpha
 reconstructed: false
-status: current
+status: superseded
 date: 2026-09-24
 purpose: Unify CareerHub as one software body with one version and profile manifests as data/context nodes.
 user_contract: "Find jobs -> Analyse? -> Apply"
