@@ -4,12 +4,14 @@ import json
 import os
 import unicodedata
 from pathlib import Path
+from xml.etree import ElementTree as ET
 from typing import Any, Protocol
 
 import requests
 
 SCB_WFS = "https://geodata.scb.se/geoserver/stat/wfs"
 ADMIN_DATA_PATH = Path(__file__).resolve().parents[2] / "data/geography/sweden_admin_2026.json"
+LABOUR_MARKET_DATA_PATH = Path(__file__).resolve().parents[2] / "data/geography/sweden_local_labour_markets.json"
 
 SWEDEN_COUNTIES = {
     "01": "Stockholms län",
@@ -78,6 +80,19 @@ def _municipality_record(name: str) -> dict | None:
     return None
 
 
+def _labour_market_record(municipality_code: str | None) -> dict | None:
+    if not municipality_code or not LABOUR_MARKET_DATA_PATH.exists():
+        return None
+    try:
+        data = json.loads(LABOUR_MARKET_DATA_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    for row in data.get("records", []):
+        if str(row.get("municipality_code") or "") == str(municipality_code):
+            return row
+    return None
+
+
 def _feature_properties(feature: dict | None) -> dict:
     return dict((feature or {}).get("properties") or {})
 
@@ -87,10 +102,41 @@ class SwedenAdapter:
 
     def __init__(self, timeout: int = 12):
         self.timeout = timeout
-        # Layer names are deployment-configurable because SCB may change
-        # GeoServer identifiers independently of the stable CareerHub contract.
+        # Explicit overrides are optional; otherwise the adapter discovers the
+        # current SCB feature type from WFS capabilities at runtime.
         self.regso_layer = os.getenv("SCB_REGSO_WFS_LAYER", "")
         self.deso_layer = os.getenv("SCB_DESO_WFS_LAYER", "")
+        self._discovery_attempted = False
+
+    def _discover_wfs_layer(self, token: str) -> str:
+        params = {"service": "WFS", "request": "GetCapabilities", "version": "2.0.0"}
+        response = requests.get(SCB_WFS, params=params, timeout=self.timeout)
+        response.raise_for_status()
+        root = ET.fromstring(response.content)
+        names = []
+        for node in root.iter():
+            if node.tag.endswith("Name") and node.text:
+                value = node.text.strip()
+                if token.casefold() in value.casefold():
+                    names.append(value)
+        # Prefer the current 2025 statistical geography, then the highest
+        # lexical version available. No layer name is invented.
+        preferred = [x for x in names if "2025" in x]
+        return sorted(preferred or names)[-1] if (preferred or names) else ""
+
+    def _ensure_layers(self) -> None:
+        if self._discovery_attempted:
+            return
+        self._discovery_attempted = True
+        try:
+            if not self.regso_layer:
+                self.regso_layer = self._discover_wfs_layer("RegSO")
+            if not self.deso_layer:
+                self.deso_layer = self._discover_wfs_layer("DeSO")
+        except Exception:
+            # Fine-grained enrichment is optional; the canonical geo object
+            # remains usable even if SCB WFS is temporarily unavailable.
+            return
 
     def _wfs_point(self, layer: str, lat: float, lng: float) -> dict | None:
         if not layer:
@@ -118,6 +164,8 @@ class SwedenAdapter:
         admin1 = str(hierarchy.get("admin1") or "")
         locality = str(hierarchy.get("locality") or "")
         municipality = _municipality_record(locality)
+        municipality_code = (municipality or {}).get("code")
+        labour_market = _labour_market_record(municipality_code)
         county_code = (municipality or {}).get("county_code") or _county_code(admin1)
         out: dict[str, Any] = {
             "adapter": "scb",
@@ -125,18 +173,19 @@ class SwedenAdapter:
             "country_code": "SE",
             "county_code": county_code,
             "county_name": SWEDEN_COUNTIES.get(county_code or ""),
-            "municipality_code": (municipality or {}).get("code"),
+            "municipality_code": municipality_code,
             "municipality_name": (municipality or {}).get("name") or locality or None,
             "regso_code": None,
             "deso_code": None,
-            "local_labour_market_code": None,
+            "local_labour_market_code": (labour_market or {}).get("la_code"),
+            "local_labour_market_name": (labour_market or {}).get("la_name"),
             "sources": SCB_SOURCES,
             "completeness": {
                 "county": bool(county_code),
                 "municipality": bool((municipality or {}).get("code")),
                 "regso": False,
                 "deso": False,
-                "local_labour_market": False,
+                "local_labour_market": bool((labour_market or {}).get("la_code")),
             },
         }
 
@@ -146,6 +195,7 @@ class SwedenAdapter:
         except (TypeError, ValueError):
             return out
 
+        self._ensure_layers()
         for key, layer in (("regso", self.regso_layer), ("deso", self.deso_layer)):
             try:
                 props = _feature_properties(self._wfs_point(layer, lat_f, lng_f))
