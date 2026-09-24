@@ -1,0 +1,31 @@
+name: CareerHub Unified Body
+description: Run the centrally maintained CareerHub body against a caller repository profile manifest.
+inputs:
+  manifest:
+    description: Path to careerhub.yaml in the caller repository.
+    required: true
+  command:
+    description: CareerHub command: validate, scan, drill, track, render or maintain.
+    required: true
+  arguments:
+    description: Additional command arguments.
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install CareerHub dependencies
+      shell: bash
+      run: python -m pip install -r "${{ github.action_path }}/requirements.txt"
+    - name: Run CareerHub
+      shell: bash
+      env:
+        PYTHONPATH: ${{ github.action_path }}/src
+      run: >-
+        python "${{ github.action_path }}/scripts/careerhub.py"
+        --manifest "${{ inputs.manifest }}"
+        "${{ inputs.command }}"
+        ${{ inputs.arguments }}
