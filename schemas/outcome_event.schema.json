@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CareerHub Outcome Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "at",
+    "event_type",
+    "job_id",
+    "source"
+  ],
+  "properties": {
+    "at": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "surfaced",
+        "viewed",
+        "ignored",
+        "selected_hrdm",
+        "user_rejected",
+        "applied",
+        "contacted",
+        "test",
+        "interview",
+        "offer",
+        "denied",
+        "withdrawn",
+        "archived"
+      ]
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "system",
+        "user",
+        "employer"
+      ]
+    },
+    "role_family": {
+      "type": "string"
+    },
+    "function_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "employer_type": {
+      "type": "string"
+    },
+    "geography_key": {
+      "type": "string"
+    },
+    "search_lane": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
