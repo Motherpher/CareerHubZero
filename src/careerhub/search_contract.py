@@ -91,6 +91,7 @@ def normalize_search(search: dict) -> dict:
         "remote_allowed": bool(geographies.get("remote_allowed", True)) if isinstance(geographies, dict) else True,
         "remote_scopes": list(geographies.get("remote_scopes") or []) if isinstance(geographies, dict) else [],
         "progressive_widening": list(geographies.get("progressive_widening") or []) if isinstance(geographies, dict) else [],
+        "travel_time": dict(geographies.get("travel_time") or {}) if isinstance(geographies, dict) else {},
         "max_per_query": int(search.get("max_per_query") or 20),
         "max_total": int(search.get("max_total") or 120),
         "lanes": normalized_lanes,
