@@ -38,7 +38,7 @@ jobs:
           PY
       - name: Commit normalized matrix when changed
         run: |
-          if git diff --quiet -- data/geography/sweden_local_labour_markets.json; then
+          if [ -z "$(git status --porcelain -- data/geography/sweden_local_labour_markets.json)" ]; then
             echo "No SCB LA change."
             exit 0
           fi
