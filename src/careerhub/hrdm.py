@@ -122,8 +122,9 @@ Hybridianesque (Hy-Filter):
 - {hy_instruction}
 
 Trace discipline:
-- Echo the exact process_id and trace object supplied in the packet. Do not generate a different Process-ID.
-- Treat the result as FINAL user handoff.
+- Preserve the supplied run_id, run sequence and trace identity.
+- Do not invent a new Process-ID.
+- The CareerHub runtime, not the model, finalizes the Process-ID state token after successful semantic execution.
 
 Return only JSON conforming to the supplied schema.
 
