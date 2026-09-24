@@ -1,0 +1,29 @@
+version: 0.2.5-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Precision-aware vacancy geotagging and zoom-aware geographic aggregation.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  geography:
+    - every sourced vacancy can carry a normalized geo tag
+    - Google Places API New is the first global geocoder adapter
+    - source-native coordinates take precedence over geocoding
+    - explicit vacancy address/location is used before optional employer-place lookup
+    - precision is retained as source_coordinates, premise, street, postal_code, district, locality, admin2, admin1, country or unknown
+    - locality-only vacancies are never fabricated into street-level positions
+    - low zoom aggregates jobs by country, regional and locality hierarchy
+    - high zoom emits genuinely precise vacancy points while coarse jobs remain grouped
+    - cluster payloads expose total count and newly sourced count
+    - country-matrix enrichment has a dedicated extension field
+  runtime:
+    - src/careerhub/geography.py
+    - scripts/geotag_jobs.py
+    - schemas/job_geo.schema.json
+    - tests/test_geography.py
+  governance:
+    - geographical drill remains search-raster functionality and never candidate evidence
+    - Google-specific IDs do not replace country-matrix identifiers
+compatibility:
+  migration_required: true
+  note: Profile hubs must record engine 0.2.5-alpha. Grace and Weronika remain blocked by legacy local motors pending 0.3 cutover.
