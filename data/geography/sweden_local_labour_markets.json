@@ -1,0 +1,2040 @@
+{
+  "schema_version": "1.0",
+  "reference_year": 2024,
+  "source": "SCB BAS — Lokala arbetsmarknader år 2020–2024",
+  "source_url": "https://www.scb.se/contentassets/80b5648961b647379bf147e791aa446b/lokala-arbetsmarknader-20202024-bas.xlsx",
+  "municipality_count": 290,
+  "labour_market_count": 66,
+  "records": [
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0114",
+      "municipality_name": "Upplands Väsby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0115",
+      "municipality_name": "Vallentuna"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0117",
+      "municipality_name": "Österåker"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0120",
+      "municipality_name": "Värmdö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0123",
+      "municipality_name": "Järfälla"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0125",
+      "municipality_name": "Ekerö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0126",
+      "municipality_name": "Huddinge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0127",
+      "municipality_name": "Botkyrka"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0128",
+      "municipality_name": "Salem"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0136",
+      "municipality_name": "Haninge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0138",
+      "municipality_name": "Tyresö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0139",
+      "municipality_name": "Upplands-Bro"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0140",
+      "municipality_name": "Nykvarn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0160",
+      "municipality_name": "Täby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0162",
+      "municipality_name": "Danderyd"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0163",
+      "municipality_name": "Sollentuna"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0180",
+      "municipality_name": "Stockholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0181",
+      "municipality_name": "Södertälje"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0182",
+      "municipality_name": "Nacka"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0183",
+      "municipality_name": "Sundbyberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0184",
+      "municipality_name": "Solna"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0186",
+      "municipality_name": "Lidingö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0187",
+      "municipality_name": "Vaxholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0188",
+      "municipality_name": "Norrtälje"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0191",
+      "municipality_name": "Sigtuna"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0192",
+      "municipality_name": "Nynäshamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0305",
+      "municipality_name": "Håbo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2440",
+      "la_name": "Gävle",
+      "municipality_code": "0319",
+      "municipality_name": "Älvkarleby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0330",
+      "municipality_name": "Knivsta"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0331",
+      "municipality_name": "Heby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0360",
+      "municipality_name": "Tierp"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0380",
+      "municipality_name": "Uppsala"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0381",
+      "municipality_name": "Enköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0382",
+      "municipality_name": "Östhammar"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2403",
+      "la_name": "Eskilstuna",
+      "municipality_code": "0428",
+      "municipality_name": "Vingåker"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0461",
+      "municipality_name": "Gnesta"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2402",
+      "la_name": "Nyköping-Oxelösund",
+      "municipality_code": "0480",
+      "municipality_name": "Nyköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2402",
+      "la_name": "Nyköping-Oxelösund",
+      "municipality_code": "0481",
+      "municipality_name": "Oxelösund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2403",
+      "la_name": "Eskilstuna",
+      "municipality_code": "0482",
+      "municipality_name": "Flen"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2403",
+      "la_name": "Eskilstuna",
+      "municipality_code": "0483",
+      "municipality_name": "Katrineholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2403",
+      "la_name": "Eskilstuna",
+      "municipality_code": "0484",
+      "municipality_name": "Eskilstuna"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0486",
+      "municipality_name": "Strängnäs"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2401",
+      "la_name": "Stockholm-Solna",
+      "municipality_code": "0488",
+      "municipality_name": "Trosa"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0509",
+      "municipality_name": "Ödeshög"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0512",
+      "municipality_name": "Ydre"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0513",
+      "municipality_name": "Kinda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0560",
+      "municipality_name": "Boxholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0561",
+      "municipality_name": "Åtvidaberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0562",
+      "municipality_name": "Finspång"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0563",
+      "municipality_name": "Valdemarsvik"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0580",
+      "municipality_name": "Linköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0581",
+      "municipality_name": "Norrköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0582",
+      "municipality_name": "Söderköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0583",
+      "municipality_name": "Motala"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0584",
+      "municipality_name": "Vadstena"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2404",
+      "la_name": "Linköping",
+      "municipality_code": "0586",
+      "municipality_name": "Mjölby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0604",
+      "municipality_name": "Aneby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2406",
+      "la_name": "Värnamo-Gislaved",
+      "municipality_code": "0617",
+      "municipality_name": "Gnosjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0642",
+      "municipality_name": "Mullsjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0643",
+      "municipality_name": "Habo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2406",
+      "la_name": "Värnamo-Gislaved",
+      "municipality_code": "0662",
+      "municipality_name": "Gislaved"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0665",
+      "municipality_name": "Vaggeryd"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0680",
+      "municipality_name": "Jönköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0682",
+      "municipality_name": "Nässjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2406",
+      "la_name": "Värnamo-Gislaved",
+      "municipality_code": "0683",
+      "municipality_name": "Värnamo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0684",
+      "municipality_name": "Sävsjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0685",
+      "municipality_name": "Vetlanda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0686",
+      "municipality_name": "Eksjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2405",
+      "la_name": "Jönköping",
+      "municipality_code": "0687",
+      "municipality_name": "Tranås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0760",
+      "municipality_name": "Uppvidinge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0761",
+      "municipality_name": "Lessebo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0763",
+      "municipality_name": "Tingsryd"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0764",
+      "municipality_name": "Alvesta"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0765",
+      "municipality_name": "Älmhult"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2408",
+      "la_name": "Ljungby",
+      "municipality_code": "0767",
+      "municipality_name": "Markaryd"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "0780",
+      "municipality_name": "Växjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2408",
+      "la_name": "Ljungby",
+      "municipality_code": "0781",
+      "municipality_name": "Ljungby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2410",
+      "la_name": "Oskarshamn",
+      "municipality_code": "0821",
+      "municipality_name": "Högsby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0834",
+      "municipality_name": "Torsås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0840",
+      "municipality_name": "Mörbylånga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2412",
+      "la_name": "Vimmerby-Hultsfred",
+      "municipality_code": "0860",
+      "municipality_name": "Hultsfred"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2410",
+      "la_name": "Oskarshamn",
+      "municipality_code": "0861",
+      "municipality_name": "Mönsterås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0862",
+      "municipality_name": "Emmaboda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0880",
+      "municipality_name": "Kalmar"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0881",
+      "municipality_name": "Nybro"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2410",
+      "la_name": "Oskarshamn",
+      "municipality_code": "0882",
+      "municipality_name": "Oskarshamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2411",
+      "la_name": "Västervik",
+      "municipality_code": "0883",
+      "municipality_name": "Västervik"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2412",
+      "la_name": "Vimmerby-Hultsfred",
+      "municipality_code": "0884",
+      "municipality_name": "Vimmerby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2409",
+      "la_name": "Kalmar",
+      "municipality_code": "0885",
+      "municipality_name": "Borgholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2413",
+      "la_name": "Gotland",
+      "municipality_code": "0980",
+      "municipality_name": "Gotland"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2415",
+      "la_name": "Karlshamn-Olofström",
+      "municipality_code": "1060",
+      "municipality_name": "Olofström"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2414",
+      "la_name": "Karlskrona",
+      "municipality_code": "1080",
+      "municipality_name": "Karlskrona"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2414",
+      "la_name": "Karlskrona",
+      "municipality_code": "1081",
+      "municipality_name": "Ronneby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2415",
+      "la_name": "Karlshamn-Olofström",
+      "municipality_code": "1082",
+      "municipality_name": "Karlshamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1083",
+      "municipality_name": "Sölvesborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1214",
+      "municipality_name": "Svalöv"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1230",
+      "municipality_name": "Staffanstorp"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1231",
+      "municipality_name": "Burlöv"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1233",
+      "municipality_name": "Vellinge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1256",
+      "municipality_name": "Östra Göinge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1257",
+      "municipality_name": "Örkelljunga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1260",
+      "municipality_name": "Bjuv"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1261",
+      "municipality_name": "Kävlinge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1262",
+      "municipality_name": "Lomma"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1263",
+      "municipality_name": "Svedala"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1264",
+      "municipality_name": "Skurup"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1265",
+      "municipality_name": "Sjöbo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1266",
+      "municipality_name": "Hörby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1267",
+      "municipality_name": "Höör"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1270",
+      "municipality_name": "Tomelilla"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1272",
+      "municipality_name": "Bromölla"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2407",
+      "la_name": "Växjö",
+      "municipality_code": "1273",
+      "municipality_name": "Osby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1275",
+      "municipality_name": "Perstorp"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1276",
+      "municipality_name": "Klippan"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1277",
+      "municipality_name": "Åstorp"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1278",
+      "municipality_name": "Båstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1280",
+      "municipality_name": "Malmö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1281",
+      "municipality_name": "Lund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1282",
+      "municipality_name": "Landskrona"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1283",
+      "municipality_name": "Helsingborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1284",
+      "municipality_name": "Höganäs"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1285",
+      "municipality_name": "Eslöv"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1286",
+      "municipality_name": "Ystad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1287",
+      "municipality_name": "Trelleborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1290",
+      "municipality_name": "Kristianstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1291",
+      "municipality_name": "Simrishamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2416",
+      "la_name": "Malmö-Lund",
+      "municipality_code": "1292",
+      "municipality_name": "Ängelholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2417",
+      "la_name": "Kristianstad-Hässleholm",
+      "municipality_code": "1293",
+      "municipality_name": "Hässleholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2418",
+      "la_name": "Halmstad",
+      "municipality_code": "1315",
+      "municipality_name": "Hylte"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2418",
+      "la_name": "Halmstad",
+      "municipality_code": "1380",
+      "municipality_name": "Halmstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2418",
+      "la_name": "Halmstad",
+      "municipality_code": "1381",
+      "municipality_name": "Laholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1382",
+      "municipality_name": "Falkenberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1383",
+      "municipality_name": "Varberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1384",
+      "municipality_name": "Kungsbacka"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1401",
+      "municipality_name": "Härryda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1402",
+      "municipality_name": "Partille"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1407",
+      "municipality_name": "Öckerö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1415",
+      "municipality_name": "Stenungsund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1419",
+      "municipality_name": "Tjörn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1421",
+      "municipality_name": "Orust"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1427",
+      "municipality_name": "Sotenäs"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1430",
+      "municipality_name": "Munkedal"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2421",
+      "la_name": "Strömstad",
+      "municipality_code": "1435",
+      "municipality_name": "Tanum"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2419",
+      "la_name": "Bengtsfors-Dals-Ed",
+      "municipality_code": "1438",
+      "municipality_name": "Dals-Ed"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1439",
+      "municipality_name": "Färgelanda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1440",
+      "municipality_name": "Ale"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1441",
+      "municipality_name": "Lerum"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1442",
+      "municipality_name": "Vårgårda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1443",
+      "municipality_name": "Bollebygd"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1444",
+      "municipality_name": "Grästorp"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2422",
+      "la_name": "Lidköping-Götene",
+      "municipality_code": "1445",
+      "municipality_name": "Essunga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1446",
+      "municipality_name": "Karlsborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1447",
+      "municipality_name": "Gullspång"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1452",
+      "municipality_name": "Tranemo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2419",
+      "la_name": "Bengtsfors-Dals-Ed",
+      "municipality_code": "1460",
+      "municipality_name": "Bengtsfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1461",
+      "municipality_name": "Mellerud"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1462",
+      "municipality_name": "Lilla Edet"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1463",
+      "municipality_name": "Mark"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1465",
+      "municipality_name": "Svenljunga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1466",
+      "municipality_name": "Herrljunga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2422",
+      "la_name": "Lidköping-Götene",
+      "municipality_code": "1470",
+      "municipality_name": "Vara"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2422",
+      "la_name": "Lidköping-Götene",
+      "municipality_code": "1471",
+      "municipality_name": "Götene"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1472",
+      "municipality_name": "Tibro"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1473",
+      "municipality_name": "Töreboda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1480",
+      "municipality_name": "Göteborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1481",
+      "municipality_name": "Mölndal"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1482",
+      "municipality_name": "Kungälv"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1484",
+      "municipality_name": "Lysekil"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1485",
+      "municipality_name": "Uddevalla"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2421",
+      "la_name": "Strömstad",
+      "municipality_code": "1486",
+      "municipality_name": "Strömstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1487",
+      "municipality_name": "Vänersborg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1488",
+      "municipality_name": "Trollhättan"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1489",
+      "municipality_name": "Alingsås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1490",
+      "municipality_name": "Borås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2420",
+      "la_name": "Göteborg",
+      "municipality_code": "1491",
+      "municipality_name": "Ulricehamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2429",
+      "la_name": "Säffle-Åmål",
+      "municipality_code": "1492",
+      "municipality_name": "Åmål"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1493",
+      "municipality_name": "Mariestad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2422",
+      "la_name": "Lidköping-Götene",
+      "municipality_code": "1494",
+      "municipality_name": "Lidköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1495",
+      "municipality_name": "Skara"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1496",
+      "municipality_name": "Skövde"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1497",
+      "municipality_name": "Hjo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1498",
+      "municipality_name": "Tidaholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2423",
+      "la_name": "Skövde-Skara",
+      "municipality_code": "1499",
+      "municipality_name": "Falköping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1715",
+      "municipality_name": "Kil"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2428",
+      "la_name": "Arvika",
+      "municipality_code": "1730",
+      "municipality_name": "Eda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2424",
+      "la_name": "Torsby",
+      "municipality_code": "1737",
+      "municipality_name": "Torsby"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1760",
+      "municipality_name": "Storfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1761",
+      "municipality_name": "Hammarö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1762",
+      "municipality_name": "Munkfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1763",
+      "municipality_name": "Forshaga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1764",
+      "municipality_name": "Grums"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2425",
+      "la_name": "Årjäng",
+      "municipality_code": "1765",
+      "municipality_name": "Årjäng"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2424",
+      "la_name": "Torsby",
+      "municipality_code": "1766",
+      "municipality_name": "Sunne"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1780",
+      "municipality_name": "Karlstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1781",
+      "municipality_name": "Kristinehamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2426",
+      "la_name": "Karlstad",
+      "municipality_code": "1782",
+      "municipality_name": "Filipstad"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2427",
+      "la_name": "Hagfors",
+      "municipality_code": "1783",
+      "municipality_name": "Hagfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2428",
+      "la_name": "Arvika",
+      "municipality_code": "1784",
+      "municipality_name": "Arvika"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2429",
+      "la_name": "Säffle-Åmål",
+      "municipality_code": "1785",
+      "municipality_name": "Säffle"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1814",
+      "municipality_name": "Lekeberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1860",
+      "municipality_name": "Laxå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1861",
+      "municipality_name": "Hallsberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1862",
+      "municipality_name": "Degerfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2430",
+      "la_name": "Hällefors",
+      "municipality_code": "1863",
+      "municipality_name": "Hällefors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2438",
+      "la_name": "Ludvika",
+      "municipality_code": "1864",
+      "municipality_name": "Ljusnarsberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1880",
+      "municipality_name": "Örebro"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1881",
+      "municipality_name": "Kumla"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1882",
+      "municipality_name": "Askersund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1883",
+      "municipality_name": "Karlskoga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1884",
+      "municipality_name": "Nora"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2431",
+      "la_name": "Örebro",
+      "municipality_code": "1885",
+      "municipality_name": "Lindesberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1904",
+      "municipality_name": "Skinnskatteberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1907",
+      "municipality_name": "Surahammar"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1960",
+      "municipality_name": "Kungsör"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1961",
+      "municipality_name": "Hallstahammar"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1962",
+      "municipality_name": "Norberg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1980",
+      "municipality_name": "Västerås"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1981",
+      "municipality_name": "Sala"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1982",
+      "municipality_name": "Fagersta"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1983",
+      "municipality_name": "Köping"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2432",
+      "la_name": "Västerås",
+      "municipality_code": "1984",
+      "municipality_name": "Arboga"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2433",
+      "la_name": "Vansbro",
+      "municipality_code": "2021",
+      "municipality_name": "Vansbro"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2434",
+      "la_name": "Malung-Sälen",
+      "municipality_code": "2023",
+      "municipality_name": "Malung-Sälen"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2026",
+      "municipality_name": "Gagnef"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2029",
+      "municipality_name": "Leksand"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2031",
+      "municipality_name": "Rättvik"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2435",
+      "la_name": "Mora",
+      "municipality_code": "2034",
+      "municipality_name": "Orsa"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2435",
+      "la_name": "Mora",
+      "municipality_code": "2039",
+      "municipality_name": "Älvdalen"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2438",
+      "la_name": "Ludvika",
+      "municipality_code": "2061",
+      "municipality_name": "Smedjebacken"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2435",
+      "la_name": "Mora",
+      "municipality_code": "2062",
+      "municipality_name": "Mora"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2080",
+      "municipality_name": "Falun"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2081",
+      "municipality_name": "Borlänge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2436",
+      "la_name": "Falun-Borlänge",
+      "municipality_code": "2082",
+      "municipality_name": "Säter"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2437",
+      "la_name": "Avesta-Hedemora",
+      "municipality_code": "2083",
+      "municipality_name": "Hedemora"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2437",
+      "la_name": "Avesta-Hedemora",
+      "municipality_code": "2084",
+      "municipality_name": "Avesta"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2438",
+      "la_name": "Ludvika",
+      "municipality_code": "2085",
+      "municipality_name": "Ludvika"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2440",
+      "la_name": "Gävle",
+      "municipality_code": "2101",
+      "municipality_name": "Ockelbo"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2440",
+      "la_name": "Gävle",
+      "municipality_code": "2104",
+      "municipality_name": "Hofors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2442",
+      "la_name": "Bollnäs-Ovanåker",
+      "municipality_code": "2121",
+      "municipality_name": "Ovanåker"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2443",
+      "la_name": "Hudiksvall",
+      "municipality_code": "2132",
+      "municipality_name": "Nordanstig"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2439",
+      "la_name": "Ljusdal",
+      "municipality_code": "2161",
+      "municipality_name": "Ljusdal"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2440",
+      "la_name": "Gävle",
+      "municipality_code": "2180",
+      "municipality_name": "Gävle"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2440",
+      "la_name": "Gävle",
+      "municipality_code": "2181",
+      "municipality_name": "Sandviken"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2441",
+      "la_name": "Söderhamn",
+      "municipality_code": "2182",
+      "municipality_name": "Söderhamn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2442",
+      "la_name": "Bollnäs-Ovanåker",
+      "municipality_code": "2183",
+      "municipality_name": "Bollnäs"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2443",
+      "la_name": "Hudiksvall",
+      "municipality_code": "2184",
+      "municipality_name": "Hudiksvall"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2444",
+      "la_name": "Sundsvall",
+      "municipality_code": "2260",
+      "municipality_name": "Ånge"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2444",
+      "la_name": "Sundsvall",
+      "municipality_code": "2262",
+      "municipality_name": "Timrå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2444",
+      "la_name": "Sundsvall",
+      "municipality_code": "2280",
+      "municipality_name": "Härnösand"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2444",
+      "la_name": "Sundsvall",
+      "municipality_code": "2281",
+      "municipality_name": "Sundsvall"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2445",
+      "la_name": "Kramfors",
+      "municipality_code": "2282",
+      "municipality_name": "Kramfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2446",
+      "la_name": "Sollefteå",
+      "municipality_code": "2283",
+      "municipality_name": "Sollefteå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2447",
+      "la_name": "Örnsköldsvik",
+      "municipality_code": "2284",
+      "municipality_name": "Örnsköldsvik"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2303",
+      "municipality_name": "Ragunda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2305",
+      "municipality_name": "Bräcke"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2309",
+      "municipality_name": "Krokom"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2448",
+      "la_name": "Strömsund",
+      "municipality_code": "2313",
+      "municipality_name": "Strömsund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2321",
+      "municipality_name": "Åre"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2326",
+      "municipality_name": "Berg"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2449",
+      "la_name": "Härjedalen",
+      "municipality_code": "2361",
+      "municipality_name": "Härjedalen"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2450",
+      "la_name": "Östersund",
+      "municipality_code": "2380",
+      "municipality_name": "Östersund"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2401",
+      "municipality_name": "Nordmaling"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2403",
+      "municipality_name": "Bjurholm"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2404",
+      "municipality_name": "Vindeln"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2409",
+      "municipality_name": "Robertsfors"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2457",
+      "la_name": "Skellefteå",
+      "municipality_code": "2417",
+      "municipality_name": "Norsjö"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2456",
+      "la_name": "Lycksele",
+      "municipality_code": "2418",
+      "municipality_name": "Malå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2451",
+      "la_name": "Storuman",
+      "municipality_code": "2421",
+      "municipality_name": "Storuman"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2459",
+      "la_name": "Arjeplog",
+      "municipality_code": "2422",
+      "municipality_name": "Sorsele"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2452",
+      "la_name": "Dorotea",
+      "municipality_code": "2425",
+      "municipality_name": "Dorotea"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2460",
+      "municipality_name": "Vännäs"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2453",
+      "la_name": "Vilhelmina",
+      "municipality_code": "2462",
+      "municipality_name": "Vilhelmina"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2454",
+      "la_name": "Åsele",
+      "municipality_code": "2463",
+      "municipality_name": "Åsele"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2455",
+      "la_name": "Umeå",
+      "municipality_code": "2480",
+      "municipality_name": "Umeå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2456",
+      "la_name": "Lycksele",
+      "municipality_code": "2481",
+      "municipality_name": "Lycksele"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2457",
+      "la_name": "Skellefteå",
+      "municipality_code": "2482",
+      "municipality_name": "Skellefteå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2458",
+      "la_name": "Arvidsjaur",
+      "municipality_code": "2505",
+      "municipality_name": "Arvidsjaur"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2459",
+      "la_name": "Arjeplog",
+      "municipality_code": "2506",
+      "municipality_name": "Arjeplog"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2463",
+      "la_name": "Gällivare",
+      "municipality_code": "2510",
+      "municipality_name": "Jokkmokk"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2460",
+      "la_name": "Överkalix",
+      "municipality_code": "2513",
+      "municipality_name": "Överkalix"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2464",
+      "la_name": "Luleå",
+      "municipality_code": "2514",
+      "municipality_name": "Kalix"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2461",
+      "la_name": "Övertorneå",
+      "municipality_code": "2518",
+      "municipality_name": "Övertorneå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2462",
+      "la_name": "Pajala",
+      "municipality_code": "2521",
+      "municipality_name": "Pajala"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2463",
+      "la_name": "Gällivare",
+      "municipality_code": "2523",
+      "municipality_name": "Gällivare"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2464",
+      "la_name": "Luleå",
+      "municipality_code": "2560",
+      "municipality_name": "Älvsbyn"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2464",
+      "la_name": "Luleå",
+      "municipality_code": "2580",
+      "municipality_name": "Luleå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2464",
+      "la_name": "Luleå",
+      "municipality_code": "2581",
+      "municipality_name": "Piteå"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2464",
+      "la_name": "Luleå",
+      "municipality_code": "2582",
+      "municipality_name": "Boden"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2465",
+      "la_name": "Haparanda",
+      "municipality_code": "2583",
+      "municipality_name": "Haparanda"
+    },
+    {
+      "year": 2024,
+      "la_code": "LA2466",
+      "la_name": "Kiruna",
+      "municipality_code": "2584",
+      "municipality_name": "Kiruna"
+    }
+  ]
+}
