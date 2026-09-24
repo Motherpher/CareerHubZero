@@ -14,8 +14,8 @@ Canonical targets:
 
 - `Motherpher/CareerHubZero` — central motor
 - `Motherpher/CareerHub-LinusF` — Linus profile
-- `Motherpher/CareerHub-Weronika` — Weronika profile target
-- `Motherpher/CareerHub-Grace` — Grace profile target
+- `Motherpher/wpb` — Weronika repository; `CareerHub/` is the bounded profile instance
+- `Motherpher/Gracey` — Grace repository; `CareerHub/` is the bounded profile instance
 
 Legacy repositories may remain as migration sources until their history/state has been preserved and parity has passed, but no non-Motherpher CareerHub repository may be part of the 1.0 aligned stack.
 
