@@ -58,8 +58,8 @@ Target layout:
 ```text
 Motherpher/CareerHubZero
 Motherpher/CareerHub-LinusF
-Motherpher/CareerHub-Weronika
-Motherpher/CareerHub-Grace
+Motherpher/wpb            # CareerHub/ bounded instance
+Motherpher/Gracey         # CareerHub/ bounded instance
 ```
 
 A legacy repository outside Motherpher may be used during migration, but it is a source/transition state and cannot satisfy the 1.0 stable stack boundary.
