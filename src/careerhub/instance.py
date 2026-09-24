@@ -196,6 +196,8 @@ def validate_instance_paths(instance_file: str | Path) -> list[str]:
         try:
             profile = _load(root / cfg["profile"]["path"])
             search = _load(root / cfg["search"]["path"])
+            if str(search.get("version") or "") != "2.1":
+                errors.append("Stable profile nodes must use search_profile version 2.1.")
             errors.extend(validate_profile_policy(profile, search))
         except InstanceError as exc:
             errors.append(str(exc))
