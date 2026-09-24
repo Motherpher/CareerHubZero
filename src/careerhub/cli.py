@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 from .application import fallback_application, run_ai_application, write_application_docx
+from .country_adapters import enrich_country_matrix
 from .geography import GooglePlacesGeocoder, build_map_payload, geotag_vault
 from .hrdm import build_packet, fallback_hrdm, packet_prompt, run_ai_hrdm
 from .hrdm_reports import maintain_hrdm_reports, save_report_bundle
@@ -131,7 +132,13 @@ def cmd_scan(args):
     maps_key = os.getenv("GOOGLE_MAPS_API_KEY", "")
     if maps_key:
         geocoder = GooglePlacesGeocoder(maps_key)
-        vault = geotag_vault(vault, geocoder, region_code=runtime["country"], only_missing=True)
+        vault = geotag_vault(
+            vault,
+            geocoder,
+            region_code=runtime["country"],
+            only_missing=True,
+            country_enricher=enrich_country_matrix,
+        )
         write_json(ctx["paths"]["job_vault"], vault)
         map_root = ctx["root"] / "data/maps"
         map_root.mkdir(parents=True, exist_ok=True)
