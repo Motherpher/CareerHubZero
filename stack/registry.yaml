@@ -1,38 +1,33 @@
-schema_version: "1.0"
-stack_id: careerhub
-engine_repository: Motherpher/CareerHubZero
+schema_version: "2.0"
+product: careerhub
 version_source: VERSION
-alignment_rule: "All active profile hubs consume the same central motor; only profile/config/state/artifacts may vary."
-instances:
-  - instance_id: linus-fast
+architecture: unified_body
+rule: "CareerHub has one software version. Profile repositories contain data/context manifests only and do not pin or fork the runtime."
+
+profiles:
+  - profile_id: linus-fast
     repository: Motherpher/CareerHub-LinusF
-    instance_path: instance.yaml
-    lock_path: stack.lock.yaml
+    manifest_path: careerhub.yaml
     status: active
-    auto_sync: true
-    forbidden_motor_paths:
-      - src/careerhub
-      - scripts/careerhub.py
-      - core/hrdm
+    migration:
+      legacy_instance_path: instance.yaml
+      legacy_lock_path: stack.lock.yaml
+      legacy_motor_present: false
 
-  - instance_id: weronika-perez-borjas
+  - profile_id: weronika-perez-borjas
     repository: Motherpher/wpb
-    instance_path: CareerHub/instance.yaml
-    lock_path: CareerHub/stack.lock.yaml
+    manifest_path: CareerHub/careerhub.yaml
     status: active
-    auto_sync: true
-    forbidden_motor_paths:
-      - CareerHub/src/careerhub
-      - CareerHub/scripts/careerhub.py
-      - CareerHub/hrdm/HRDM_R_v6.3.md
+    migration:
+      legacy_instance_path: CareerHub/instance.yaml
+      legacy_lock_path: CareerHub/stack.lock.yaml
+      legacy_motor_present: true
 
-  - instance_id: grace
+  - profile_id: grace
     repository: Motherpher/Gracey
-    instance_path: CareerHub/instance.yaml
-    lock_path: CareerHub/stack.lock.yaml
+    manifest_path: CareerHub/careerhub.yaml
     status: active
-    auto_sync: true
-    forbidden_motor_paths:
-      - CareerHub/src/careerhub
-      - CareerHub/scripts/careerhub.py
-      - CareerHub/hrdm/HRDM_R_v6.3.md
+    migration:
+      legacy_instance_path: CareerHub/instance.yaml
+      legacy_lock_path: CareerHub/stack.lock.yaml
+      legacy_motor_present: true
