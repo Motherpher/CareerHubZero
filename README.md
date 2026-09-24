@@ -26,7 +26,7 @@ A CareerHub release is valid only when the unified body and all active profile-n
 
 ## Current version
 
-**CareerHub 0.2.7-alpha — integrated unified-body execution spine with HRDM ledger/report lifecycle.**
+**CareerHub 0.2.8-alpha — Household-governed Silicon Sprint execution baseline.**
 
 Canonical version source: `VERSION`.
 
