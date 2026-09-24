@@ -27,6 +27,9 @@ class SprintIntegrationTests(unittest.TestCase):
         self.assertEqual(enriched["municipality_name"], "Stockholm")
         self.assertEqual(enriched["municipality_code"], "0180")
         self.assertTrue(enriched["completeness"]["municipality"])
+        self.assertEqual(enriched["local_labour_market_code"], "LA2401")
+        self.assertEqual(enriched["local_labour_market_name"], "Stockholm-Solna")
+        self.assertTrue(enriched["completeness"]["local_labour_market"])
 
     def test_case_binds_one_hrdm_and_application_artifact_set(self):
         with tempfile.TemporaryDirectory() as tmp:
