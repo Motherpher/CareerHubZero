@@ -28,7 +28,7 @@ work_packages:
   - id: WP05
     issue: 17
     name: Career Learning Loop
-    depends_on: [WP04, WP08]
+    depends_on: [WP04]
   - id: WP06
     issue: 15
     name: Unified Geography
