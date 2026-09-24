@@ -133,33 +133,3 @@ def write_application_docx(outdir: Path, job: dict, profile: dict, app: dict) ->
     path = outdir / f"Application_{_safe_name(company)}_{_safe_name(role)}.docx"
     doc.save(path)
     return path
-
-
-def write_hrdm_docx(outdir: Path, hrdm: dict) -> Path:
-    job = hrdm.get("job", {})
-    doc = _base_doc(f"HRDM-R brief — {job.get('title') or 'Role'}")
-    sections = [
-        ("Hidden need", hrdm.get("hidden_need", {})),
-        ("FunctionCore", hrdm.get("function_core", {})),
-        ("DoD", hrdm.get("dod", {})),
-        ("Assessment zones", hrdm.get("assessment_zones", [])),
-        ("Candidate positioning", hrdm.get("candidate_positioning", {})),
-        ("HCC", hrdm.get("hcc", {})),
-        ("Ansökningsstrategi", hrdm.get("application_strategy", {})),
-    ]
-    for heading, value in sections:
-        doc.add_heading(heading, level=1)
-        if isinstance(value, dict):
-            for k, v in value.items():
-                p = doc.add_paragraph()
-                p.add_run(str(k).replace("_", " ").title() + ": ").bold = True
-                p.add_run(json.dumps(v, ensure_ascii=False, indent=2) if isinstance(v, (list, dict)) else str(v))
-        elif isinstance(value, list):
-            for x in value:
-                doc.add_paragraph(json.dumps(x, ensure_ascii=False) if isinstance(x, dict) else str(x), style="List Bullet")
-        else:
-            doc.add_paragraph(str(value))
-
-    path = outdir / f"HRDM_{_safe_name(job.get('company',''))}_{_safe_name(job.get('title','Role'))}.docx"
-    doc.save(path)
-    return path
