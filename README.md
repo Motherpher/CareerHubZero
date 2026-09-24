@@ -26,7 +26,7 @@ A CareerHub release is valid only when the unified body and all active profile-n
 
 ## Current version
 
-**CareerHub 0.2.8-alpha — Household-governed Silicon Sprint execution baseline.**
+**CareerHub 0.2.9-alpha — open Household-governed Silicon Sprint integration line.**
 
 Canonical version source: `VERSION`.
 
