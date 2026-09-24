@@ -28,6 +28,9 @@ class Job:
     title: str
     company: str = ""
     location: str = ""
+    workplace_address: str = ""
+    latitude: float | None = None
+    longitude: float | None = None
     employment_type: str = ""
     work_mode: str = ""
     published: str = ""
