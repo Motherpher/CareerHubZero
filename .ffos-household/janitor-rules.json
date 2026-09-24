@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "rules": [
+    {
+      "id": "CAREERHUB-README",
+      "type": "path_exists",
+      "domain": "REPOSITORY",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "README.md",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "CAREERHUB-VERSION",
+      "type": "path_exists",
+      "domain": "GOVERNANCE",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "VERSION",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "SILICON-SPRINT-PLAN",
+      "type": "path_exists",
+      "domain": "CONTROL_PLANE",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "docs/SPRINT_1_0_SILICON_10WP.md",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "AUDIT-STATE-ORDER",
+      "type": "path_exists",
+      "domain": "CONTROL_PLANE",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "docs/HOUSEHOLD_AUDIT_STATE_ORDER.md",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "CAREERHUB-MANIFEST-SCHEMA",
+      "type": "path_exists",
+      "domain": "CONTRACT",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "schemas/careerhub_manifest.schema.json",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "HRDM-SCHEMA",
+      "type": "path_exists",
+      "domain": "HRDM",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "core/hrdm/hrdm_result.schema.json",
+      "repairability": "J2",
+      "blocks_progression": true
+    },
+    {
+      "id": "CENTRAL-ACTION",
+      "type": "path_exists",
+      "domain": "DISTRIBUTION",
+      "severity": "CONTROL_DEFECT",
+      "profiles": [
+        "deep",
+        "gate"
+      ],
+      "path": "action.yml",
+      "repairability": "J2",
+      "blocks_progression": true
+    }
+  ]
+}
