@@ -43,6 +43,7 @@ jobs:
               Path("schemas/profile.schema.json"),
               Path("schemas/candidate_profile.schema.json"),
               Path("schemas/search_profile.schema.json"),
+              Path("schemas/job_geo.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
