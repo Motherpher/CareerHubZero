@@ -31,7 +31,7 @@ No profiled hub may maintain an authoritative fork of these capabilities.
 
 ### B. Profiled instance
 
-A separate bounded repository or folder for one person.
+A separate bounded repository for one person.
 
 It may contain only instance-specific material needed for the CareerHub service:
 
@@ -49,19 +49,34 @@ It may contain only instance-specific material needed for the CareerHub service:
 
 Private-life material is outside the candidate-evidence model.
 
-## 2. Dependency direction
+## 2. Repository placement
+
+Stable CareerHub repositories live under **Motherpher**.
+
+Target layout:
+
+```text
+Motherpher/CareerHubZero
+Motherpher/CareerHub-LinusF
+Motherpher/CareerHub-Weronika
+Motherpher/CareerHub-Grace
+```
+
+A legacy repository outside Motherpher may be used during migration, but it is a source/transition state and cannot satisfy the 1.0 stable stack boundary.
+
+## 3. Dependency direction
 
 Profiled instance → verified career evidence + search raster + state → CareerHubZero → analysis/artifacts/state updates → profiled instance.
 
 CareerHubZero must not depend on a specific person. Profile hubs must not redefine CareerHubZero motor logic.
 
-## 3. Interface rule
+## 4. Interface rule
 
 **Find → Analyse? → Apply**
 
 Everything else is implementation.
 
-## 4. Data classes
+## 5. Data classes
 
 ### Capability data — CareerHubZero only
 Source definitions, schemas, canonical prompts/contracts, matching/scoring logic, HRDM implementation, application/rendering logic, workflow templates and version/release machinery.
@@ -77,7 +92,7 @@ Search-raster data does not become candidate evidence.
 ### State data — profiled hub only
 Saved jobs, deadlines, application status, interview/meeting history, reminders already sent and outcomes.
 
-## 5. Hard separation invariant
+## 6. Hard separation invariant
 
 **VERIFIED CAREER SOURCES → MATCHABLE PROFILE → HRDM / APPLICATION CLAIMS**
 
@@ -87,15 +102,25 @@ Saved jobs, deadlines, application status, interview/meeting history, reminders 
 
 No path may cross these boundaries.
 
-## 6. Versioning
+## 7. Legacy artifact rule
+
+Artifacts produced before the verified-career firewall may be preserved for provenance, but they are not automatically valid for external use.
+
+They must be:
+- revalidated against verified career evidence, or
+- explicitly retired/archived as pre-firewall artifacts.
+
+Grace's Region Stockholm application case is the first registered example of this rule.
+
+## 8. Versioning
 
 VERSION in CareerHubZero is the single motor-version source.
 
 Every central motor/schema/workflow change requires:
 1. a new VERSION,
-2. a stack/releases version ledger,
+2. a `stack/releases` version ledger,
 3. successful central CI,
-4. propagation to every active hub in stack/registry.yaml,
+4. propagation to every active hub in `stack/registry.yaml`,
 5. remote compatibility verification.
 
-Only after those checks may the release be tagged as stack-current. See docs/VERSIONING.md.
+Only after those checks may the release be tagged as stack-current. See `docs/VERSIONING.md`.
