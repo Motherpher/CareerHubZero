@@ -1,5 +1,5 @@
 schema_version: "2.0"
-current_version: 0.2.7-alpha
+current_version: 0.2.8-alpha
 active_sprint:
   id: CH-1.0-SILICON
   plan: docs/SPRINT_1_0_SILICON_10WP.md
@@ -25,6 +25,8 @@ absorbed_legacy_issues:
 
 release_path:
   - version: 0.2.7-alpha
+    status: superseded
+  - version: 0.2.8-alpha
     status: current
     role: executable integration baseline
   - version: 0.3.0-alpha
