@@ -9,6 +9,13 @@ planned_versions:
     purpose: Complete central-motor cutover and remove all remaining profile-local runtimes.
     source_plan: docs/MIGRATION.md
     required_content:
+      geography:
+        - global Google Maps/Places selection layer for any location worldwide
+        - provider-independent geo-anchor schema
+        - country-adapter registry with Google-only fallback
+        - Sweden adapter using official national geography matrices
+        - administrative, functional-labour-market, radius and travel-time drill modes
+        - progressive geographic widening integrated with sourcing and ranking
       central_motor:
         - extract/generalise reusable WPB and Grace runtime modules into CareerHubZero
         - remove repository/person hard-coding
