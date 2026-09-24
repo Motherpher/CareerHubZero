@@ -124,3 +124,7 @@ Every central motor/schema/workflow change requires:
 5. remote compatibility verification.
 
 Only after those checks may the release be tagged as stack-current. See `docs/VERSIONING.md`.
+
+## 9. Geographical drill
+
+CareerHub geography uses a dual-layer model: Google Maps Platform is the global place-selection, geocoding and routing surface; authoritative country adapters enrich the selected location with national administrative, statistical and functional-labour-market matrices where available. Sweden is the first country adapter. Unsupported countries remain fully usable through the global map layer. See `docs/GEOGRAPHICAL_DRILL.md`.
