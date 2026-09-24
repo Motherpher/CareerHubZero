@@ -1,46 +1,104 @@
-name: CareerHub Household Clearance
+name: CareerHub Household Sprint Clearance
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - "governance/household/**"
-      - "stack/sprints/CH-1.0-SILICON.yaml"
-      - "src/**"
-      - "schemas/**"
-      - "tests/**"
-      - "scripts/household_clearance.py"
-      - ".github/workflows/careerhub-household.yml"
+      - '.ffos-household/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'schemas/**'
+      - 'config/**'
+      - 'tests/**'
+      - 'stack/household/**'
+      - 'stack/sprints/**'
+      - 'docs/SPRINT_1_0_SILICON_10WP.md'
+      - 'docs/HOUSEHOLD_AUDIT_STATE_ORDER.md'
+      - '.github/workflows/careerhub-household.yml'
+      - 'VERSION'
 
 permissions:
   contents: read
 
 jobs:
-  household:
+  household-clearance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          python-version: "3.12"
-      - name: Install dependencies
+          fetch-depth: 0
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Install CareerHub dependencies
         run: pip install -r requirements.txt
-      - name: Central regression suite
+
+      - name: Janitor deep scan
+        id: janitor
+        shell: bash
         env:
-          PYTHONPATH: src
-        run: python -m unittest discover -s tests -p 'test_*.py'
-      - name: Household clearance
-        id: household
-        continue-on-error: true
-        env:
-          CAREERHUB_TESTS_PASS: "1"
-        run: python scripts/household_clearance.py --wp all --out .careerhub-household-output
-      - uses: actions/upload-artifact@v4
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python .ffos-household/janitor.py             --root .             --manifest .ffos-household/household-manifest.json             --rules .ffos-household/janitor-rules.json             --exceptions .ffos-household/exceptions.json             --out .ffos-household-output             --profile deep
+          echo "rc=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Director WP01-WP10 clearance in fixed audit order
+        id: director
+        shell: bash
+        run: |
+          set +e
+          mkdir -p .ffos-household/audit
+          BLOCKED=0
+          for WP in WP01 WP02 WP03 WP04 WP05 WP06 WP07 WP08 WP09 WP10; do
+            python .ffos-household/director.py               --root .               --manifest .ffos-household/wp-manifest.json               --audit-dir .ffos-household/audit               --state .ffos-household/audit/director-state.json               --wp "$WP"
+            RC=$?
+            if [ "$RC" -ne 0 ]; then BLOCKED=1; fi
+          done
+          echo "blocked=$BLOCKED" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write clearance summary
         if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          state=Path(".ffos-household/audit/director-state.json")
+          data=json.loads(state.read_text()) if state.exists() else {}
+          lines=["# CareerHub Household Clearance Run",""]
+          for wp in [f"WP{i:02d}" for i in range(1,11)]:
+              row=data.get(wp,{})
+              lines.append(f"- {wp}: **{row.get('status','NO_RECORD')}** — {row.get('audit','')}")
+          Path(".ffos-household-output").mkdir(exist_ok=True)
+          Path(".ffos-household-output/clearance-summary.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+          PY
+
+      - name: Upload Household audit evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: careerhub-household-${{ github.run_id }}
-          path: .careerhub-household-output/
-      - name: Respect Household blockers
-        if: steps.household.outcome == 'failure'
-        run: exit 1
+          path: |
+            .ffos-household-output/
+            .ffos-household/audit/
+          if-no-files-found: warn
+          include-hidden-files: true
+
+      - name: Enforce Household blocking result
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.janitor.outputs.rc }}" -ge 20 ]; then
+            echo "::error::Janitor reported a blocking repository finding."
+            exit 1
+          fi
+          if [ "${{ steps.director.outputs.blocked }}" = "1" ]; then
+            echo "::error::One or more WP Director gates are BLOCKED."
+            exit 1
+          fi
