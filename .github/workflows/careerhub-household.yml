@@ -50,6 +50,8 @@ jobs:
       - name: Director WP01-WP10 clearance in fixed audit order
         id: director
         shell: bash
+        env:
+          PYTHONPATH: src
         run: |
           set +e
           mkdir -p .ffos-household/audit
