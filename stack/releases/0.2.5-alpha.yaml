@@ -1,6 +1,6 @@
 version: 0.2.5-alpha
 reconstructed: false
-status: current
+status: superseded
 date: 2026-09-24
 purpose: Precision-aware vacancy geotagging and zoom-aware geographic aggregation.
 user_contract: "Find jobs -> Analyse? -> Apply"
