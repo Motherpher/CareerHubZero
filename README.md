@@ -18,8 +18,8 @@ Everything else is implementation behind that interface.
 Motherpher/CareerHubZero          ← one canonical motor + VERSION
         │
         ├── CareerHub-LinusF      ← thin profile; already under Motherpher
-        ├── CareerHub-Weronika    ← stable target; migration from Hybrismannen/wpb
-        └── CareerHub-Grace       ← stable target; migration from Hybrismannen/Gracey
+        ├── wpb    ← stable target; migration from Hybrismannen/wpb
+        └── Gracey       ← stable target; migration from Hybrismannen/Gracey
 ```
 
 A CareerHub version is stack-current only when every active registered profile hub consumes the same central engine version, contains no local motor copy and satisfies the stable Motherpher ownership boundary.
@@ -73,8 +73,8 @@ Motor changes are made only in CareerHubZero. The matchable profile is hard-boun
 ## Migration status
 
 - `Motherpher/CareerHub-LinusF` is already a thin Motherpher profile repository but its candidate profile still requires migration to the current verified-career schema.
-- `Hybrismannen/wpb/CareerHub` remains the Weronika legacy implementation and contains local motor code. Stable target: `Motherpher/CareerHub-Weronika`.
-- `Hybrismannen/Gracey/CareerHub` is now registered, policy-normalised and bound to CareerHubZero 0.2.4-alpha, but still contains a temporary local motor. Stable target: `Motherpher/CareerHub-Grace`.
+- `Motherpher/wpb/CareerHub` remains the Weronika legacy implementation and contains local motor code. Stable target: `Motherpher/wpb`.
+- `Motherpher/Gracey/CareerHub` is now registered, policy-normalised and bound to CareerHubZero 0.2.4-alpha, but still contains a temporary local motor. Stable target: `Motherpher/Gracey`.
 - Grace's pre-firewall Region Stockholm application artifact is quarantined until verified career sources are added and the case is rerun.
 
 ## Stable release rule
