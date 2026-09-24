@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "status": "BLOCKED",
+  "updated_at": "2026-09-25",
+  "reason": "Household sprint execution is active; WP02/WP03 and live external gates prevent Full Audit Lock.",
+  "work_packages": [
+    {
+      "id": "WP01",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP02",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "WP03",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "WP04",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP05",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP06",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "WP07",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP08",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP09",
+      "status": "OPEN"
+    },
+    {
+      "id": "WP10",
+      "status": "BLOCKED"
+    }
+  ]
+}
