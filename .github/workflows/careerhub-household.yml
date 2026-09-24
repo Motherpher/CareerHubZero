@@ -98,7 +98,8 @@ jobs:
             echo "::error::Janitor reported a blocking repository finding."
             exit 1
           fi
+          echo "Director states: ${{ steps.director.outputs.director_states }}"
           if [ "${{ steps.director.outputs.blocked }}" = "1" ]; then
-            echo "::error::One or more WP Director gates are BLOCKED."
+            echo "::error::One or more WP Director gates are not PASS."
             exit 1
           fi
