@@ -1,0 +1,49 @@
+name: CareerHub · Refresh SCB Geography
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 5 * *"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/update_scb_labour_markets.py"
+      - ".github/workflows/scb-geography-sync.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install HTTP dependency
+        run: pip install requests
+      - name: Refresh SCB BAS local labour markets
+        run: python scripts/update_scb_labour_markets.py data/geography/sweden_local_labour_markets.json
+      - name: Verify matrix
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("data/geography/sweden_local_labour_markets.json").read_text(encoding="utf-8"))
+          assert data["municipality_count"] == 290, data
+          assert len(data["records"]) == 290, data
+          assert data["labour_market_count"] > 0, data
+          print("SCB LA OK", data["reference_year"], data["labour_market_count"])
+          PY
+      - name: Commit normalized matrix when changed
+        run: |
+          if git diff --quiet -- data/geography/sweden_local_labour_markets.json; then
+            echo "No SCB LA change."
+            exit 0
+          fi
+          git config user.name "careerhub-geography[bot]"
+          git config user.email "careerhub-geography[bot]@users.noreply.github.com"
+          git add data/geography/sweden_local_labour_markets.json
+          git commit -m "Data: refresh SCB local labour markets"
+          git push
