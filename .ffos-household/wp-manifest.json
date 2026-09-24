@@ -180,7 +180,7 @@
       ],
       "required_paths": [
         "src/careerhub/learning.py",
-        "schemas/career_event.schema.json",
+        "schemas/outcome_event.schema.json",
         "tests/test_learning.py"
       ],
       "acceptance": [
@@ -305,7 +305,7 @@
       ],
       "required_paths": [
         "src/careerhub/state.py",
-        "schemas/career_event.schema.json",
+        "schemas/outcome_event.schema.json",
         "tests/test_state_machine.py"
       ],
       "acceptance": [
