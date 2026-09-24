@@ -1,149 +1,104 @@
-# Migration: Profile-Local CareerHubs → CareerHubZero
+# Migration: Profile-Local CareerHubs → Unified CareerHub Body
 
 ## Objective
 
-Move all reusable CareerHub capability into `Motherpher/CareerHubZero` while preserving each person's verified career evidence, search configuration, job/application state, historical provenance and user-facing surfaces.
+Move all reusable capability into one CareerHub software body while preserving person-specific evidence, search settings, state and provenance.
 
-## Current Motherpher topology
+## Stable target
 
 ```text
-Motherpher/CareerHubZero
-Motherpher/CareerHub-LinusF
-Motherpher/wpb
-  └── CareerHub/          Weronika bounded instance
-Motherpher/Gracey
-  └── CareerHub/          Grace bounded instance
+Motherpher/CareerHubZero      one software body + one VERSION
+Motherpher/CareerHub-LinusF   profile node + careerhub.yaml
+Motherpher/wpb/CareerHub      profile node + careerhub.yaml
+Motherpher/Gracey/CareerHub   profile node + careerhub.yaml
 ```
 
-Repository ownership migration is complete.
+Profile nodes are not independently versioned.
 
-## Current profile-contract state
+## Current migration state
 
 ### Linus
-- canonical `0.2.5-alpha` engine binding,
-- canonical verified-evidence profile,
-- canonical search-only overlay,
+- versionless `careerhub.yaml` installed,
 - no profile-local CareerHub motor,
-- stack lock: aligned.
+- canonical verified-evidence profile,
+- suitable as the first stable thin-profile reference.
 
 ### Weronika
-- canonical `0.2.5-alpha` engine binding,
-- parallel verified-evidence profile at `CareerHub/profile/candidate_verified.yaml`,
-- canonical search profile at `CareerHub/config/search_profile.yaml`,
-- legacy candidate/profile files retained only for the temporary local runtime,
-- profile-local motor still present,
-- stack lock: blocked pending central-motor cutover.
+- versionless `CareerHub/careerhub.yaml` installed,
+- canonical verified-evidence profile,
+- local runtime/HRDM still present as migration code,
+- cutover to central reusable body still required.
 
 ### Grace
-- canonical `0.2.5-alpha` engine binding,
-- canonical verified-evidence profile,
-- canonical search profile,
-- 159-job historical vault preserved,
-- Region Stockholm pre-firewall application artifact quarantined,
-- profile-local motor still present,
-- stack lock: blocked pending central-motor cutover.
+- versionless `CareerHub/careerhub.yaml` installed,
+- canonical evidence/search contract,
+- 159-job history preserved,
+- pre-firewall application quarantined,
+- local runtime/HRDM still present as migration code,
+- cutover to central reusable body still required.
 
 ## Migration sequence
 
-### M0 — Central governance
+### M0 — Governance and evidence firewall
 Status: **COMPLETE**
 
-- central architecture and instance boundary,
-- verified-career evidence firewall,
-- search-only raster,
-- stack registry and locks,
-- release/version governance,
-- Motherpher ownership boundary,
-- 1.0 Full Audit Lock.
+### M1 — Unified body contract
+Status: **COMPLETE**
 
-### M1 — Extract pure reusable core
-Status: **OPEN**
+- one VERSION,
+- versionless profile manifests,
+- no stable stack-lock requirement,
+- no central cross-repository version propagation,
+- `CAREERHUB_STACK_TOKEN` removed from stable architecture.
 
-Move/generalise from legacy profile motors into CareerHubZero:
+### M2 — Central runtime extraction
+Status: **ACTIVE**
 
-- source adapters,
-- normalisation/deduplication,
-- matching/triage,
-- HRDM execution,
+Reusable modules from Grace/Weronika are being moved into CareerHubZero:
+
+- sourcing,
+- matching,
+- HRDM,
 - application generation,
-- document generation,
-- state transitions,
-- dashboard/rendering,
-- workflow/bootstrap logic.
+- state lifecycle,
+- rendering,
+- notifications,
+- issue/update parsing.
 
-No person-specific assumptions may enter central core.
-
-### M2 — Remove repository/person hard-coding
+### M3 — Reusable distribution
 Status: **OPEN**
 
-The same CareerHubZero runtime must operate against Linus, Weronika and Grace by instance configuration only.
+Create the central reusable action/workflow interface used by all profile repositories.
 
-### M3 — Reusable workflow layer
+The caller profile repository writes its own state with its own `GITHUB_TOKEN`.
+
+### M4 — Profile cutover
 Status: **OPEN**
 
-Profile repositories should call centrally governed reusable workflows rather than maintain independent workflow logic.
+For Weronika and Grace:
 
-### M4 — Canonical profile contracts
-Status: **COMPLETE for 0.2.4**
+1. run central body against existing state,
+2. compare outputs/state transitions,
+3. repair any parity differences,
+4. switch workflows to central reusable execution,
+5. remove profile-local Python/HRDM runtime,
+6. archive/remove `instance.yaml` and `stack.lock.yaml`.
 
-All three active instances now have a CareerHubZero-compatible engine binding and verified-evidence candidate path.
+### M5 — Geography completion
+Status: **ACTIVE**
 
-Legacy runtime profile files may temporarily coexist only where required for dual-run migration.
+Complete global map selection, geotagging, country-adapter registry, Sweden/SCB adapter, radius/travel-time and progressive widening.
 
-### M5 — Historical/state preservation
-Status: **COMPLETE for migration baseline**
-
-Grace:
-- 159-job history preserved,
-- issue #2 preserved after transfer,
-- pre-firewall application state marked `external_use_allowed=false`.
-
-Weronika:
-- corpus, credits, job/application state and broader WPB provenance remain preserved in `Motherpher/wpb`.
-
-### M6 — Dual-run parity
-Status: **OPEN**
-
-For controlled jobs, compare legacy runtime and CareerHubZero on:
-
-1. source normalisation,
-2. triage,
-3. HRDM structure,
-4. candidate-evidence use,
-5. application artifact generation,
-6. state transitions,
-7. rendered user surfaces.
-
-Run separately for Weronika and Grace.
-
-### M7 — Repository relocation to Motherpher
-Status: **COMPLETE**
-
-- `Hybrismannen/Gracey` → `Motherpher/Gracey`
-- `Hybrismannen/wpb` → `Motherpher/wpb`
-- central registry repointed,
-- connector access verified,
-- Grace transferred issue links repaired.
-
-Repository renaming is cosmetic and non-blocking.
-
-### M8 — Central-motor cutover
-Status: **BLOCKED by M1–M3 and M6**
-
-After parity:
-- remove `CareerHub/src/careerhub` from Grace and Weronika,
-- remove profile-local runners and HRDM copies,
-- retire legacy runtime-only profile/config copies,
-- regenerate aligned stack locks,
-- make CareerHubZero the only authoritative runtime.
-
-### M9 — Full audit and 1.0 lock
+### M6 — Full Audit Lock
 Status: **NOT STARTED**
 
-Run `docs/AUDIT_1.0.md` against CareerHubZero + Linus + Weronika + Grace.
+Run `docs/AUDIT_1.0.md` against the entire CareerHub body and Linus/Weronika/Grace compatibility suite.
 
-Only a full PASS permits `VERSION = 1.0.0`.
+Only a complete PASS permits `VERSION = 1.0.0`.
 
 ## Non-goals
 
-Migration does not move private-life data into CareerHub, does not convert search wishes into evidence, and does not delete historical state merely because it predates the current runtime.
+- No private-life data enters candidate evidence.
+- No search wish becomes candidate evidence.
+- No profile repository carries an independent CareerHub software version.
+- No cross-profile write token is required for normal CareerHub operation.
