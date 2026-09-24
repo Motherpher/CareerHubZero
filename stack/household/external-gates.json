@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-09-25",
+  "gates": {
+    "private_action_profile_access": {
+      "status": "BLOCKED",
+      "evidence": "Compatibility workflows in Linus, Weronika and Grace fail at GitHub job setup before CareerHub code runs; CareerHubZero is private and repository/organization private-action access has not been enabled."
+    },
+    "geo_runtime_complete": {
+      "status": "BLOCKED",
+      "evidence": "Canonical geo object, geotagging, clustering and country-adapter registry code exist, but Google Maps live key/routing and full Sweden matrix runtime have not yet been proven end-to-end."
+    },
+    "live_ai_execution": {
+      "status": "BLOCKED",
+      "evidence": "OPENAI_API_KEY wiring previously reached OpenAI but API credit was exhausted; live HRDM/application structured-output execution is not yet revalidated."
+    }
+  }
+}
