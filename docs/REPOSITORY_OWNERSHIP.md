@@ -2,33 +2,33 @@
 
 ## Stable ownership rule
 
-All repositories that constitute the stable CareerHub stack belong under **Motherpher**.
+All repositories that constitute the stable CareerHub stack belong under **Motherpher**. Repository naming is descriptive; ownership and contract compliance are architectural.
 
-| Instance | Current location | Stable target | State |
-|---|---|---|---|
-| Central motor | Motherpher/CareerHubZero | Motherpher/CareerHubZero | already canonical |
-| Linus Fast | Motherpher/CareerHub-LinusF | Motherpher/CareerHub-LinusF | already canonical |
-| Weronika Pérez Borjas | Hybrismannen/wpb/CareerHub | Motherpher/CareerHub-Weronika | relocation/extraction pending |
-| Grace | Hybrismannen/Gracey/CareerHub | Motherpher/CareerHub-Grace | relocation pending |
+| Instance | Current location | State |
+|---|---|---|
+| Central motor | Motherpher/CareerHubZero | canonical |
+| Linus Fast | Motherpher/CareerHub-LinusF | canonical |
+| Weronika Pérez Borjas | Motherpher/wpb/CareerHub | ownership complete; local motor cutover pending |
+| Grace | Motherpher/Gracey/CareerHub | ownership complete; local motor cutover pending |
 
-## Why Weronika is an extraction rather than a whole-repository transfer
+## Transfer result
 
-`Hybrismannen/wpb` contains material beyond CareerHub. The CareerHub profile/state must therefore be extracted into a dedicated Motherpher repository while preserving WPB as its original broader repository.
+The existing Grace and WPB repositories were transferred intact to Motherpher. This preserves commit history, issues and provenance.
 
-## Why Grace can be relocated as a dedicated hub
+Weronika remains housed in the broader `Motherpher/wpb` repository. For CareerHub governance, the bounded `CareerHub/` subtree is the profile instance. This is acceptable provided that, after cutover, the subtree contains profile/config/state/artifacts only and no authoritative CareerHub motor.
 
-`Hybrismannen/Gracey` is functioning as Grace's CareerHub repository. Its state/history should be preserved and moved into the dedicated stable target `Motherpher/CareerHub-Grace`.
+Grace remains housed in `Motherpher/Gracey`; its `CareerHub/` subtree is the profile instance.
 
-## Relocation completion criteria
+## Ownership completion criteria
 
-A relocation is complete only when:
+Ownership is complete because:
 
-1. profile/config/state/artifacts are present in the Motherpher target,
-2. issue/application provenance is preserved or mapped,
-3. registry points to the target,
-4. stack.lock is regenerated,
-5. repository-hard-coded links are eliminated,
-6. central compatibility passes,
-7. old location is archived or documented as migration provenance.
+1. all four active repositories are under Motherpher,
+2. Grace issue/application provenance was preserved,
+3. `stack/registry.yaml` points to the Motherpher paths,
+4. stack locks record the canonical central engine,
+5. the connector can read all four repositories.
 
-Repository creation/ownership transfer is an administrative GitHub operation and must not be simulated by merely changing repository strings in code.
+Remaining local-motor code is a **centralisation** blocker, not an ownership blocker.
+
+Repository renaming to `CareerHub-Grace` or `CareerHub-Weronika` is optional and does not block 1.0 unless a future governance decision makes naming canonical.
