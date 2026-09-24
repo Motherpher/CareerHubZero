@@ -339,8 +339,8 @@ def render_control_room(path: Path, jobs: list[Job], lane: str, cases_data: dict
     active_cases = [c for c in cases if c.get("status") not in TERMINAL_STATUSES]
     active_cases.sort(key=lambda c: (-int(c.get("priority") or 3), c.get("deadline") or "9999"))
     lines = [
-        "![{PROFILE_NAME} · Karriärhubben](visuals/careerhub-journey.svg)", "",
-        "# {PROFILE_NAME} · Karriärhubben", "",
+        f"![{PROFILE_NAME} · Karriärhubben](visuals/careerhub-journey.svg)", "",
+        f"# {PROFILE_NAME} · Karriärhubben", "",
         "## 1 · HITTA JOBB → 2 · VÄLJ JOBB → 3 · SÖK", "",
         "Välkommen. Här är dina aktuella möjligheter, samlade och förberedda. Du väljer tempot. Vi håller ordning på resten.", "",
         "---", "",
