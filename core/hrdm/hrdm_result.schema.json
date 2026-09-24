@@ -14,12 +14,15 @@
     "dod",
     "assessment_zones",
     "candidate_positioning",
+    "hybridianesque",
     "hcc",
-    "application_strategy"
+    "application_strategy",
+    "trace"
   ],
   "properties": {
     "process_id": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^HRDM-(?:F|R)-\\d{8}-\\d{4}-S\\d{2}-[A-Z0-9]+-R\\d{2}-(?:OPEN|PASS|WARN|FAIL|LOOP|LOCK|FINAL|VOID|REDO)$"
     },
     "job": {
       "type": "object",
@@ -328,6 +331,296 @@
         }
       },
       "additionalProperties": false
+    },
+    "hybridianesque": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommended",
+        "why",
+        "criteria",
+        "user_decision",
+        "status",
+        "participating_logics",
+        "asymmetries",
+        "translation_relations",
+        "process_to_output",
+        "overload_or_misframing",
+        "failure_modes",
+        "risk_remaining",
+        "framing_if_active"
+      ],
+      "properties": {
+        "recommended": {
+          "type": "boolean"
+        },
+        "why": {
+          "type": "string"
+        },
+        "criteria": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "plural_logics",
+            "structural_asymmetry",
+            "constitutive_translation",
+            "materialized_output"
+          ],
+          "properties": {
+            "plural_logics": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "met",
+                "evidence"
+              ],
+              "properties": {
+                "met": {
+                  "type": "boolean"
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "structural_asymmetry": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "met",
+                "evidence"
+              ],
+              "properties": {
+                "met": {
+                  "type": "boolean"
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "constitutive_translation": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "met",
+                "evidence"
+              ],
+              "properties": {
+                "met": {
+                  "type": "boolean"
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "materialized_output": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "met",
+                "evidence"
+              ],
+              "properties": {
+                "met": {
+                  "type": "boolean"
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "user_decision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_recommended",
+            "awaiting_user_decision",
+            "active",
+            "declined"
+          ]
+        },
+        "participating_logics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "asymmetries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "translation_relations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "process_to_output": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "overload_or_misframing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "decorative_complexity_language",
+              "prestige_coded_overload",
+              "many_hats_drift",
+              "undefined_outputs",
+              "undefined_counterparties",
+              "false_depth_through_blur"
+            ]
+          }
+        },
+        "risk_remaining": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "framing_if_active": {
+          "type": "string"
+        }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "mode",
+        "timestamp",
+        "environment",
+        "piusite_usage",
+        "hy_filter_usage",
+        "hcc_authority",
+        "downing_street_loop_count",
+        "final_output_state",
+        "process_id_validation_status",
+        "last_pid_rev",
+        "process_id",
+        "runseq",
+        "step_process_ids",
+        "outstanding_warnings",
+        "bank_eligible_outputs"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "R"
+          ]
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "Pius",
+            "Standalone"
+          ]
+        },
+        "piusite_usage": {
+          "type": "boolean"
+        },
+        "hy_filter_usage": {
+          "type": "boolean"
+        },
+        "hcc_authority": {
+          "type": "string",
+          "enum": [
+            "HCC",
+            "HCC-Lite"
+          ]
+        },
+        "downing_street_loop_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "final_output_state": {
+          "type": "string",
+          "enum": [
+            "FINAL"
+          ]
+        },
+        "process_id_validation_status": {
+          "type": "boolean"
+        },
+        "last_pid_rev": {
+          "type": "string",
+          "pattern": "^HRDM-(?:F|R)-\\d{8}-\\d{4}-S\\d{2}-[A-Z0-9]+-R\\d{2}-(?:OPEN|PASS|WARN|FAIL|LOOP|LOCK|FINAL|VOID|REDO)$"
+        },
+        "process_id": {
+          "type": "string",
+          "pattern": "^HRDM-(?:F|R)-\\d{8}-\\d{4}-S\\d{2}-[A-Z0-9]+-R\\d{2}-(?:OPEN|PASS|WARN|FAIL|LOOP|LOCK|FINAL|VOID|REDO)$"
+        },
+        "runseq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "step_process_ids": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "outstanding_warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bank_eligible_outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }
