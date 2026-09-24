@@ -2,16 +2,11 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
-from hashlib import sha1
 from pathlib import Path
 
+from .hrdm_trace import create_reverse_trace
+from .hybridianesque import empty_hyfilter, finalize_hyfilter, normalize_decision
 from .models import Job
-
-
-def process_id(job: Job) -> str:
-    seed = job.url or f"{job.company}|{job.title}"
-    return f"HRDM-R-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{sha1(seed.encode()).hexdigest()[:8].upper()}"
 
 
 def public_candidate_evidence(profile: dict) -> dict:
@@ -43,49 +38,94 @@ def public_candidate_evidence(profile: dict) -> dict:
     }
 
 
-def build_packet(job: Job, profile: dict, lane: str) -> dict:
+def build_packet(
+    job: Job,
+    profile: dict,
+    lane: str,
+    *,
+    run_counter_path: Path,
+    hy_filter_decision: str | None = None,
+) -> dict:
+    decision = normalize_decision(hy_filter_decision)
+    trace = create_reverse_trace(
+        counter_path=run_counter_path,
+        hy_filter_usage=decision == "Yes",
+        environment="Standalone",
+        piusite_usage=False,
+        hcc_authority="HCC-Lite",
+    )
     return {
-        "process_id": process_id(job),
+        "process_id": trace["process_id"],
         "mode": "HRDM-R-v6.3",
         "lane": lane,
         "job": job.full_dict(),
         "candidate_evidence": public_candidate_evidence(profile),
+        "hy_filter_decision": decision,
+        "trace": trace,
         "constraints": [
-            "Gå igenom hela matchningen systematiskt i rätt ordning.",
-            "Hitta inte på uppgifter om kandidaten.",
-            "Använd endast verifierade karriärkällor och source-bound verifierad evidens som kandidatfakta.",
-            "Privatliv, modellminne, samtalsintryck och search-only önskemål får aldrig användas som kandidatfakta.",
+            "Run the full HRDM-R sequence in canonical order.",
+            "Do not invent candidate facts.",
+            "Use only verified career sources and source-bound verified evidence as candidate facts.",
+            "Private life, model memory, conversational impressions and search-only wishes are forbidden as candidate evidence.",
             "Separate job-ad facts from inference.",
-            "Bedömningen får bara använda verifierad karriärevidens i paketet.",
-            "Språk, nuvarande plats och anställning som inte är verifierade ska markeras som okända.",
-            "Bedöm avståndet till rollen, inte Grace värde eller kvalitet som person.",
-            "HCC must address overload, ambiguity, fairness, dignity and structural honesty.",
+            "Unknown candidate facts remain unknown.",
+            "HCC-Lite must address structural honesty, overload, dignity, fairness, vulnerability sensitivity, non-deceptive framing and trace/accountability.",
+            "Hybridianesque is an optional enclosed depth filter. Recommendation is semi-automatic; full use requires the exact user decision Yes.",
         ],
     }
 
 
 def packet_prompt(packet: dict) -> str:
-    return f"""Du gör en fördjupad jobbmatchning i Karriärhubben.
+    decision = packet.get("hy_filter_decision")
+    hy_instruction = (
+        "The user explicitly answered Yes. If the four-criterion validity test supports it, run the full Hybridianesque filter."
+        if decision == "Yes"
+        else "The user explicitly answered No. You may record whether the filter would have been recommended, but do not run the deep filter."
+        if decision == "No"
+        else "No Hybridianesque decision has been supplied. Evaluate whether the filter is recommended. If recommended, set status awaiting_user_decision and do not perform the deep interpretation."
+    )
+    return f"""You are performing a full CareerHub HRDM-R v6.3 analysis.
 
-Canonical sequence:
+Canonical Reverse sequence:
 1 Ad/Text Intake
 2 Signal Extraction
 3 Key Words & Concepts
 4 Hidden Need Reconstruction
 5 Field Logic Reconstruction
 6 FunctionCore Estimation
-7 DoD Diagnostic
-8 Likely Assessment Zones
-9 Candidate Positioning Map
-10 HCC Reverse Commentary
+6A DoD Diagnostic
+7 Likely Assessment Zones
+8 Candidate Positioning Map
+9 HCC Reverse Commentary
 
-Använd webbkällor bara för aktuell offentlig information om arbetsgivaren och rollen. Använd inte webben för att fylla i kandidatens bakgrund.
+Candidate evidence rule:
+- Only verified career evidence in the packet may be used as candidate facts or proof points.
+- Never use private-life information, model memory, conversational impressions or search-only wishes as candidate evidence.
+- Unknown means unknown.
 
-Endast verifierade karriärkällor i kandidatpaketet får generera matchningsbara profilfakta eller HRDM proof points. Privatliv och användarens search-only "specifika önskemål eller behov" är uttryckligen förbjudna som kandidatbevis.
+HCC-Lite:
+Review structural honesty, burden clarity, dignity/fairness, vulnerability sensitivity, non-deceptive framing and trace/accountability.
 
-Om en karriäruppgift saknas ska den markeras som okänd eller som något att kontrollera.
+Hybridianesque (Hy-Filter):
+- Status: optional depth filter; never globally active.
+- Recommend only when the context plausibly contains the four criteria together:
+  1) more than one logic genuinely in play,
+  2) structural asymmetry is relevant,
+  3) translation/mediation does constitutive work,
+  4) process materializes into usable outputs.
+- If active, identify participating logics, asymmetries, who/what translates between whom/what, process-to-output movement, overload/misframing, and remaining risk.
+- Scan only these canonical failure modes:
+  decorative_complexity_language, prestige_coded_overload, many_hats_drift,
+  undefined_outputs, undefined_counterparties, false_depth_through_blur.
+- Never glamorize overload, invent complexity, aestheticize incoherence or reward vagueness.
+- Keep Hybridianesque logic enclosed in the hybridianesque output object.
+- {hy_instruction}
 
-Skriv alla användartexter på tydlig, vuxen och idiomatisk svenska. Undvik tekniskt språk i slutsatserna. Returnera enligt JSON-schemat.
+Trace discipline:
+- Echo the exact process_id and trace object supplied in the packet. Do not generate a different Process-ID.
+- Treat the result as FINAL user handoff.
+
+Return only JSON conforming to the supplied schema.
 
 PACKET:
 {json.dumps(packet, ensure_ascii=False, indent=2)}
@@ -101,7 +141,7 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
         return None
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    model = os.getenv("CAREERHUB_MODEL") or "gpt-5.4"
+    model = os.getenv("CAREERHUB_MODEL") or "gpt-5.6-sol"
     client = OpenAI()
     response = client.responses.create(
         model=model,
@@ -117,16 +157,28 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
             }
         },
     )
-    return json.loads(response.output_text)
+    result = json.loads(response.output_text)
+    result["process_id"] = packet["process_id"]
+    result["trace"] = packet["trace"]
+    result["hybridianesque"] = finalize_hyfilter(
+        result.get("hybridianesque"),
+        packet.get("hy_filter_decision"),
+    )
+    result["trace"]["hy_filter_usage"] = result["hybridianesque"]["status"] == "active"
+    return result
 
 
 def fallback_hrdm(packet: dict) -> dict:
     job = packet["job"]
+    hy = empty_hyfilter(packet.get("hy_filter_decision"))
+    warnings = ["Automated HRDM analysis not run."]
+    trace = dict(packet["trace"])
+    trace["outstanding_warnings"] = warnings
     return {
         "process_id": packet["process_id"],
         "job": job,
         "ai_status": "not_run",
-        "note": "OPENAI_API_KEY not configured. Use the generated HRDM prompt packet in ChatGPT or rerun after configuring the secret.",
+        "note": "OPENAI_API_KEY not configured. The HRDM run was registered but semantic analysis was not completed.",
         "signals": [],
         "concept_clusters": [],
         "hidden_need": {"statement": "", "confidence": "low", "rationale": []},
@@ -143,12 +195,13 @@ def fallback_hrdm(packet: dict) -> dict:
         "candidate_positioning": {
             "strong_matches": [],
             "transferable_matches": [],
-            "gaps_unknowns": ["Automated HRDM analysis not run."],
+            "gaps_unknowns": warnings,
             "prohibited_claims": [],
             "proof_points": [],
             "cv_emphasis": [],
         },
-        "hcc": {"risks": [], "commentary": "Not analysed."},
+        "hybridianesque": hy,
+        "hcc": {"risks": warnings, "commentary": "Not analysed."},
         "application_strategy": {
             "positioning": "",
             "opening": "",
@@ -157,4 +210,5 @@ def fallback_hrdm(packet: dict) -> dict:
             "tone": "",
             "interview_themes": [],
         },
+        "trace": trace,
     }
