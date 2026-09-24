@@ -2,6 +2,17 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.6-alpha — 2026-09-24
+**Unified CareerHub body architecture.**
+
+- Replace the permanent engine + stack-lock model with one CareerHub software body and one VERSION.
+- Add versionless `careerhub.yaml` manifests to Linus, Weronika and Grace.
+- Make `instance.yaml` and `stack.lock.yaml` migration-only artifacts.
+- Remove cross-repository version propagation from the stable release path.
+- Remove `CAREERHUB_STACK_TOKEN` as a stable architecture requirement.
+- Add unified-body validation and a 1.0 Full Audit Lock guard.
+- Begin centralising reusable Grace/Weronika runtime modules into CareerHubZero.
+
 ## 0.2.5-alpha — 2026-09-24
 **Precision-aware vacancy geotagging + zoom-aware map aggregation.**
 
