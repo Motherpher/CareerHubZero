@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from careerhub.hrdm_trace import create_reverse_trace, validate_process_id
+from careerhub.hrdm_trace import create_reverse_trace, finalize_reverse_trace, validate_process_id
 from careerhub.hybridianesque import finalize_hyfilter
 
 
@@ -10,9 +10,13 @@ class HRDMCoreTests(unittest.TestCase):
     def test_full_reverse_trace_final_pid(self):
         with tempfile.TemporaryDirectory() as tmp:
             trace = create_reverse_trace(counter_path=Path(tmp)/"seq.json", hy_filter_usage=False)
-            self.assertEqual(trace["final_output_state"], "FINAL")
+            self.assertEqual(trace["final_output_state"], "OPEN")
             self.assertTrue(validate_process_id(trace["process_id"]))
             self.assertEqual(len(trace["step_process_ids"]), 9)
+            final = finalize_reverse_trace(trace, success=True)
+            self.assertEqual(final["final_output_state"], "FINAL")
+            self.assertTrue(final["process_id"].endswith("-FINAL"))
+            self.assertTrue(final["bank_eligible_outputs"])
 
     def test_hybridianesque_enclosure(self):
         value = {
