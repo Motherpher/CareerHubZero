@@ -264,25 +264,40 @@ def write_hrdm_pdf(path: Path, hrdm: dict) -> Path:
 
 def save_report_bundle(root: Path, hrdm: dict, ledger_path: Path) -> dict:
     job = hrdm.get("job") or {}
+    trace = hrdm.get("trace") or {}
     job_id = str(job.get("id") or safe_name(job.get("url") or job.get("title") or "job"))
-    process_id = str(hrdm.get("process_id") or (hrdm.get("trace") or {}).get("process_id") or "")
+    process_id = str(hrdm.get("process_id") or trace.get("process_id") or "")
     if not process_id:
-        raise ValueError("HRDM result requires process_id before report banking")
-    base = root / "reports" / "hrdm" / "active" / safe_name(job_id) / safe_name(process_id)
+        raise ValueError("HRDM result requires process_id before run registration")
+
+    bankable = (
+        trace.get("final_output_state") in {"LOCK", "FINAL"}
+        and bool(trace.get("process_id_validation_status"))
+        and bool(trace.get("bank_eligible_outputs"))
+    )
+    shelf = "active" if bankable else "incomplete"
+    base = root / "reports" / "hrdm" / shelf / safe_name(job_id) / safe_name(process_id)
     base.mkdir(parents=True, exist_ok=True)
 
     result_json = base / "HRDM_result.json"
     md_path = base / "HRDM_report.md"
-    docx_path = base / "HRDM_report.docx"
-    pdf_path = base / "HRDM_report.pdf"
-
     result_json.write_text(json.dumps(hrdm, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(report_markdown(hrdm), encoding="utf-8")
-    write_hrdm_docx(docx_path, hrdm)
-    write_hrdm_pdf(pdf_path, hrdm)
+
+    paths = {
+        "markdown": str(md_path.relative_to(root)),
+        "json": str(result_json.relative_to(root)),
+    }
+    if bankable:
+        docx_path = base / "HRDM_report.docx"
+        pdf_path = base / "HRDM_report.pdf"
+        write_hrdm_docx(docx_path, hrdm)
+        write_hrdm_pdf(pdf_path, hrdm)
+        paths["docx"] = str(docx_path.relative_to(root))
+        paths["pdf"] = str(pdf_path.relative_to(root))
 
     ledger = read_ledger(ledger_path)
-    run_id = (hrdm.get("trace") or {}).get("run_id")
+    run_id = trace.get("run_id")
     entry = {
         "run_id": run_id,
         "process_id": process_id,
@@ -292,27 +307,23 @@ def save_report_bundle(root: Path, hrdm: dict, ledger_path: Path) -> dict:
         "location": job.get("location") or "",
         "deadline": job.get("deadline") or "",
         "job_url": job.get("url") or "",
-        "created_at": (hrdm.get("trace") or {}).get("timestamp") or utcnow(),
-        "status": "active",
+        "created_at": trace.get("timestamp") or utcnow(),
+        "status": "active" if bankable else "incomplete",
         "archived_at": None,
         "archive_reason": None,
+        "bankable": bankable,
         "hy_filter": {
             "recommended": bool((hrdm.get("hybridianesque") or {}).get("recommended")),
             "status": (hrdm.get("hybridianesque") or {}).get("status"),
-            "used": bool((hrdm.get("trace") or {}).get("hy_filter_usage")),
+            "used": bool(trace.get("hy_filter_usage")),
         },
-        "trace": hrdm.get("trace") or {},
-        "paths": {
-            "markdown": str(md_path.relative_to(root)),
-            "docx": str(docx_path.relative_to(root)),
-            "pdf": str(pdf_path.relative_to(root)),
-            "json": str(result_json.relative_to(root)),
-        },
+        "trace": trace,
+        "paths": paths,
     }
     runs = ledger.setdefault("runs", [])
-    old = next((x for x in runs if x.get("run_id") == run_id and run_id), None)
-    if old:
-        old.update(entry)
+    previous = next((x for x in runs if x.get("run_id") == run_id and run_id), None)
+    if previous:
+        previous.update(entry)
     else:
         runs.append(entry)
     write_ledger(ledger_path, ledger)
