@@ -2,7 +2,7 @@ careerhub:
   instance_id: example-person
   engine:
     repository: Motherpher/CareerHubZero
-    version: "0.2.1-alpha"
+    version: "0.2.4-alpha"
 
 profile:
   path: profile/candidate.yaml
