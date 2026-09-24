@@ -24,7 +24,7 @@ def run_ai_application(job: dict, profile: dict, hrdm: dict, lane: str) -> dict 
     except Exception:
         return None
 
-    model = os.getenv("CAREERHUB_MODEL") or "gpt-5.4"
+    model = os.getenv("CAREERHUB_MODEL") or "gpt-5.6-sol"
     client = OpenAI()
     schema = {
         "type": "object",
@@ -72,7 +72,7 @@ HRDM:
 
 
 def fallback_application(job: dict, profile: dict, hrdm: dict) -> dict:
-    name = profile.get("identity", {}).get("name", "Grace")
+    name = profile.get("identity", {}).get("name", "Candidate")
     role = job.get("title") or "the role"
     company = job.get("company") or "your organisation"
     matches = hrdm.get("candidate_positioning", {}).get("strong_matches", [])
@@ -143,7 +143,7 @@ def write_hrdm_docx(outdir: Path, hrdm: dict) -> Path:
         ("FunctionCore", hrdm.get("function_core", {})),
         ("DoD", hrdm.get("dod", {})),
         ("Assessment zones", hrdm.get("assessment_zones", [])),
-        ("Grace i relation till rollen", hrdm.get("candidate_positioning", {})),
+        ("Candidate positioning", hrdm.get("candidate_positioning", {})),
         ("HCC", hrdm.get("hcc", {})),
         ("Ansökningsstrategi", hrdm.get("application_strategy", {})),
     ]
