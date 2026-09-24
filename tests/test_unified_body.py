@@ -48,12 +48,18 @@ class UnifiedBodyTests(unittest.TestCase):
         (root / "data").mkdir()
         (root / "profile/candidate.yaml").write_text(yaml.safe_dump(valid_profile()), encoding="utf-8")
         search = {
-            "version": "2.0",
+            "version": "2.1",
             "intent": "Find work",
-            "geographies": {"primary": ["Stockholm", "Sweden"]},
+            "geographies": {
+                "country": "SE",
+                "anchors": ["Stockholm"],
+                "remote_allowed": True,
+                "remote_scopes": ["SE"],
+                "progressive_widening": ["anchor", "country", "remote"],
+            },
             "lanes": [
-                {"lane_id": "L1", "priority": "core", "titles": ["strateg"]},
-                {"lane_id": "L2", "priority": "adjacent", "queries": ["analyst"]},
+                {"lane_id": "L1", "name": "Strategy", "bucket": "core", "priority": 1, "queries": ["strateg"]},
+                {"lane_id": "L2", "name": "Analysis", "bucket": "adjacent", "priority": 2, "queries": ["analyst"]},
             ],
             "negative_filters": [],
             "triage_rule": "Verified evidence defines fit.",
