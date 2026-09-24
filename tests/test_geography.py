@@ -1,6 +1,6 @@
 import unittest
 
-from careerhub.geography import build_map_payload, geotag_job, geotag_vault
+from careerhub.geography import build_map_payload, enrich_travel_time, geotag_job, geotag_vault
 
 
 class FakeGeocoder:
@@ -37,6 +37,21 @@ class FakeGeocoder:
                 ],
             }
         return None
+
+
+class FakeRouter:
+    def compute(self, origin, destinations, *, travel_mode="DRIVE", region_code=None):
+        rows = []
+        for idx, _ in enumerate(destinations):
+            rows.append({
+                "origin_index": 0,
+                "destination_index": idx,
+                "condition": "ROUTE_EXISTS",
+                "status_code": 0,
+                "distance_meters": 10000 * (idx + 1),
+                "duration_seconds": 1200 * (idx + 1),
+            })
+        return rows
 
 
 class GeographyTests(unittest.TestCase):
@@ -117,6 +132,31 @@ class GeographyTests(unittest.TestCase):
         self.assertEqual(len(close_view["points"]), 1)
         self.assertEqual(close_view["points"][0]["properties"]["job_id"], "exact")
         self.assertEqual(close_view["clusters"][0]["count"], 1)
+
+    def test_travel_time_enriches_same_geo_object(self):
+        vault = {
+            "jobs": [{
+                "id": "a",
+                "geo": {
+                    "status": "tagged",
+                    "point": {"lat": 59.3, "lng": 18.0},
+                    "hierarchy": {"country_code": "SE"},
+                },
+            }]
+        }
+        enriched = enrich_travel_time(
+            vault,
+            origin={"label": "Stockholm", "place_id": "p", "point": {"lat": 59.33, "lng": 18.06}},
+            router=FakeRouter(),
+            travel_mode="TRANSIT",
+            max_minutes=30,
+            region_code="SE",
+        )
+        reach = enriched["jobs"][0]["geo"]["reach"]
+        self.assertEqual(reach["travel_mode"], "TRANSIT")
+        self.assertEqual(reach["duration_minutes"], 20.0)
+        self.assertTrue(reach["within_threshold"])
+        self.assertEqual(enriched["jobs"][0]["geo"]["hierarchy"]["country_code"], "SE")
 
 
 if __name__ == "__main__":
