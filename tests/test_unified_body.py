@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from careerhub.hrdm_reports import archive_expired_reports, render_report_indexes, write_ledger
+from careerhub.hrdm_reports import archive_expired_reports, render_report_indexes, save_report_bundle, write_ledger
 from careerhub.hrdm_trace import create_reverse_trace, finalize_reverse_trace, validate_process_id
 from careerhub.hybridianesque import finalize_hyfilter
 from careerhub.instance import load_profile_node, validate_profile_node_paths
@@ -197,6 +197,53 @@ class UnifiedBodyTests(unittest.TestCase):
             active_index, history_index = render_report_indexes(root, ledger_path)
             self.assertIn("0 aktiva rapporter", active_index.read_text(encoding="utf-8"))
             self.assertIn("Role", history_index.read_text(encoding="utf-8"))
+
+    def test_hrdm_bank_only_final_runs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ledger = root / "data/hrdm_ledger.json"
+            base_trace = create_reverse_trace(
+                counter_path=root / "data/runseq.json",
+                hy_filter_usage=False,
+            )
+            incomplete_trace = finalize_reverse_trace(
+                base_trace,
+                success=False,
+                warnings=["semantic execution unavailable"],
+            )
+            incomplete = {
+                "process_id": incomplete_trace["process_id"],
+                "job": {"id": "job-a", "title": "Role", "company": "Org", "deadline": "2026-10-01"},
+                "signals": [], "concept_clusters": [],
+                "hidden_need": {"statement": "", "confidence": "low", "rationale": []},
+                "field_logic": {}, "function_core": {"chain": "", "summary": ""},
+                "dod": {"alpha": "", "zenith": "", "dimensions": {}, "average": 0, "classification": "Low"},
+                "assessment_zones": [],
+                "candidate_positioning": {},
+                "hybridianesque": {"recommended": False, "status": "not_recommended", "user_decision": None},
+                "hcc": {"risks": [], "commentary": ""},
+                "application_strategy": {},
+                "trace": incomplete_trace,
+            }
+            entry = save_report_bundle(root, incomplete, ledger)
+            self.assertEqual(entry["status"], "incomplete")
+            self.assertFalse(entry["bankable"])
+            self.assertNotIn("docx", entry["paths"])
+            self.assertNotIn("pdf", entry["paths"])
+
+            success_trace = finalize_reverse_trace(
+                create_reverse_trace(counter_path=root / "data/runseq.json", hy_filter_usage=False),
+                success=True,
+            )
+            final = dict(incomplete)
+            final["process_id"] = success_trace["process_id"]
+            final["trace"] = success_trace
+            final["job"] = {"id": "job-b", "title": "Role B", "company": "Org", "deadline": "2026-10-01"}
+            final_entry = save_report_bundle(root, final, ledger)
+            self.assertEqual(final_entry["status"], "active")
+            self.assertTrue(final_entry["bankable"])
+            self.assertTrue((root / final_entry["paths"]["docx"]).exists())
+            self.assertTrue((root / final_entry["paths"]["pdf"]).exists())
 
 
 if __name__ == "__main__":
