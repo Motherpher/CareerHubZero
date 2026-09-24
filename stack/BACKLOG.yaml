@@ -35,9 +35,8 @@ planned_versions:
         - remote stack verification passes
     blockers:
       - CAREERHUB_STACK_TOKEN is not configured in CareerHubZero Actions
-      - Hybrismannen/wpb still contains the legacy local CareerHub motor
-      - Hybrismannen/Gracey still contains the legacy local CareerHub motor
-      - Weronika and Grace repositories have not yet been relocated under Motherpher
+      - Motherpher/wpb still contains the legacy local CareerHub motor
+      - Motherpher/Gracey still contains the legacy local CareerHub motor
 
   - version: 1.0.0
     status: audit-lock-target
