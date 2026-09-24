@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .application import fallback_application, run_ai_application, write_application_docx
 from .country_adapters import enrich_country_matrix
-from .geography import GooglePlacesGeocoder, build_map_payload, geotag_vault
+from .geography import GooglePlacesGeocoder, GoogleRoutesMatrix, build_map_payload, enrich_travel_time, geocode_anchor, geotag_vault
 from .hrdm import build_packet, fallback_hrdm, packet_prompt, run_ai_hrdm
 from .hrdm_reports import maintain_hrdm_reports, save_report_bundle
 from .hub import render_applications as render_hub_applications, render_control_room as render_hub_control_room, render_job_vault as render_hub_job_vault
@@ -146,6 +146,19 @@ def cmd_scan(args):
             only_missing=True,
             country_enricher=enrich_country_matrix,
         )
+        travel_cfg = runtime.get("travel_time") or {}
+        if travel_cfg.get("enabled") and runtime.get("anchors"):
+            anchor = geocode_anchor(geocoder, runtime["anchors"][0], region_code=runtime["country"])
+            if anchor:
+                router = GoogleRoutesMatrix(maps_key)
+                vault = enrich_travel_time(
+                    vault,
+                    origin=anchor,
+                    router=router,
+                    travel_mode=travel_cfg.get("mode") or "DRIVE",
+                    max_minutes=int(travel_cfg.get("max_minutes") or 60),
+                    region_code=runtime["country"],
+                )
         write_json(ctx["paths"]["job_vault"], vault)
         map_root = ctx["root"] / "data/maps"
         map_root.mkdir(parents=True, exist_ok=True)
