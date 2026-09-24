@@ -1,5 +1,5 @@
 schema_version: "1.0"
-current_engine_version: 0.2.4-alpha
+current_engine_version: 0.2.5-alpha
 release_ledger: stack/releases/
 rule: "No planned version becomes stack-current until every active registry instance passes central-motor parity."
 
