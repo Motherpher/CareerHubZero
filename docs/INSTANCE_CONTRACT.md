@@ -1,79 +1,66 @@
-# Profiled Instance Contract
+# CareerHub Profile Manifest Contract
 
-A profiled CareerHub instance supplies verified career context, search preferences and state. It does not duplicate the central engine.
+A CareerHub profile node supplies verified career context, search settings and state. It does not duplicate or version the CareerHub body.
 
-## Required instance inputs
+## Stable manifest
 
-At minimum:
+Each profile node exposes `careerhub.yaml`.
 
-    careerhub:
-      instance_id: example-person
-      engine:
-        repository: Motherpher/CareerHubZero
-        version: "0.x"
+Example:
 
-    profile:
-      path: profile/candidate.yaml
+```yaml
+schema_version: "1.0"
+profile_id: example-person
 
-    search:
-      path: config/search_profile.yaml
+profile:
+  path: profile/candidate.yaml
 
-    state:
-      job_vault: data/job_vault.json
-      applications: data/applications.json
+search:
+  path: config/search_profile.yaml
 
-## Hard candidate-evidence rule
+state:
+  job_vault: data/job_vault.json
+  applications: data/applications.json
+```
 
-CareerHub may position or match a candidate only from evidence that is career-related, bound to an allowed career source, verified and present in the profiled instance.
+The manifest deliberately contains **no engine repository and no engine version**.
 
-Absent evidence remains **unknown**.
+## Candidate-evidence rule
 
-CareerHub must never generate a matchable profile fact from private-life information, family or relationship context, health information, religion, ethnicity or sexual orientation, political affiliation, personal financial context, model memory, conversational impressions or unverified biographical claims.
+CareerHub may position or match a candidate only from verified career-related evidence bound to permitted source IDs.
 
-CareerHub must never invent dates, employers, qualifications, tools, language proficiency, results, achievements, current location or current employment status.
+Absent evidence remains unknown.
 
-## Search-only user overlay
+Private-life data, model memory, conversational impressions and search-only wishes/needs cannot become candidate evidence.
 
-The user may enter **specific wishes or needs** to refine a search.
+## Search-only overlay
 
-Canonical contract:
+```yaml
+user_search_overlay:
+  source: user_input
+  scope: search_only
+  specific_wishes_or_needs: "..."
+```
 
-    user_search_overlay:
-      source: user_input
-      scope: search_only
-      specific_wishes_or_needs: "..."
+This may affect sourcing, filtering, ranking and presentation but not candidate truth, HRDM proof points or application claims.
 
-This overlay may influence sourcing queries, filtering, ranking and presentation order.
+## State outputs
 
-It may not influence candidate-evidence truth, CV claims, HRDM proof points or external factual claims about the candidate.
+A profile node may maintain:
 
-## Expected state outputs
-
-A profiled instance may maintain normalized sourced jobs, historic job vault, analysed-job records, application cases, deadlines, next actions, reminder history, status progression, generated artifacts and outcomes.
-
-## Status vocabulary
-
-Canonical application progression:
-
-    saved
-    preparing
-    ready
-    applied
-    contacted
-    portfolio
-    interview_1 ... interview_5
-    meeting_1 ... meeting_5
-    offer
-    denied
-    withdrawn
-    archived
+- normalized sourced jobs,
+- historical job vault,
+- analyzed-job records,
+- application cases,
+- deadlines and next actions,
+- reminder history,
+- status progression,
+- generated artifacts and outcomes.
 
 ## User-facing rule
 
-The implementation may use issues, workflows, JSON, APIs and structured state internally.
-
-The profiled user should normally experience only:
+The user should normally experience only:
 
 **Find jobs → Analyse? → Apply**
 
-No additional user-facing command or funnel is canonical unless explicitly added to the base contract.
+`instance.yaml` is deprecated migration metadata and is not part of the stable 1.0 contract.
