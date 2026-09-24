@@ -1,10 +1,10 @@
 # CareerHubZero
 
-**Canonical central motor for CareerHub.**
+**Canonical software body for CareerHub.**
 
-CareerHubZero is the single reusable motor behind every profiled CareerHub instance. It owns sourcing/matching capability, HRDM-R, application generation, state contracts, rendering, reusable workflows, schemas and stack version governance.
+CareerHubZero is the single reusable software body behind every CareerHub profile node. It owns sourcing, geography, matching, HRDM-R, application generation, state contracts, rendering, reusable workflows, schemas and release governance.
 
-A profiled hub owns only verified career evidence, search settings, durable job/application state and generated artifacts. User-entered wishes or needs are a search-only raster and never candidate evidence. It must not fork or redefine the motor.
+A profile node owns only verified career evidence, search settings, durable state and generated artifacts. It exposes a versionless `careerhub.yaml` manifest and does not fork or independently version CareerHub.
 
 ## User contract
 
@@ -12,21 +12,21 @@ A profiled hub owns only verified career evidence, search settings, durable job/
 
 Everything else is implementation behind that interface.
 
-## Stack contract
+## Body contract
 
 ```text
-Motherpher/CareerHubZero          ← one canonical motor + VERSION
+Motherpher/CareerHubZero          ← one CareerHub body + one VERSION
         │
         ├── CareerHub-LinusF      ← thin profile; already under Motherpher
         ├── wpb    ← stable target; migration from Hybrismannen/wpb
         └── Gracey       ← stable target; migration from Hybrismannen/Gracey
 ```
 
-A CareerHub version is stack-current only when every active registered profile hub consumes the same central engine version, contains no local motor copy and satisfies the stable Motherpher ownership boundary.
+A CareerHub release is valid only when the unified body and all active profile-node compatibility checks pass.
 
 ## Current version
 
-**CareerHubZero 0.2.5-alpha — precision-aware vacancy geotagging and zoom-aware geographic aggregation.**
+**CareerHub 0.2.6-alpha — unified one-body architecture and versionless profile manifests.**
 
 Canonical version source: `VERSION`.
 
@@ -68,7 +68,7 @@ stack/
 **Central CareerHub = motor/capability.**  
 **Profiled CareerHub = context/state.**
 
-Motor changes are made only in CareerHubZero. The matchable profile is hard-bound to verified career sources; private-life data has no profile path. Every motor/schema/workflow change requires a version bump and release-ledger entry. The release workflow propagates that version to registered profile hubs and fails rather than silently leaving a hub behind.
+Software changes are made only in the CareerHub body. The matchable profile is hard-bound to verified career sources; private-life data has no profile path. Every runtime/schema/workflow change requires a single CareerHub version bump and release-ledger entry. Profile nodes are compatibility-tested against the body; versions are not propagated into them.
 
 ## Migration status
 
