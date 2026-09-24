@@ -14,8 +14,20 @@ instances:
       - src/careerhub
       - scripts/careerhub.py
       - core/hrdm
+
   - instance_id: weronika-perez-borjas
     repository: Hybrismannen/wpb
+    instance_path: CareerHub/instance.yaml
+    lock_path: CareerHub/stack.lock.yaml
+    status: active
+    auto_sync: true
+    forbidden_motor_paths:
+      - CareerHub/src/careerhub
+      - CareerHub/scripts/careerhub.py
+      - CareerHub/hrdm/HRDM_R_v6.3.md
+
+  - instance_id: grace
+    repository: Hybrismannen/Gracey
     instance_path: CareerHub/instance.yaml
     lock_path: CareerHub/stack.lock.yaml
     status: active
