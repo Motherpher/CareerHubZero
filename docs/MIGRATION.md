@@ -1,150 +1,149 @@
-# Migration: Legacy CareerHubs → CareerHubZero
+# Migration: Profile-Local CareerHubs → CareerHubZero
 
 ## Objective
 
-Extract the generic CareerHub capability embedded in legacy profile repositories into `Motherpher/CareerHubZero` without losing profile evidence, job history, application state or provenance.
+Move all reusable CareerHub capability into `Motherpher/CareerHubZero` while preserving each person's verified career evidence, search configuration, job/application state, historical provenance and user-facing surfaces.
 
-## Active migration sources
+## Current Motherpher topology
 
-### Weronika
-Legacy source:
 ```text
-Hybrismannen/wpb/CareerHub
+Motherpher/CareerHubZero
+Motherpher/CareerHub-LinusF
+Motherpher/wpb
+  └── CareerHub/          Weronika bounded instance
+Motherpher/Gracey
+  └── CareerHub/          Grace bounded instance
 ```
 
-Stable target:
-```text
-Motherpher/CareerHub-Weronika
-```
+Repository ownership migration is complete.
 
-### Grace
-Legacy source:
-```text
-Hybrismannen/Gracey/CareerHub
-```
-
-Stable target:
-```text
-Motherpher/CareerHub-Grace
-```
-
-Grace has already been policy-normalised to the verified-career evidence firewall and registered in the central stack, but her local motor remains until central parity is available.
-
-## Already-central profile
+## Current profile-contract state
 
 ### Linus
-```text
-Motherpher/CareerHub-LinusF
-```
+- canonical `0.2.4-alpha` engine binding,
+- canonical verified-evidence profile,
+- canonical search-only overlay,
+- no profile-local CareerHub motor,
+- stack lock: aligned.
 
-Linus is already a thin repository but must still be migrated to the current candidate-evidence contract before 1.0.
+### Weronika
+- canonical `0.2.4-alpha` engine binding,
+- parallel verified-evidence profile at `CareerHub/profile/candidate_verified.yaml`,
+- canonical search profile at `CareerHub/config/search_profile.yaml`,
+- legacy candidate/profile files retained only for the temporary local runtime,
+- profile-local motor still present,
+- stack lock: blocked pending central-motor cutover.
+
+### Grace
+- canonical `0.2.4-alpha` engine binding,
+- canonical verified-evidence profile,
+- canonical search profile,
+- 159-job historical vault preserved,
+- Region Stockholm pre-firewall application artifact quarantined,
+- profile-local motor still present,
+- stack lock: blocked pending central-motor cutover.
 
 ## Migration sequence
 
-### M0 — Central repository and governance
-Status: **ACTIVE**
+### M0 — Central governance
+Status: **COMPLETE**
 
-- architecture boundary defined,
-- profiled-instance contract defined,
-- version governance defined,
-- Grace registered,
-- 1.0 Full Audit Lock defined,
-- Motherpher stable ownership boundary defined.
+- central architecture and instance boundary,
+- verified-career evidence firewall,
+- search-only raster,
+- stack registry and locks,
+- release/version governance,
+- Motherpher ownership boundary,
+- 1.0 Full Audit Lock.
 
-### M1 — Extract pure core
-Move/generalize:
+### M1 — Extract pure reusable core
+Status: **OPEN**
 
-- models,
-- state primitives,
+Move/generalise from legacy profile motors into CareerHubZero:
+
 - source adapters,
-- matching,
-- HRDM engine,
+- normalisation/deduplication,
+- matching/triage,
+- HRDM execution,
 - application generation,
 - document generation,
+- state transitions,
 - dashboard/rendering,
 - workflow/bootstrap logic.
 
-No person-specific data may enter central core.
+No person-specific assumptions may enter central core.
 
-### M2 — Remove repository hard-coding
+### M2 — Remove repository/person hard-coding
+Status: **OPEN**
 
-All repository/instance references must become injected runtime context.
+The same CareerHubZero runtime must operate against Linus, Weronika and Grace by instance configuration only.
 
-The same engine must operate against Linus, Weronika and Grace without source-code changes.
+### M3 — Reusable workflow layer
+Status: **OPEN**
 
-### M3 — Extract workflow templates
+Profile repositories should call centrally governed reusable workflows rather than maintain independent workflow logic.
 
-Turn profile-specific GitHub Actions implementations into reusable CareerHubZero workflows.
+### M4 — Canonical profile contracts
+Status: **COMPLETE for 0.2.4**
 
-The central engine must not assume:
-- repository owner,
-- repository name,
-- candidate identity,
-- issue numbering,
-- profile path beyond declared instance configuration.
+All three active instances now have a CareerHubZero-compatible engine binding and verified-evidence candidate path.
 
-### M4 — Profile every instance explicitly
+Legacy runtime profile files may temporarily coexist only where required for dual-run migration.
 
-Each active hub receives:
-- canonical `instance.yaml`,
-- canonical verified career profile,
-- canonical search profile,
-- job/application state,
-- generated `stack.lock.yaml`.
+### M5 — Historical/state preservation
+Status: **COMPLETE for migration baseline**
 
-### M5 — Preserve and classify legacy state
+Grace:
+- 159-job history preserved,
+- issue #2 preserved after transfer,
+- pre-firewall application state marked `external_use_allowed=false`.
 
-For Grace:
-- preserve the 159-job history,
-- preserve application issue #2,
-- keep the pre-firewall application artifact for provenance,
-- block that artifact from external use until revalidated.
+Weronika:
+- corpus, credits, job/application state and broader WPB provenance remain preserved in `Motherpher/wpb`.
 
-For Weronika:
-- preserve existing job/application/corpus-derived professional state,
-- migrate only source-supported candidate evidence into the current contract.
+### M6 — Dual-run parity
+Status: **OPEN**
 
-### M6 — Dual-run validation
+For controlled jobs, compare legacy runtime and CareerHubZero on:
 
-For controlled jobs:
-1. run the legacy profile implementation,
-2. run CareerHubZero against the same profile state,
-3. compare HRDM structure,
-4. compare application artifact generation,
-5. compare state transitions,
-6. verify no person-specific leakage into central repository.
+1. source normalisation,
+2. triage,
+3. HRDM structure,
+4. candidate-evidence use,
+5. application artifact generation,
+6. state transitions,
+7. rendered user surfaces.
 
-Run this separately for Weronika and Grace.
+Run separately for Weronika and Grace.
 
 ### M7 — Repository relocation to Motherpher
+Status: **COMPLETE**
 
-After state preservation is verified:
+- `Hybrismannen/Gracey` → `Motherpher/Gracey`
+- `Hybrismannen/wpb` → `Motherpher/wpb`
+- central registry repointed,
+- connector access verified,
+- Grace transferred issue links repaired.
 
-- relocate Grace to `Motherpher/CareerHub-Grace`,
-- extract Weronika CareerHub into `Motherpher/CareerHub-Weronika`,
-- update the central registry,
-- update generated locks,
-- update any remaining repository references,
-- preserve legacy source repositories as provenance/redirect sources as appropriate.
+Repository renaming is cosmetic and non-blocking.
 
-### M8 — Cutover
+### M8 — Central-motor cutover
+Status: **BLOCKED by M1–M3 and M6**
 
-Only after parity:
-- profile hubs call CareerHubZero,
-- duplicate engine code is removed from WPB and Grace,
-- CareerHubZero becomes the only canonical motor,
-- all profile repositories remain profile/config/state/artifact only.
+After parity:
+- remove `CareerHub/src/careerhub` from Grace and Weronika,
+- remove profile-local runners and HRDM copies,
+- retire legacy runtime-only profile/config copies,
+- regenerate aligned stack locks,
+- make CareerHubZero the only authoritative runtime.
 
 ### M9 — Full audit and 1.0 lock
+Status: **NOT STARTED**
 
-Run the complete 1.0 audit across:
-- CareerHubZero,
-- Linus,
-- Weronika,
-- Grace.
+Run `docs/AUDIT_1.0.md` against CareerHubZero + Linus + Weronika + Grace.
 
 Only a full PASS permits `VERSION = 1.0.0`.
 
-## Non-goal
+## Non-goals
 
-Migration does **not** merge private profile data into CareerHubZero.
+Migration does not move private-life data into CareerHub, does not convert search wishes into evidence, and does not delete historical state merely because it predates the current runtime.
