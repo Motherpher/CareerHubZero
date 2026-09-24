@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "family": "Household",
+  "product": "CareerHub",
+  "sprint": "CH-1.0-SILICON",
+  "authority": {
+    "director": "progression and immutable clearance; never repairs",
+    "handyman": "J1 bounded deterministic repair only; never self-clears",
+    "janitor": "drift, contradiction, security, provenance and hygiene surveillance",
+    "household": "orchestrates roles; gains no extra authority"
+  },
+  "audit_state_order": [
+    "DISPATCHED",
+    "JANITOR_SCAN",
+    "HANDYMAN_PLAN",
+    "HANDYMAN_J1_APPLIED_OR_SKIPPED",
+    "JANITOR_RESCAN",
+    "DIRECTOR_RECONCILIATION",
+    "PASS_OR_BLOCKED",
+    "CLOSED_OR_HELD"
+  ],
+  "repair_classes": {
+    "J0": "ephemeral cleanup",
+    "J1": "deterministic registered repair",
+    "J2": "interpretive, constitutional or external-control stop"
+  },
+  "blocking_severities": [
+    "CONTRADICTION",
+    "CONTROL_DEFECT",
+    "SECURITY_STOP",
+    "CONSTITUTIONAL_STOP"
+  ],
+  "policy": {
+    "sequence": [
+      "WP01",
+      "WP02",
+      "WP03",
+      "WP04",
+      "WP05",
+      "WP06",
+      "WP07",
+      "WP08",
+      "WP09",
+      "WP10"
+    ],
+    "independent_work_may_continue_after_external_j2": true,
+    "dependent_clearance_never_fabricated": true,
+    "warn_is_not_pass": true,
+    "user_clearance_scope": "Operational WP01-WP10 progression and Household workflow support granted 2026-09-24. External/admin controls remain real blockers."
+  },
+  "work_packages": {
+    "WP01": {
+      "issue": 1,
+      "depends_on": [],
+      "required_paths": [
+        "src/careerhub/cli.py",
+        "action.yml",
+        "schemas/careerhub_manifest.schema.json"
+      ],
+      "checks": [
+        "central_ci",
+        "single_body_contract"
+      ]
+    },
+    "WP02": {
+      "issue": 3,
+      "depends_on": [
+        "WP01"
+      ],
+      "required_paths": [
+        "action.yml"
+      ],
+      "checks": [
+        "private_action_profile_execution"
+      ],
+      "external_control": "Motherpher/CareerHubZero Actions access"
+    },
+    "WP03": {
+      "issue": 4,
+      "depends_on": [
+        "WP01",
+        "WP02"
+      ],
+      "required_paths": [
+        "stack/registry.yaml"
+      ],
+      "checks": [
+        "profile_cutover",
+        "legacy_motors_absent"
+      ]
+    },
+    "WP04": {
+      "issue": 16,
+      "depends_on": [
+        "WP01"
+      ],
+      "required_paths": [
+        "src/careerhub/search_contract.py",
+        "schemas/search_profile.schema.json"
+      ],
+      "checks": [
+        "search_kernel_tests"
+      ]
+    },
+    "WP05": {
+      "issue": 17,
+      "depends_on": [
+        "WP04",
+        "WP08"
+      ],
+      "required_paths": [
+        "src/careerhub/learning.py",
+        "schemas/outcome_event.schema.json"
+      ],
+      "checks": [
+        "learning_firewall_tests"
+      ]
+    },
+    "WP06": {
+      "issue": 15,
+      "depends_on": [
+        "WP01",
+        "WP04"
+      ],
+      "required_paths": [
+        "src/careerhub/geography.py",
+        "src/careerhub/country_adapters.py"
+      ],
+      "checks": [
+        "geography_tests"
+      ]
+    },
+    "WP07": {
+      "issue": 18,
+      "depends_on": [
+        "WP01"
+      ],
+      "required_paths": [
+        "src/careerhub/hrdm.py",
+        "src/careerhub/hybridianesque.py",
+        "src/careerhub/hrdm_reports.py"
+      ],
+      "checks": [
+        "hrdm_tests"
+      ]
+    },
+    "WP08": {
+      "issue": 19,
+      "depends_on": [
+        "WP01",
+        "WP07"
+      ],
+      "required_paths": [
+        "src/careerhub/state.py",
+        "schemas/case.schema.json"
+      ],
+      "checks": [
+        "case_state_tests"
+      ]
+    },
+    "WP09": {
+      "issue": 20,
+      "depends_on": [
+        "WP04",
+        "WP05",
+        "WP06",
+        "WP07",
+        "WP08"
+      ],
+      "required_paths": [
+        "src/careerhub/hub.py"
+      ],
+      "checks": [
+        "hub_surface_tests"
+      ]
+    },
+    "WP10": {
+      "issue": 14,
+      "depends_on": [
+        "WP01",
+        "WP02",
+        "WP03",
+        "WP04",
+        "WP05",
+        "WP06",
+        "WP07",
+        "WP08",
+        "WP09"
+      ],
+      "required_paths": [
+        "docs/AUDIT_1.0.md"
+      ],
+      "checks": [
+        "full_audit"
+      ]
+    }
+  }
+}
