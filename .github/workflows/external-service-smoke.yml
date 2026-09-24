@@ -33,7 +33,7 @@ jobs:
           response=client.responses.create(
               model="gpt-5.6-sol",
               input="Return exactly OK.",
-              max_output_tokens=8,
+              max_output_tokens=16,
           )
           text=(response.output_text or "").strip()
           if "OK" not in text:
