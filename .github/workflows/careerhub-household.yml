@@ -1,0 +1,46 @@
+name: CareerHub Household Clearance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "governance/household/**"
+      - "stack/sprints/CH-1.0-SILICON.yaml"
+      - "src/**"
+      - "schemas/**"
+      - "tests/**"
+      - "scripts/household_clearance.py"
+      - ".github/workflows/careerhub-household.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  household:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Central regression suite
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Household clearance
+        id: household
+        continue-on-error: true
+        env:
+          CAREERHUB_TESTS_PASS: "1"
+        run: python scripts/household_clearance.py --wp all --out .careerhub-household-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: careerhub-household-${{ github.run_id }}
+          path: .careerhub-household-output/
+      - name: Respect Household blockers
+        if: steps.household.outcome == 'failure'
+        run: exit 1
