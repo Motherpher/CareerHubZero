@@ -1,98 +1,85 @@
 # Architecture
 
-## 1. System boundary
+## 1. CareerHub is one software body
 
-CareerHub is split into one canonical motor and multiple profiled instances.
+CareerHub is released as one product with one version.
 
-### A. Central motor — CareerHubZero
+**Canonical software body:** `Motherpher/CareerHubZero`
 
-Owned by **Motherpher/CareerHubZero**.
+It contains all reusable capability:
 
-This layer contains all reusable capability:
-
-- job-source adapters,
+- sourcing and source adapters,
 - normalization and deduplication,
-- deterministic matching and triage,
-- verified-career-evidence policy enforcement,
+- geographical drill and vacancy geotagging,
+- matching and triage,
+- verified-career evidence policy enforcement,
 - search-only user overlay handling,
 - HRDM-R,
-- employer and role context research,
+- employer/role context research,
 - evidence-bounded candidate positioning,
-- application drafting and document generation,
-- deadline logic,
-- application-state contracts,
-- dashboard/rendering logic,
-- notifications,
-- reusable automation/workflow definitions,
-- schemas, validation and regression tests,
-- stack version governance.
+- application and document generation,
+- state lifecycle,
+- dashboard/rendering,
+- reminders/notifications,
+- reusable actions/workflows,
+- schemas, migrations, tests and audit governance.
 
-No profiled hub may maintain an authoritative fork of these capabilities.
+There is no separately versioned profile engine in the stable architecture.
 
-### B. Profiled instance
+## 2. Profile nodes
 
-A separate bounded repository for one person.
+A profile repository is a bounded data/context node for one person.
 
-It may contain only instance-specific material needed for the CareerHub service:
+It may contain only:
 
-- identity needed to label the instance,
+- identity required to label the profile,
 - verified career-source references,
 - verified career evidence,
 - search configuration,
-- optional search-only wishes/needs,
-- target geographies/languages/availability as search configuration,
-- job vault and analysed-job records,
-- application history and progression,
-- outcomes,
-- generated views/artifacts,
-- generated stack lock.
+- search-only wishes/needs,
+- job/application state,
+- generated artifacts,
+- `careerhub.yaml`.
 
-Private-life material is outside the candidate-evidence model.
+It does not own runtime code, HRDM logic, central schemas or a software version.
 
-## 2. Repository placement
-
-Stable CareerHub repositories live under **Motherpher**.
-
-Target layout:
+## 3. Stable topology
 
 ```text
-Motherpher/CareerHubZero
-Motherpher/CareerHub-LinusF
-Motherpher/wpb            # CareerHub/ bounded instance
-Motherpher/Gracey         # CareerHub/ bounded instance
+Motherpher/CareerHubZero      ← one CareerHub body + one VERSION
+        │
+        ├── CareerHub-LinusF  ← profile/data node
+        ├── wpb/CareerHub     ← profile/data node
+        └── Gracey/CareerHub  ← profile/data node
 ```
 
-A legacy repository outside Motherpher may be used during migration, but it is a source/transition state and cannot satisfy the 1.0 stable stack boundary.
+## 4. Dependency direction
 
-## 3. Dependency direction
+```text
+profile/search/state
+      ↓
+CareerHub body
+      ↓
+analysis / artifacts / state updates
+      ↓
+same profile repository
+```
 
-Profiled instance → verified career evidence + search raster + state → CareerHubZero → analysis/artifacts/state updates → profiled instance.
+Each profile repository writes its own state using its own repository-scoped credentials.
 
-CareerHubZero must not depend on a specific person. Profile hubs must not redefine CareerHubZero motor logic.
+## 5. Stable manifest
 
-## 4. Interface rule
+Each profile exposes `careerhub.yaml` containing only paths and profile identity.
+
+It contains no engine repository and no engine version.
+
+## 6. Interface rule
 
 **Find → Analyse? → Apply**
 
 Everything else is implementation.
 
-## 5. Data classes
-
-### Capability data — CareerHubZero only
-Source definitions, schemas, canonical prompts/contracts, matching/scoring logic, HRDM implementation, application/rendering logic, workflow templates and version/release machinery.
-
-### Verified career profile data — profiled hub only
-Allowed career-source references, source-bound verified career claims and derived positioning tied back to verified evidence IDs.
-
-### Search-raster data — profiled hub only
-Geographies, engagement types, search lanes and specific wishes or needs supplied by the user.
-
-Search-raster data does not become candidate evidence.
-
-### State data — profiled hub only
-Saved jobs, deadlines, application status, interview/meeting history, reminders already sent and outcomes.
-
-## 6. Hard separation invariant
+## 7. Hard separation invariant
 
 **VERIFIED CAREER SOURCES → MATCHABLE PROFILE → HRDM / APPLICATION CLAIMS**
 
@@ -102,29 +89,25 @@ Saved jobs, deadlines, application status, interview/meeting history, reminders 
 
 No path may cross these boundaries.
 
-## 7. Legacy artifact rule
+## 8. Geography
 
-Artifacts produced before the verified-career firewall may be preserved for provenance, but they are not automatically valid for external use.
+CareerHub geography uses a dual-layer model:
 
-They must be:
-- revalidated against verified career evidence, or
-- explicitly retired/archived as pre-firewall artifacts.
+- Google Maps Platform for global place selection/geocoding/routing,
+- authoritative country adapters for national administrative/statistical/functional geography.
 
-Grace's Region Stockholm application case is the first registered example of this rule.
+Sweden is the first country adapter.
 
-## 8. Versioning
+## 9. Versioning
 
-VERSION in CareerHubZero is the single motor-version source.
+`VERSION` in CareerHubZero is the only CareerHub software version.
 
-Every central motor/schema/workflow change requires:
-1. a new VERSION,
-2. a `stack/releases` version ledger,
-3. successful central CI,
-4. propagation to every active hub in `stack/registry.yaml`,
-5. remote compatibility verification.
+Profile nodes are compatibility-tested, not independently versioned.
 
-Only after those checks may the release be tagged as stack-current. See `docs/VERSIONING.md`.
+## 10. Migration
 
-## 9. Geographical drill
+`instance.yaml`, `stack.lock.yaml`, profile-local motors and cross-repository version propagation are pre-1.0 migration mechanisms only.
 
-CareerHub geography uses a dual-layer model: Google Maps Platform is the global place-selection, geocoding and routing surface; authoritative country adapters enrich the selected location with national administrative, statistical and functional-labour-market matrices where available. Sweden is the first country adapter. Unsupported countries remain fully usable through the global map layer. See `docs/GEOGRAPHICAL_DRILL.md`.
+They are removed from the stable architecture after Grace and Weronika complete central-body cutover.
+
+See `docs/BODY_ARCHITECTURE.md`, `docs/VERSIONING.md` and `docs/MIGRATION.md`.
