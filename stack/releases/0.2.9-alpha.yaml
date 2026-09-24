@@ -21,3 +21,26 @@ known_external_blockers:
   - live OpenAI HRDM/application execution after previous credit exhaustion
   - Grace and Weronika local-motor cutover pending central action parity
 closure_rule: Close development_open only when the S00-S13 Household end audit is committed.
+
+household_audit:
+  order_id: CH-HH-ORDER-2026-09-25-01
+  evidence_run: 36073576772
+  validation_run: 36073576839
+  implementation_commit: 3a32f03c68110c951c9236828d3bc21fa76ea768
+  report: docs/audit/CAREERHUB_HOUSEHOLD_SPRINT_AUDIT_2026-09-25.md
+  verdict: BLOCKED
+  wp_states:
+    WP01: PASS
+    WP02: BLOCKED
+    WP03: BLOCKED
+    WP04: PASS
+    WP05: PASS
+    WP06: BLOCKED
+    WP07: PASS
+    WP08: PASS
+    WP09: BLOCKED
+    WP10: BLOCKED
+  janitor:
+    findings: 6
+    blocking_findings: 0
+  release_1_0_allowed: false
