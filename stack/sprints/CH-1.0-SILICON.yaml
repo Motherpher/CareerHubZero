@@ -1,0 +1,61 @@
+schema_version: "1.0"
+sprint_id: CH-1.0-SILICON
+name: "CareerHub 1.0 Silicon Sprint"
+status: active
+baseline_version: 0.2.7-alpha
+release_candidate_target: 0.3.0-alpha
+stable_target: 1.0.0
+
+rule: "Invert before adding. Unify before optimizing. Replace, delete, then prove."
+
+work_packages:
+  - id: WP01
+    issue: 1
+    name: Collapse Runtime to One CareerHub Body
+    depends_on: []
+  - id: WP02
+    issue: 3
+    name: Invert Distribution
+    depends_on: [WP01]
+  - id: WP03
+    issue: 4
+    name: Cut Over Profiles and Delete Legacy Motors
+    depends_on: [WP01, WP02, WP07, WP08]
+  - id: WP04
+    issue: 16
+    name: Unify the Search Kernel
+    depends_on: [WP01]
+  - id: WP05
+    issue: 17
+    name: Career Learning Loop
+    depends_on: [WP04, WP08]
+  - id: WP06
+    issue: 15
+    name: Unified Geography
+    depends_on: [WP01, WP04]
+  - id: WP07
+    issue: 18
+    name: Canonical HRDM
+    depends_on: [WP01]
+  - id: WP08
+    issue: 19
+    name: One Application and Outcome State Machine
+    depends_on: [WP01, WP07]
+  - id: WP09
+    issue: 20
+    name: One Hub Surface
+    depends_on: [WP04, WP05, WP06, WP07, WP08]
+  - id: WP10
+    issue: 14
+    name: Contract Audit and Lock CareerHub 1.0
+    depends_on: [WP01, WP02, WP03, WP04, WP05, WP06, WP07, WP08, WP09]
+
+silicon_gates:
+  - one_authority_per_concept
+  - new_code_replaces_or_collapses_old_code
+  - profile_nodes_contain_no_authoritative_runtime
+  - derived_surfaces_do_not_create_second_truth
+  - candidate_evidence_cannot_be_mutated_by_learning
+  - every_wp_has_executed_deletion_target
+  - no_migration_scaffolding_in_stable_1_0
+  - full_audit_pass_required_for_1_0
