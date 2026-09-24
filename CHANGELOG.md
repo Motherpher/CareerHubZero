@@ -2,6 +2,17 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.5-alpha — 2026-09-24
+**Precision-aware vacancy geotagging + zoom-aware map aggregation.**
+
+- Add Google Places API (New) geotagging adapter for sourced vacancies.
+- Prefer source coordinates and explicit vacancy addresses before broader locality geocoding.
+- Preserve geographic precision instead of inventing street-level locations.
+- Add zoom-aware country/region/locality clusters and high-zoom point expansion.
+- Track both total jobs and newly sourced jobs in cluster payloads.
+- Add canonical job-geo schema, CLI and unit tests.
+- Reserve country-matrix enrichment as a separate, provider-independent layer.
+
 ## 0.2.4-alpha — 2026-09-24
 **Grace stack recovery + Motherpher ownership and 1.0 audit-lock governance.**
 
