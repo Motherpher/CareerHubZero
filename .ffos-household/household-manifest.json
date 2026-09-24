@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "runtime_version": "1.0.0",
+  "state": "ACTIVE_CAREERHUB_SILICON_SPRINT",
+  "repository": {
+    "id": "Motherpher/CareerHubZero",
+    "default_branch": "main",
+    "timezone": "Europe/Stockholm"
+  },
+  "roles": {
+    "director": "progression and immutable acceptance",
+    "handyman": "bounded deterministic mutation; never self-certifies",
+    "janitor": "entropy, contradiction, drift, provenance, CI and hygiene surveillance"
+  },
+  "output": {
+    "runtime_dir": ".ffos-household-output",
+    "persistent_reports": ".ffos-household/audit + GitHub Actions artifacts"
+  },
+  "director_gate": {
+    "enabled": true,
+    "blocking_severities": [
+      "CONTRADICTION",
+      "CONTROL_DEFECT",
+      "SECURITY_STOP",
+      "CONSTITUTIONAL_STOP"
+    ]
+  },
+  "janitor": {
+    "github_api_checks": true,
+    "deep_scan_local_time": "04:07",
+    "verification_window": "04:00-06:00",
+    "secret_fixture_allowlist": []
+  },
+  "repair_registry": {},
+  "authority": {
+    "j0": "ephemeral cleanup only",
+    "j1": "deterministic repair under registered contract and path guard",
+    "j2": "interpretive/constitutional/integration stop; no automatic mutation",
+    "no_new_external_authority": true,
+    "operational_clearance": "User authorized Director/Household operational clearance for CareerHub WP01-WP10",
+    "stable_release": "WP10 Full Audit Lock remains mandatory"
+  },
+  "audit_order": "docs/HOUSEHOLD_AUDIT_STATE_ORDER.md"
+}
