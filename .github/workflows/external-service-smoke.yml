@@ -1,0 +1,95 @@
+name: CareerHub · External Service Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/external-service-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  openai:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Require OpenAI credential
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          [ -n "$OPENAI_API_KEY" ] || { echo "::error::OPENAI_API_KEY is not configured."; exit 20; }
+      - name: Minimal Responses API call
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          pip install "openai>=2,<3"
+          python - <<'PY'
+          from openai import OpenAI
+          client=OpenAI()
+          response=client.responses.create(
+              model="gpt-5.6-sol",
+              input="Return exactly OK.",
+              max_output_tokens=8,
+          )
+          text=(response.output_text or "").strip()
+          if "OK" not in text:
+              raise SystemExit(f"Unexpected OpenAI smoke response: {text!r}")
+          print("OPENAI_SMOKE_OK")
+          PY
+
+  google_maps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Google Maps credential
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        run: |
+          [ -n "$GOOGLE_MAPS_API_KEY" ] || { echo "::error::GOOGLE_MAPS_API_KEY is not configured."; exit 20; }
+      - name: Places + Routes smoke
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          key=os.environ["GOOGLE_MAPS_API_KEY"]
+
+          def post(url, body, field_mask):
+              data=json.dumps(body).encode()
+              req=urllib.request.Request(url,data=data,method="POST",headers={
+                  "Content-Type":"application/json",
+                  "X-Goog-Api-Key":key,
+                  "X-Goog-FieldMask":field_mask,
+              })
+              with urllib.request.urlopen(req,timeout=30) as resp:
+                  return json.loads(resp.read().decode())
+
+          place=post(
+              "https://places.googleapis.com/v1/places:searchText",
+              {"textQuery":"Stockholm Centralstation, Sweden","pageSize":1,"regionCode":"SE"},
+              "places.id,places.location",
+          )
+          places=place.get("places") or []
+          if not places:
+              raise SystemExit("Google Places smoke returned no place.")
+
+          route=post(
+              "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix",
+              {
+                  "origins":[{"waypoint":{"location":{"latLng":{"latitude":59.3309,"longitude":18.0583}}}}],
+                  "destinations":[{"waypoint":{"location":{"latLng":{"latitude":59.3607,"longitude":18.0009}}}}],
+                  "travelMode":"DRIVE",
+                  "routingPreference":"TRAFFIC_AWARE",
+                  "regionCode":"SE",
+                  "units":"METRIC",
+              },
+              "originIndex,destinationIndex,status,condition,distanceMeters,duration",
+          )
+          rows=route if isinstance(route,list) else []
+          if not rows or rows[0].get("condition") != "ROUTE_EXISTS":
+              raise SystemExit(f"Google Routes smoke failed: {route!r}")
+          print("GOOGLE_MAPS_SMOKE_OK")
+          PY
