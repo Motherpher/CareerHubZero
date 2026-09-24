@@ -1,22 +1,42 @@
-version: "2.0"
-intent: "Find relevant opportunities from the verified career profile, with optional user search preferences."
-geographies: {}
+version: "2.1"
+intent: "Find relevant opportunities from verified career evidence while keeping experiments and wishes search-only."
+
+geographies:
+  country: "SE"
+  anchors: []
+  remote_allowed: true
+  remote_scopes:
+    - SE
+  progressive_widening:
+    - anchor
+    - travel_time
+    - functional_labour_market
+    - region
+    - country
+    - remote
+
 engagement_types: []
 salary: {}
 
 lanes:
   - lane_id: core
     name: Core
+    bucket: core
     priority: 1
+    queries: []
   - lane_id: adjacent
     name: Adjacent
+    bucket: adjacent
     priority: 2
+    queries: []
   - lane_id: bridge
     name: Bridge
+    bucket: bridge
     priority: 3
+    queries: []
 
 negative_filters: []
-triage_rule: "Verified career evidence defines candidate fit. User wishes/needs may only modify search and ranking as a search-only overlay."
+triage_rule: "Verified career evidence defines candidate fit. Search hypotheses may affect sourcing and ranking only."
 
 user_search_overlay:
   source: user_input
