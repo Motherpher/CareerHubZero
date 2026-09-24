@@ -45,6 +45,8 @@ jobs:
               Path("schemas/search_profile.schema.json"),
               Path("schemas/job_geo.schema.json"),
               Path("schemas/careerhub_manifest.schema.json"),
+              Path("schemas/outcome_event.schema.json"),
+              Path("schemas/case.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
