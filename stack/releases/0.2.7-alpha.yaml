@@ -1,0 +1,40 @@
+version: 0.2.7-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Integrate the unified CareerHub body into one executable search-to-application spine and add HRDM report/ledger lifecycle.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  execution_spine:
+    - versionless careerhub.yaml profile manifest loader
+    - canonical search-profile normalisation across active profile shapes
+    - central CLI joining sourcing, triage, state, geography, HRDM, reports, applications and rendering
+    - central composite GitHub Action for profile-side execution
+  hrdm:
+    - canonical Process-ID and run-registry support
+    - persistent per-profile HRDM ledger
+    - active HRDM report shelf
+    - deadline-driven archiving from active reports into history
+    - Markdown, DOCX and PDF HRDM report artifacts
+    - Hybridianesque optional depth filter with explicit Yes/No activation gate
+    - HCC-Lite and trace metadata carried into report output
+  geography:
+    - Platsbanken source preserves workplace address/source coordinates when available
+    - central scan can geotag jobs when GOOGLE_MAPS_API_KEY exists
+    - zoom-level map payloads can be generated into profile state
+  distribution:
+    - profile nodes are intended to invoke Motherpher/CareerHubZero as a private composite action
+    - no CAREERHUB_STACK_TOKEN is required
+known_blockers:
+  - GitHub private-action sharing from CareerHubZero to the other Motherpher repositories is not yet enabled; compatibility jobs fail at workflow setup before code execution
+  - Grace and Weronika therefore still execute their legacy local motors
+  - Sweden country-matrix adapter and global map frontend are not yet runtime-complete
+  - source coverage remains Sweden/remote-feed centered and is not yet a full global discovery layer
+  - live AI HRDM/application execution still depends on a working OPENAI_API_KEY and available API credit
+  - full three-profile controlled end-to-end parity run has not yet passed
+compatibility:
+  manifests_present:
+    - Motherpher/CareerHub-LinusF: careerhub.yaml
+    - Motherpher/wpb: CareerHub/careerhub.yaml
+    - Motherpher/Gracey: CareerHub/careerhub.yaml
+  local_motor_cutover_complete: false
