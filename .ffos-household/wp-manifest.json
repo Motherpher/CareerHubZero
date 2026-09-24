@@ -218,10 +218,11 @@
       ],
       "required_paths": [
         "src/careerhub/geography.py",
-        "src/careerhub/geo_country.py",
-        "config/geo/countries.yaml",
+        "src/careerhub/country_adapters.py",
+        "data/geography/sweden_admin_2026.json",
+        "data/geography/sweden_local_labour_markets.json",
         "tests/test_geography.py",
-        "tests/test_geo_country.py"
+        "tests/test_sprint_integration.py"
       ],
       "acceptance": [
         "dependency_pass",
@@ -239,11 +240,8 @@
             "python",
             "-m",
             "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_geo*.py"
+            "tests.test_geography",
+            "tests.test_sprint_integration"
           ],
           "timeout": 120,
           "repairable": false
