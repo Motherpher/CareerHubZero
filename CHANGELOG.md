@@ -2,6 +2,17 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.4-alpha — 2026-09-24
+**Grace stack recovery + Motherpher ownership and 1.0 audit-lock governance.**
+
+- Register Grace as the third active CareerHub profile instance.
+- Correct stale central engine metadata from 0.2.2-alpha to the current line.
+- Require Grace pre-firewall application artifacts to be revalidated before external use.
+- Expand 0.3.0-alpha cutover scope to both WPB and Grace legacy motors.
+- Set Motherpher ownership as the target repository boundary for all CareerHub repositories.
+- Define CareerHubZero 1.0.0 as the Full Audit Lock release, not a feature-count milestone.
+- Correct the example candidate profile to use the canonical `verification_queue` field.
+
 ## 0.2.3-alpha — 2026-09-24
 **Verified-career evidence firewall + search-only user raster.**
 
@@ -11,7 +22,6 @@ The authoritative per-version content register is `stack/releases/<version>.yaml
 - Forbid the search overlay from becoming CV evidence, HRDM proof points or application claims.
 - Add runtime policy validation and regression tests.
 - Tighten candidate/search schemas and profiled-instance documentation.
-
 
 ## 0.2.2-alpha — 2026-09-24
 **Harmonised stack version governance.**
