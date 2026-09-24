@@ -1,16 +1,16 @@
 schema_version: "1.0"
-current_engine_version: 0.2.2-alpha
+current_engine_version: 0.2.4-alpha
 release_ledger: stack/releases/
 rule: "No planned version becomes stack-current until every active registry instance passes central-motor parity."
 
 planned_versions:
   - version: 0.3.0-alpha
     status: blocked
-    purpose: Complete central-motor cutover and remove the final profile-local runtime.
+    purpose: Complete central-motor cutover and remove all remaining profile-local runtimes.
     source_plan: docs/MIGRATION.md
     required_content:
       central_motor:
-        - extract/generalise reusable WPB runtime modules into CareerHubZero
+        - extract/generalise reusable WPB and Grace runtime modules into CareerHubZero
         - remove repository/person hard-coding
         - centralise sourcing, matching, HRDM execution, application generation, state logic and rendering
         - centralise reusable workflow/bootstrap logic
@@ -20,26 +20,38 @@ planned_versions:
         - all profile hubs use generated stack.lock.yaml
       migration:
         - dual-run WPB legacy vs CareerHubZero on controlled cases
+        - dual-run Grace legacy vs CareerHubZero on controlled cases
         - verify HRDM structural parity
         - verify application artifact parity
         - verify state transition parity
-        - remove CareerHub/src/careerhub from WPB
-        - remove profile-local HRDM/runtime scripts from WPB
+        - remove profile-local motor code from WPB
+        - remove profile-local motor code from Grace
+        - revalidate Grace pre-firewall application artifacts
       release_gate:
         - Motherpher/CareerHub-LinusF aligned
         - Weronika profile aligned
+        - Grace profile aligned
         - no active registry entry contains forbidden motor paths
         - remote stack verification passes
     blockers:
       - CAREERHUB_STACK_TOKEN is not configured in CareerHubZero Actions
       - Hybrismannen/wpb still contains the legacy local CareerHub motor
+      - Hybrismannen/Gracey still contains the legacy local CareerHub motor
+      - Weronika and Grace repositories have not yet been relocated under Motherpher
 
   - version: 1.0.0
-    status: milestone
-    purpose: First stable reusable CareerHub central-motor release.
+    status: audit-lock-target
+    purpose: First stable reusable CareerHub central-motor release after full stack audit.
     entry_conditions:
       - 0.x extraction and contract stabilisation complete
       - all active profile hubs thin and centrally versioned
+      - all CareerHub repositories owned by Motherpher
       - reusable runtime cutover complete
-      - version governance and regression gates proven in live use
+      - verified-career evidence firewall passes on every hub
+      - search-only raster separation passes on every hub
+      - HRDM and application provenance audit passes
+      - legacy pre-firewall artifacts are revalidated or explicitly retired
+      - central CI and remote stack verification pass
+      - version governance and regression gates proven across Linus, Weronika and Grace
+      - final 1.0 audit checklist is fully PASS
     scheduled: false
