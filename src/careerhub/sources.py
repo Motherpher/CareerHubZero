@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 
 from .models import Job, clean_text
 
-UA = "CareerHub/0.2.4 (+https://github.com/Motherpher/CareerHubZero)"
+UA = "CareerHub (+https://github.com/Motherpher/CareerHubZero)"
 TIMEOUT = 15
 
 
@@ -69,12 +69,25 @@ def platsbanken(query: str, limit: int = 20) -> list[Job]:
             url = f"https://arbetsformedlingen.se/platsbanken/annonser/{h['id']}"
         employment = h.get("employment_type")
         work_model = h.get("workplace_model")
+        coords = addr.get("coordinates") or {}
+        lat = coords.get("lat") if isinstance(coords, dict) else None
+        lng = coords.get("lon") if isinstance(coords, dict) else None
+        if lng is None and isinstance(coords, dict):
+            lng = coords.get("lng")
+        street = ", ".join(
+            str(x).strip()
+            for x in [addr.get("street_address"), addr.get("postcode"), addr.get("municipality")]
+            if x
+        )
         jobs.append(Job(
             source="platsbanken",
             provider_id=str(h.get("id") or ""),
             title=title,
             company=company,
             location=location,
+            workplace_address=street,
+            latitude=lat,
+            longitude=lng,
             employment_type=employment.get("label", "") if isinstance(employment, dict) else str(employment or ""),
             work_mode=work_model.get("label", "") if isinstance(work_model, dict) else str(work_model or ""),
             published=str(h.get("publication_date") or ""),
