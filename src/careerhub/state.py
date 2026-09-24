@@ -16,6 +16,29 @@ APPLIED_STATUSES = {
     "interview_3", "interview_4", "interview_5", "meeting_1", "meeting_2",
     "meeting_3", "meeting_4", "meeting_5", "offer", "denied",
 }
+EVENT_TYPE_BY_STATUS = {
+    "saved": "selected_hrdm",
+    "preparing": "selected_hrdm",
+    "ready": "selected_hrdm",
+    "applied": "applied",
+    "contacted": "contacted",
+    "portfolio": "test",
+    "interview_1": "interview",
+    "interview_2": "interview",
+    "interview_3": "interview",
+    "interview_4": "interview",
+    "interview_5": "interview",
+    "meeting_1": "interview",
+    "meeting_2": "interview",
+    "meeting_3": "interview",
+    "meeting_4": "interview",
+    "meeting_5": "interview",
+    "offer": "offer",
+    "denied": "denied",
+    "withdrawn": "withdrawn",
+    "archived": "archived",
+}
+
 STATUS_LABELS = {
     "saved": "Valt",
     "preparing": "Förbereds",
@@ -167,8 +190,7 @@ def choose_case(
         "next_action_date": job.deadline or "",
         "notification_log": [],
         "history": [
-            {"at": now, "status": "saved", "event": "Jobbet analyserades"},
-            {"at": now, "status": "ready", "event": "Ansökningsunderlaget är klart"},
+            {"at": now, "status": "saved", "event_type": "selected_hrdm", "source": "user", "event": "Jobbet valdes för analys"},
         ],
     }
     if existing:
@@ -217,6 +239,8 @@ def update_case(
     case.setdefault("history", []).append({
         "at": event_date or now,
         "status": status,
+        "event_type": EVENT_TYPE_BY_STATUS.get(status, status),
+        "source": "employer" if status in {"contacted", "portfolio", "interview_1", "interview_2", "interview_3", "interview_4", "interview_5", "meeting_1", "meeting_2", "meeting_3", "meeting_4", "meeting_5", "offer", "denied"} else "user",
         "event": STATUS_LABELS[status],
     })
     save_cases(path, data)
@@ -271,3 +295,69 @@ def case_counts(data: dict) -> dict:
 
 def rank_label(priority: int) -> str:
     return {5: "Sök", 4: "Mycket intressant", 3: "Intressant", 2: "Svagare träff", 1: "Avvakta"}.get(int(priority or 3), "Intressant")
+
+
+def bind_analysis(
+    path: Path,
+    issue_number: int,
+    process_id: str,
+    *,
+    external_use_allowed: bool,
+    report_paths: dict | None = None,
+    application_paths: dict | None = None,
+) -> dict:
+    """Bind one HRDM/application analysis to the canonical case object."""
+    data = load_cases(path)
+    case = next((c for c in data.get("cases", []) if int(c.get("issue_number") or 0) == int(issue_number)), None)
+    if not case:
+        raise ValueError(f"CareerHub case issue #{issue_number} was not found.")
+    now = utcnow()
+    case["hrdm_process_id"] = process_id
+    case["external_use_allowed"] = bool(external_use_allowed)
+    if report_paths:
+        case["hrdm_report_paths"] = dict(report_paths)
+    if application_paths:
+        case["application_paths"] = dict(application_paths)
+    case["status"] = "ready" if external_use_allowed else "preparing"
+    case["status_updated_at"] = now
+    case["next_action"] = "Sök när du vill" if external_use_allowed else "Slutför och validera HRDM/ansökningsunderlag"
+    case.setdefault("history", []).append({
+        "at": now,
+        "status": case["status"],
+        "event_type": "selected_hrdm",
+        "source": "system",
+        "process_id": process_id,
+        "event": "HRDM-analys och ansökningsunderlag bundet till ärendet",
+    })
+    save_cases(path, data)
+    return case
+
+
+def append_case_event(
+    path: Path,
+    issue_number: int,
+    event_type: str,
+    *,
+    source: str = "user",
+    note: str = "",
+    at: str = "",
+) -> dict:
+    """Append a learning/outcome event without creating a second state store."""
+    allowed = {
+        "viewed", "ignored", "selected_hrdm", "user_rejected", "applied",
+        "contacted", "test", "interview", "offer", "denied", "withdrawn", "archived",
+    }
+    if event_type not in allowed:
+        raise ValueError(f"Unknown CareerHub event_type: {event_type}")
+    data = load_cases(path)
+    case = next((c for c in data.get("cases", []) if int(c.get("issue_number") or 0) == int(issue_number)), None)
+    if not case:
+        raise ValueError(f"CareerHub case issue #{issue_number} was not found.")
+    case.setdefault("history", []).append({
+        "at": at or utcnow(),
+        "event_type": event_type,
+        "source": source,
+        "event": note or event_type,
+    })
+    save_cases(path, data)
+    return case
