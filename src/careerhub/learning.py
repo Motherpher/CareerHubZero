@@ -218,3 +218,30 @@ def derive_hypotheses(events: list[dict]) -> dict:
         "policy": learning.get("policy", {}),
         "dimensions": dict(dimensions),
     }
+
+
+def learning_bonus(job: Any, hypotheses: dict, max_bonus: float = 10.0) -> tuple[float, list[str]]:
+    """Return a bounded post-triage adjustment from the canonical learning model."""
+    dims = {
+        "role_family": str(getattr(job, "lane", "") or "").strip(),
+        "function_family": str((getattr(job, "provider_meta", {}) or {}).get("function_family") or "").strip(),
+        "employer_type": str((getattr(job, "provider_meta", {}) or {}).get("employer_type") or "").strip(),
+        "arrangement": str(getattr(job, "work_mode", "") or "").strip(),
+        "geography": str(getattr(job, "location", "") or "").strip(),
+    }
+    total = 0.0
+    reasons = []
+    for dimension, key in dims.items():
+        if not key:
+            continue
+        row = ((hypotheses.get("dimensions") or {}).get(dimension) or {}).get(key)
+        if not row:
+            continue
+        contribution = float(row.get("score") or 0.0) * 2.0
+        total += contribution
+        reasons.append(
+            f"career-learning {dimension} {key}: {contribution:+.1f} "
+            f"(n={row.get('sample_size')}, confidence={row.get('confidence')})"
+        )
+    bounded = max(-max_bonus, min(max_bonus, total))
+    return round(bounded, 2), reasons
