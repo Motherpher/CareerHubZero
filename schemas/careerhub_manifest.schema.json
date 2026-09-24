@@ -8,7 +8,8 @@
     "profile",
     "search",
     "state",
-    "artifacts"
+    "artifacts",
+    "ui"
   ],
   "properties": {
     "schema_version": {
@@ -82,6 +83,22 @@
         "hrdm_history": {
           "type": "string",
           "minLength": 1
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language"
+      ],
+      "properties": {
+        "language": {
+          "type": "string",
+          "enum": [
+            "sv",
+            "en"
+          ]
         }
       }
     }
