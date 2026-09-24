@@ -42,6 +42,8 @@ Executable capability audit: `docs/CAPABILITY_AUDIT_0.2.7.md`.
 
 Active 1.0 contraction sprint: `docs/SPRINT_1_0_SILICON_10WP.md`.
 
+Household execution audit: `docs/audit/CAREERHUB_HOUSEHOLD_SPRINT_AUDIT_2026-09-25.md`.
+
 Repository ownership plan: `docs/REPOSITORY_OWNERSHIP.md`.
 
 ## Repository map
