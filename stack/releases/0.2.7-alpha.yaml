@@ -1,6 +1,6 @@
 version: 0.2.7-alpha
 reconstructed: false
-status: current
+status: superseded
 date: 2026-09-24
 purpose: Integrate the unified CareerHub body into one executable search-to-application spine and add HRDM report/ledger lifecycle.
 user_contract: "Find jobs -> Analyse? -> Apply"
