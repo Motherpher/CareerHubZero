@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import json
 import os
 import unicodedata
+from pathlib import Path
 from typing import Any, Protocol
 
 import requests
 
 SCB_WFS = "https://geodata.scb.se/geoserver/stat/wfs"
+ADMIN_DATA_PATH = Path(__file__).resolve().parents[2] / "data/geography/sweden_admin_2026.json"
 
 SWEDEN_COUNTIES = {
     "01": "Stockholms län",
@@ -59,6 +62,22 @@ def _county_code(name: str) -> str | None:
     return None
 
 
+def _admin_data() -> dict:
+    if not ADMIN_DATA_PATH.exists():
+        return {"municipalities": []}
+    return json.loads(ADMIN_DATA_PATH.read_text(encoding="utf-8"))
+
+
+def _municipality_record(name: str) -> dict | None:
+    target = _norm(name)
+    if not target:
+        return None
+    for row in _admin_data().get("municipalities", []):
+        if _norm(row.get("name")) == target:
+            return row
+    return None
+
+
 def _feature_properties(feature: dict | None) -> dict:
     return dict((feature or {}).get("properties") or {})
 
@@ -98,22 +117,23 @@ class SwedenAdapter:
         point = geo.get("point") or {}
         admin1 = str(hierarchy.get("admin1") or "")
         locality = str(hierarchy.get("locality") or "")
-        county_code = _county_code(admin1)
+        municipality = _municipality_record(locality)
+        county_code = (municipality or {}).get("county_code") or _county_code(admin1)
         out: dict[str, Any] = {
             "adapter": "scb",
             "adapter_version": "SE-2026/2025",
             "country_code": "SE",
             "county_code": county_code,
             "county_name": SWEDEN_COUNTIES.get(county_code or ""),
-            "municipality_code": None,
-            "municipality_name": locality or None,
+            "municipality_code": (municipality or {}).get("code"),
+            "municipality_name": (municipality or {}).get("name") or locality or None,
             "regso_code": None,
             "deso_code": None,
             "local_labour_market_code": None,
             "sources": SCB_SOURCES,
             "completeness": {
                 "county": bool(county_code),
-                "municipality": False,
+                "municipality": bool((municipality or {}).get("code")),
                 "regso": False,
                 "deso": False,
                 "local_labour_market": False,
