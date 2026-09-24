@@ -26,7 +26,7 @@ A CareerHub release is valid only when the unified body and all active profile-n
 
 ## Current version
 
-**CareerHub 0.2.6-alpha — unified one-body architecture and versionless profile manifests.**
+**CareerHub 0.2.7-alpha — integrated unified-body execution spine with HRDM ledger/report lifecycle.**
 
 Canonical version source: `VERSION`.
 
@@ -37,6 +37,8 @@ Registered profile hubs: `stack/registry.yaml`.
 Versioning and release rules: `docs/VERSIONING.md`.
 
 1.0 Full Audit Lock: `docs/AUDIT_1.0.md`.
+
+Executable capability audit: `docs/CAPABILITY_AUDIT_0.2.7.md`.
 
 Repository ownership plan: `docs/REPOSITORY_OWNERSHIP.md`.
 
@@ -73,8 +75,8 @@ Software changes are made only in the CareerHub body. The matchable profile is h
 ## Migration status
 
 - `Motherpher/CareerHub-LinusF` is a thin Motherpher profile using the current verified-career schema.
-- `Motherpher/wpb/CareerHub` remains the Weronika legacy implementation and contains local motor code. Stable target: `Motherpher/wpb`.
-- `Motherpher/Gracey/CareerHub` is now registered, policy-normalised and bound to CareerHubZero 0.2.5-alpha, but still contains a temporary local motor. Stable target: `Motherpher/Gracey`.
+- `Motherpher/wpb/CareerHub` has the unified manifest but still executes its legacy local motor until private central-action access and parity pass.
+- `Motherpher/Gracey/CareerHub` has the unified manifest but still executes its temporary local motor until private central-action access and parity pass.
 - Grace's pre-firewall Region Stockholm application artifact is quarantined until verified career sources are added and the case is rerun.
 
 ## Stable release rule
