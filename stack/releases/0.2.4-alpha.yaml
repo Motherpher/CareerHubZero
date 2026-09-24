@@ -1,0 +1,24 @@
+version: 0.2.4-alpha
+reconstructed: false
+status: current
+date: 2026-09-24
+purpose: Grace stack recovery, Motherpher ownership target, and 1.0 audit-lock governance.
+user_contract: "Find jobs -> Analyse? -> Apply"
+contents:
+  stack_recovery:
+    - Grace is registered as the third active CareerHub instance
+    - Grace receives a canonical instance contract and stack lock
+    - Grace pre-firewall application artifacts are revalidation-required
+  ownership:
+    - CareerHubZero and all profiled hubs target Motherpher ownership
+    - existing non-Motherpher hubs remain blocked until repository relocation is completed
+  versioning:
+    - 0.3.0-alpha is the complete central-motor cutover candidate
+    - 0.3.x-alpha is reserved for audit repairs
+    - 1.0.0 is the Full Audit Lock release
+  audit:
+    - Linus Weronika and Grace must all pass the same central motor
+    - no active profile may retain authoritative local motor code at 1.0
+compatibility:
+  migration_required: true
+  note: Grace and Weronika remain blocked while local motors and non-Motherpher ownership remain.
