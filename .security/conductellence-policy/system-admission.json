@@ -1,0 +1,162 @@
+{
+  "schema": "cdx.control-registry-shard/v1.0",
+  "shard_id": "CDX-POL-SHARD-SYSTEM-ADMISSION",
+  "law_id": "CDX-LAW-001",
+  "policy_version": "1.0.0",
+  "enforcement_surface": "SYSTEM_ADMISSION",
+  "controls": [
+    {
+      "control_id": "CDX-CTL-REG-001",
+      "section_id": "CDX-LAW-001-03-01",
+      "title": "Registration duty",
+      "status": "IMPLEMENTED_REFERENCE_RUNTIME",
+      "enforcement_surface": "SYSTEM_ADMISSION",
+      "decision_on_fail": "DENY",
+      "predicate": {
+        "op": "equals",
+        "path": "registered",
+        "value": true
+      },
+      "description": "Material system/principal must be registered.",
+      "evidence_requirements": [
+        "policy_decision",
+        "SPETL decision event"
+      ],
+      "test_vectors": [
+        {
+          "name": "allow",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "registered": true
+          },
+          "expected": "ALLOW"
+        },
+        {
+          "name": "deny",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "registered": false
+          },
+          "expected": "DENY"
+        }
+      ]
+    },
+    {
+      "control_id": "CDX-CTL-REPO-001",
+      "section_id": "CDX-LAW-001-03-02",
+      "title": "Repository backlink",
+      "status": "IMPLEMENTED_REFERENCE_RUNTIME",
+      "enforcement_surface": "SYSTEM_ADMISSION",
+      "decision_on_fail": "DENY",
+      "predicate": {
+        "op": "exists",
+        "path": "conductellence_authority_ref"
+      },
+      "description": "Governed repository/system must backlink canonical Conductellence authority.",
+      "evidence_requirements": [
+        "policy_decision",
+        "SPETL decision event"
+      ],
+      "test_vectors": [
+        {
+          "name": "allow",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "conductellence_authority_ref": "CDX-SYS-001"
+          },
+          "expected": "ALLOW"
+        },
+        {
+          "name": "deny",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "conductellence_authority_ref": null
+          },
+          "expected": "DENY"
+        }
+      ]
+    },
+    {
+      "control_id": "CDX-CTL-03-03",
+      "section_id": "CDX-LAW-001-03-03",
+      "title": "Inventory of material dependencies",
+      "status": "IMPLEMENTED_REFERENCE_RUNTIME",
+      "enforcement_surface": "SYSTEM_ADMISSION",
+      "decision_on_fail": "DENY",
+      "predicate": {
+        "op": "exists",
+        "path": "dependencies"
+      },
+      "description": "Material dependency inventory must exist.",
+      "evidence_requirements": [
+        "policy_decision",
+        "SPETL decision event"
+      ],
+      "test_vectors": [
+        {
+          "name": "allow",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "dependencies": []
+          },
+          "expected": "ALLOW"
+        },
+        {
+          "name": "deny",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "dependencies": null
+          },
+          "expected": "DENY"
+        }
+      ]
+    },
+    {
+      "control_id": "CDX-CTL-03-05",
+      "section_id": "CDX-LAW-001-03-05",
+      "title": "Discovery of shadow assets",
+      "status": "IMPLEMENTED_REFERENCE_RUNTIME",
+      "enforcement_surface": "SYSTEM_ADMISSION",
+      "decision_on_fail": "DENY",
+      "predicate": {
+        "op": "subset",
+        "path": "discovered_assets",
+        "of_path": "registered_assets"
+      },
+      "description": "Discovered assets must be registered.",
+      "evidence_requirements": [
+        "policy_decision",
+        "SPETL decision event"
+      ],
+      "test_vectors": [
+        {
+          "name": "allow",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "discovered_assets": [
+              "a"
+            ],
+            "registered_assets": [
+              "a",
+              "b"
+            ]
+          },
+          "expected": "ALLOW"
+        },
+        {
+          "name": "deny",
+          "context": {
+            "surface": "SYSTEM_ADMISSION",
+            "discovered_assets": [
+              "x"
+            ],
+            "registered_assets": [
+              "a"
+            ]
+          },
+          "expected": "DENY"
+        }
+      ]
+    }
+  ]
+}
