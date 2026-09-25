@@ -1,21 +1,31 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-09-25",
+  "updated_at": "2026-09-25T00:55:00Z",
   "gates": {
     "private_action_profile_access": {
-      "status": "AUTHORIZED_PENDING_REPOSITORY_ADMIN_SETTING",
-      "evidence": "User authorized E01. Connected GitHub tool lacks repository/organization Actions administration, so the private-action Access toggle must be applied through repository settings or an admin-capable GitHub API token.",
-      "user_authorized": true
+      "status": "BLOCKED_REPOSITORY_ADMIN_SETTING",
+      "evidence": "User authorized E01. Compatibility reruns on Linus, Weronika and Grace all failed again at GitHub Set up job before CareerHub code executed. CareerHubZero private Action access must be set to organization access.",
+      "user_authorized": true,
+      "verification_runs": {
+        "linus": 36052388116,
+        "weronika": 36052385689,
+        "grace": 36052392296
+      },
+      "required_action": "Motherpher/CareerHubZero → Settings → Actions → General → Access → Accessible from repositories in the Motherpher organization → Save"
     },
     "geo_runtime_complete": {
-      "status": "AUTHORIZED_LIVE_PROBE_PENDING",
-      "evidence": "User authorized E02. Live Google Places + Routes probe installed; gate will PASS only on successful provider calls.",
-      "user_authorized": true
+      "status": "BLOCKED_MISSING_GOOGLE_MAPS_SECRET",
+      "evidence": "Live E02 probe run 36079668823: GOOGLE_MAPS_API_KEY was absent. No provider call could be made.",
+      "user_authorized": true,
+      "verification_run": 36079668823,
+      "required_action": "Create/restrict a Google Maps Platform key with Places API (New) and Routes API enabled, then save it in Motherpher/CareerHubZero as Actions secret GOOGLE_MAPS_API_KEY."
     },
     "live_ai_execution": {
-      "status": "AUTHORIZED_LIVE_PROBE_PENDING",
-      "evidence": "User authorized E03. Live OpenAI Responses API probe installed; gate will PASS only on successful gpt-5.6-sol response.",
-      "user_authorized": true
+      "status": "BLOCKED_CREDIT_BALANCE_EXHAUSTED",
+      "evidence": "Live E03 probe run 36079668823 reached OpenAI Responses API using gpt-5.6-sol and returned HTTP 429 credit_balance_exhausted / insufficient_quota.",
+      "user_authorized": true,
+      "verification_run": 36079668823,
+      "required_action": "Add API credits or restore API billing/spend capacity for the organization owning OPENAI_API_KEY, then rerun the external-gates workflow."
     }
   },
   "authorization": {
@@ -25,6 +35,7 @@
       "E02",
       "E03"
     ],
-    "authorized_at": "2026-09-25"
+    "authorized_at": "2026-09-25",
+    "authorization_state": "GRANTED"
   }
 }
