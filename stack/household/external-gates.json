@@ -3,16 +3,28 @@
   "updated_at": "2026-09-25",
   "gates": {
     "private_action_profile_access": {
-      "status": "BLOCKED",
-      "evidence": "Compatibility workflows in Linus, Weronika and Grace fail at GitHub job setup before CareerHub code runs; CareerHubZero is private and repository/organization private-action access has not been enabled."
+      "status": "AUTHORIZED_PENDING_REPOSITORY_ADMIN_SETTING",
+      "evidence": "User authorized E01. Connected GitHub tool lacks repository/organization Actions administration, so the private-action Access toggle must be applied through repository settings or an admin-capable GitHub API token.",
+      "user_authorized": true
     },
     "geo_runtime_complete": {
-      "status": "BLOCKED",
-      "evidence": "Canonical geo object, geotagging, clustering and country-adapter registry code exist, but Google Maps live key/routing and full Sweden matrix runtime have not yet been proven end-to-end."
+      "status": "AUTHORIZED_LIVE_PROBE_PENDING",
+      "evidence": "User authorized E02. Live Google Places + Routes probe installed; gate will PASS only on successful provider calls.",
+      "user_authorized": true
     },
     "live_ai_execution": {
-      "status": "BLOCKED",
-      "evidence": "OPENAI_API_KEY wiring previously reached OpenAI but API credit was exhausted; live HRDM/application structured-output execution is not yet revalidated."
+      "status": "AUTHORIZED_LIVE_PROBE_PENDING",
+      "evidence": "User authorized E03. Live OpenAI Responses API probe installed; gate will PASS only on successful gpt-5.6-sol response.",
+      "user_authorized": true
     }
+  },
+  "authorization": {
+    "authorized_by_user": true,
+    "authorized_scope": [
+      "E01",
+      "E02",
+      "E03"
+    ],
+    "authorized_at": "2026-09-25"
   }
 }
