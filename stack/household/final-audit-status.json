@@ -84,8 +84,29 @@
   "release_1_0_allowed": false,
   "development_line_open": true,
   "residual_external_gates": [
-    "private_action_profile_access",
-    "geo_runtime_complete",
-    "live_ai_execution"
-  ]
+    {
+      "id": "E01",
+      "status": "BLOCKED_REPOSITORY_ADMIN_SETTING",
+      "authorized": true,
+      "evidence_runs": [
+        36052388116,
+        36052385689,
+        36052392296
+      ]
+    },
+    {
+      "id": "E02",
+      "status": "BLOCKED_MISSING_GOOGLE_MAPS_SECRET",
+      "authorized": true,
+      "evidence_run": 36079668823
+    },
+    {
+      "id": "E03",
+      "status": "BLOCKED_CREDIT_BALANCE_EXHAUSTED",
+      "authorized": true,
+      "evidence_run": 36079668823
+    }
+  ],
+  "updated_at": "2026-09-25",
+  "external_gate_authorization": "GRANTED"
 }
