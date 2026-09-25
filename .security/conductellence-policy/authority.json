@@ -1,0 +1,55 @@
+{
+  "schema": "cdx.control-registry-shard/v1.0",
+  "shard_id": "CDX-POL-SHARD-AUTHORITY",
+  "law_id": "CDX-LAW-001",
+  "policy_version": "1.0.0",
+  "enforcement_surface": "AUTHORITY",
+  "controls": [
+    {
+      "control_id": "CDX-CTL-01-04",
+      "section_id": "CDX-LAW-001-01-04",
+      "title": "Presumption against implicit authority",
+      "status": "IMPLEMENTED_REFERENCE_RUNTIME",
+      "enforcement_surface": "AUTHORITY",
+      "decision_on_fail": "DENY",
+      "predicate": {
+        "op": "all",
+        "rules": [
+          {
+            "op": "exists",
+            "path": "authority_ref"
+          },
+          {
+            "op": "exists",
+            "path": "mandate_ref"
+          }
+        ]
+      },
+      "description": "Consequential action requires explicit authority and mandate.",
+      "evidence_requirements": [
+        "policy_decision",
+        "SPETL decision event"
+      ],
+      "test_vectors": [
+        {
+          "name": "allow",
+          "context": {
+            "surface": "AUTHORITY",
+            "authority_ref": "HUM-1",
+            "mandate_ref": "M-1"
+          },
+          "expected": "ALLOW"
+        },
+        {
+          "name": "deny",
+          "context": {
+            "surface": "AUTHORITY",
+            "authority_ref": null,
+            "mandate_ref": null
+          },
+          "expected": "DENY"
+        }
+      ]
+    }
+  ]
+}
