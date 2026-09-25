@@ -1,0 +1,30 @@
+name: CareerHub External Gates E02-E03
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/probe_external_services.py'
+      - '.github/workflows/external-gates.yml'
+      - 'stack/household/external-gates.json'
+
+permissions:
+  contents: read
+
+jobs:
+  external-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install probe dependency
+        run: python -m pip install 'requests>=2.32,<3'
+      - name: Probe Google Maps and OpenAI
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CAREERHUB_MODEL: ${{ vars.CAREERHUB_MODEL }}
+        run: python scripts/probe_external_services.py
