@@ -1,0 +1,19 @@
+{
+  "schema": "cdx.system-binding/v1.1",
+  "system_repository": "Motherpher/CareerHubZero",
+  "system_id": "CDX-EST-017",
+  "authority_ref": "CDX-SYS-001",
+  "authority_repository": "Hybrismannen/Conductellence-",
+  "law_id": "CDX-LAW-001",
+  "jurisdiction": "NON_HUMAN_OPERATION",
+  "binding_state": "BOUND_PENDING_RUNTIME_INTEGRATION",
+  "runtime_integration_state": "NOT_VERIFIED",
+  "runtime_integration_ref": ".security/runtime-integration.json",
+  "authority_mutation": "HUMAN_RESERVED",
+  "missing_permission": "DENY",
+  "content_may_modify_authority": false,
+  "evidence_plane": "SPETL_REQUIRED_FOR_CONSEQUENTIAL_RUNTIME",
+  "policy_bundle_version": "1.0.0",
+  "policy_shard_set_id": "CDX-POLICY-1.0.0",
+  "updated_at": "2026-09-26"
+}
