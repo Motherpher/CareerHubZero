@@ -2,6 +2,19 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## 0.2.9-alpha — 2026-09-25; repository recheck 2026-10-05
+**Household Silicon Sprint integration line + central profile cutover.**
+
+- Preserve the 2026-09-25 Household audit as the historical sprint snapshot.
+- Replace the blocked cross-repository composite-Action distribution path with checkout-based execution of CareerHubZero in profile repositories.
+- Clear WP02 after central-body compatibility passes for Weronika and Grace.
+- Rebind Weronika and Grace operational workflows to the central CareerHub motor.
+- Delete the duplicated local `src`, `scripts`, `hrdm` and requirements runtimes from both remaining profile nodes.
+- Clear WP03 after manifest-driven validation/rendering succeeds on both profile `main` branches.
+- Harden the action-complete managed web shell and artifact delivery path; scope artifact tracing to `.careerhub-artifacts`.
+- Canonicalise the user journey as Profile → Search → Analyse → Apply → Track, with Library and Improve my CareerHub as supporting workspaces.
+- Keep WP06, WP09 and WP10 blocked pending geography/routing and dependent end-gate proof.
+
 ## 0.2.7-alpha — 2026-09-24
 **Integrated execution spine + HRDM report/ledger lifecycle.**
 
