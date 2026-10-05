@@ -41,9 +41,14 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBusy(true); setMessage('');
+    setMessage('');
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(Array.from(form.entries()).map(([key, value]) => [key, String(value)]));
+    if (!String(payload.job_url ?? '').trim() && !String(payload.job_text ?? '').trim()) {
+      setMessage('Add a public job URL or paste the vacancy text before starting HRDM-R.');
+      return;
+    }
+    setBusy(true);
     const response = await fetch('/api/action', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -64,10 +69,10 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
         <label className="field"><span>Deadline</span><input name="deadline" type="date" /></label>
         <label className="field"><span>Search / application lane</span><select name="lane" defaultValue="core"><option value="core">Core</option><option value="adjacent">Adjacent</option><option value="bridge">Bridge</option></select></label>
         <label className="field"><span>Hybridianesque filter</span><select name="hy_filter" defaultValue="No"><option value="No">No</option><option value="Yes">Yes</option></select></label>
-        <label className="field field--full"><span>Paste job text when the URL cannot be read</span><textarea name="job_text" rows={8} placeholder="Optional. Use this when the vacancy blocks automated retrieval." /></label>
+        <label className="field field--full"><span>Paste job text when the URL cannot be read</span><textarea name="job_text" rows={8} placeholder="Use this when the vacancy blocks automated retrieval, or when you want to analyse pasted vacancy text directly." /></label>
       </div>
       <div className="inline-actions"><button className="button button--primary" disabled={busy} type="submit">{busy ? 'Starting analysis…' : 'Run HRDM-R and prepare application'}</button></div>
-      <p className="muted">The role analysis and application package are one governed run. The active verified profile remains the evidence boundary.</p>
+      <p className="muted">Provide either the public vacancy URL or pasted vacancy text. The role analysis and application package are one governed run, bounded by the active verified profile.</p>
       {message ? <p className="wish-status" role="status">{message}</p> : null}
     </form>
   );
