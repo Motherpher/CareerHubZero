@@ -82,7 +82,7 @@ jobs:
               cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
               OUT_REL="output/$ACTION_ID"
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT_REL"
-              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action choose --job-json "$CAREERHUB_ROOT/$OUT_REL/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
+              python .careerhub-zero/scripts/bind_web_action.py --manifest "$CAREERHUB_MANIFEST" --out "$OUT_REL" --case-id "${GITHUB_RUN_ID}" --case-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3
               ;;
             track_status)
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
