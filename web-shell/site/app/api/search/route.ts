@@ -17,6 +17,7 @@ type Job = {
   matchedQuery: string;
   laneId: string;
   laneName: string;
+  laneBucket: string;
   score: number;
 };
 
@@ -74,6 +75,7 @@ async function searchPlatsbanken(query: string, lane: Lane, anchors: string[], r
       matchedQuery: query,
       laneId: lane.lane_id,
       laneName: lane.name,
+      laneBucket: lane.bucket,
     };
     return { ...base, score: scoreJob(base, lane, anchors, remoteAllowed) };
   });

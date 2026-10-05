@@ -20,6 +20,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -47,6 +51,9 @@ jobs:
               Path("schemas/careerhub_manifest.schema.json"),
               Path("schemas/outcome_event.schema.json"),
               Path("schemas/case.schema.json"),
+              Path("schemas/source_library.schema.json"),
+              Path("schemas/search_session.schema.json"),
+              Path("schemas/wish-bank.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
@@ -82,3 +89,107 @@ jobs:
               raise SystemExit("Profiled-state files must not live in CareerHubZero: " + ", ".join(present))
           print("Central/profile separation OK")
           PY
+
+      - name: Create fixture personalised CareerHub
+        shell: bash
+        run: |
+          ROOT=/tmp/careerhub-profile
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/profile" "$ROOT/config" "$ROOT/data" "$ROOT/personalisation"
+          cat > "$ROOT/careerhub.yaml" <<'EOF'
+          schema_version: "1.0"
+          profile_id: fixture
+          profile:
+            path: profile/candidate_verified.yaml
+          search:
+            path: config/search_profile.yaml
+          state:
+            job_vault: data/job_vault.json
+            applications: data/applications.json
+            hrdm_ledger: data/hrdm_ledger.json
+          artifacts:
+            hrdm_reports: reports/hrdm/active
+            hrdm_history: reports/hrdm/history
+          ui:
+            language: en
+          presentation:
+            profile: personalisation/hub.profile.yaml
+            theme: personalisation/theme.tokens.json
+            voice: personalisation/voice.yaml
+            site_root: site
+          EOF
+          cat > "$ROOT/profile/candidate_verified.yaml" <<'EOF'
+          identity:
+            name: Fixture Candidate
+          career_sources: []
+          evidence: []
+          positioning:
+            headline: Fixture profile
+            functional_core: []
+            derived_from_evidence_ids: []
+          verification_queue: []
+          EOF
+          cat > "$ROOT/config/search_profile.yaml" <<'EOF'
+          version: "2.1"
+          intent: "Fixture search"
+          geographies:
+            country: SE
+            anchors: [Stockholm]
+            remote_allowed: true
+            progressive_widening: [anchor]
+          engagement_types: [employment]
+          lanes:
+            - lane_id: L1
+              name: Fixture lane
+              bucket: core
+              priority: 1
+              queries: [strateg]
+          negative_filters: []
+          triage_rule: "Fixture"
+          user_search_overlay:
+            source: user_input
+            scope: search_only
+            specific_wishes_or_needs: ""
+          EOF
+          printf '{"schema_version":"1.0","jobs":[]}\n' > "$ROOT/data/job_vault.json"
+          printf '{"schema_version":"1.0","cases":[]}\n' > "$ROOT/data/applications.json"
+          printf '{"schema_version":"1.0","runs":[]}\n' > "$ROOT/data/hrdm_ledger.json"
+          cat > "$ROOT/personalisation/hub.profile.yaml" <<'EOF'
+          schema_version: "1.0"
+          identity:
+            display_name: Fixture Candidate
+            strapline: Fixture CareerHub
+            language: en
+          experience:
+            mode: guided
+            density: balanced
+            guidance: standard
+          home:
+            headline: Fixture
+            intro: Fixture
+            slots: [identity, profile_health, search_coverage, next_action, opportunities, pipeline, hrdm, artifacts]
+          navigation:
+            primary: [profile, find, analyse, apply, track, library, home]
+          EOF
+          cat > "$ROOT/personalisation/theme.tokens.json" <<'EOF'
+          {"schema_version":"1.0","palette":{"background":"#ffffff","foreground":"#111111","muted":"#666666","accent":"#222222","accent_foreground":"#ffffff"}}
+          EOF
+          cat > "$ROOT/personalisation/voice.yaml" <<'EOF'
+          schema_version: "1.0"
+          posture: fixture
+          EOF
+
+      - name: Sync central shell and operations bridge into fixture
+        run: |
+          python scripts/sync_web_shell.py /tmp/careerhub-profile
+          test -f /tmp/careerhub-profile/.github/workflows/careerhub-operations.yml
+          test -f /tmp/careerhub-profile/site/app/api/action/route.ts
+          test -f /tmp/careerhub-profile/site/app/api/search/route.ts
+          test -f /tmp/careerhub-profile/site/app/analyse/AnalyseClient.tsx
+          test -f /tmp/careerhub-profile/site/app/track/TrackClient.tsx
+
+      - name: Build canonical personalised site
+        working-directory: /tmp/careerhub-profile/site
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
