@@ -40,7 +40,9 @@ export function loadJobVault() {
 
 export function loadApplications() {
   const manifest = loadCareerHubManifest();
-  return readJson<any>(manifest.state?.applications ?? 'data/applications.json') ?? { applications: [] };
+  const data = readJson<any>(manifest.state?.applications ?? 'data/applications.json') ?? {};
+  const cases = Array.isArray(data.cases) ? data.cases : Array.isArray(data.applications) ? data.applications : [];
+  return { ...data, cases, applications: cases };
 }
 
 export function loadHrdmLedger() {
