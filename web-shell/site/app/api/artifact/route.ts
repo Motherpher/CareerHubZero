@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const buffer = fs.readFileSync(artifact.full);
   const ext = path.extname(artifact.full).toLowerCase();
   const contentType = ext === '.json' ? 'application/json' : ext === '.docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : ext === '.md' ? 'text/markdown; charset=utf-8' : 'application/octet-stream';
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       'content-type': contentType,
       'content-disposition': `attachment; filename="${path.basename(artifact.full).replaceAll('"', '')}"`,
