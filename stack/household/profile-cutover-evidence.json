@@ -1,27 +1,27 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-25",
+  "observed_at": "2026-10-05",
   "profiles": {
     "linus-fast": {
       "repository": "Motherpher/CareerHub-LinusF",
       "central_body": true,
       "local_motor_present": false,
-      "compatibility": "BLOCKED_ACTION_ACCESS",
-      "evidence": "Thin profile node; central composite-action compatibility workflow cannot start because private-action access is not enabled."
+      "compatibility": "PASS",
+      "evidence": "Thin profile node using the central action-complete managed motor; main production-build gate 37341325941 passed at merge 6da11fb1d554d49573265f22bd7bd7d9efc91b9d."
     },
     "weronika-perez-borjas": {
       "repository": "Motherpher/wpb",
-      "central_body": false,
-      "local_motor_present": true,
-      "compatibility": "BLOCKED_ACTION_ACCESS",
-      "evidence": "Unified manifest exists; legacy local motor remains until central action can execute and parity passes."
+      "central_body": true,
+      "local_motor_present": false,
+      "compatibility": "PASS",
+      "evidence": "Checkout-based central execution passed on main in compatibility run 37345897747 and profile validation run 37345897861 after cutover merge 842b31c477fdd083b109d4e43bc80bd3d448f421. Local CareerHub/src, scripts, hrdm and requirements runtime removed."
     },
     "grace": {
       "repository": "Motherpher/Gracey",
-      "central_body": false,
-      "local_motor_present": true,
-      "compatibility": "BLOCKED_ACTION_ACCESS",
-      "evidence": "Unified manifest exists; legacy local motor remains until central action can execute and parity passes."
+      "central_body": true,
+      "local_motor_present": false,
+      "compatibility": "PASS",
+      "evidence": "Checkout-based central execution passed on main in compatibility run 37345918372 and profile validation/render run 37345918421 after cutover merge 1ff7dabb7aa004fd7c325026ffc33607468bb107. Local CareerHub/src, scripts, hrdm and requirements runtime removed."
     }
   }
 }
