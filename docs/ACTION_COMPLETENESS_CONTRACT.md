@@ -30,6 +30,7 @@ A surface that only explains a future capability fails this contract.
 | Profile | Resolve verification constraint | Add evidence / Request review | `/api/action` → `profile_review` | governed review request |
 | Profile | Rebuild from active sources | Request rebuild | `/api/action` → `profile_rebuild` | governed rebuild request |
 | Search | Run search | lane dropdown, session-only need, Run search | `/api/search` | ranked opportunities |
+| Search | Update saved defaults | geographic anchors, remote toggle, engagement types, saved search-only need, Save | `/api/action` → `search_profile_update` | updated Search Profile |
 | Search | Inspect role | Open role | external vacancy URL | source vacancy |
 | Search | Continue into analysis | Analyse in CareerHub | query handoff to `/analyse` | prefilled drill form |
 | Analyse | Choose role | saved-role dropdown or manual role fields | client form | drill input |
@@ -69,6 +70,7 @@ Used when the personalised Vercel site can complete the action directly:
 
 Used when the canonical Python motor must execute the operation:
 
+- saved Search Profile updates
 - HRDM-R role analysis
 - application package generation
 - application status / priority / event updates
