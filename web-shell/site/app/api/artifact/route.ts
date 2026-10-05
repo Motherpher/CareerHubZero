@@ -2,14 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { NextResponse } from 'next/server';
 
-const repoRoot = path.resolve(process.cwd(), '..');
+const artifactRoot = path.resolve(process.cwd(), '.careerhub-artifacts');
 const ALLOWED_ROOTS = ['output/', 'reports/'];
 
 function safeArtifact(relativePath: string) {
   const normalized = relativePath.replaceAll('\\', '/').replace(/^\/+/, '');
   if (!ALLOWED_ROOTS.some((prefix) => normalized.startsWith(prefix))) return null;
-  const full = path.resolve(repoRoot, normalized);
-  if (!full.startsWith(repoRoot + path.sep) || !fs.existsSync(full) || !fs.statSync(full).isFile()) return null;
+  const full = path.resolve(artifactRoot, normalized);
+  if (!full.startsWith(artifactRoot + path.sep) || !fs.existsSync(full) || !fs.statSync(full).isFile()) return null;
   return { full, normalized };
 }
 
