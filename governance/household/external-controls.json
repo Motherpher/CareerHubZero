@@ -1,21 +1,24 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-09-24T22:15:00+02:00",
+  "updated_at": "2026-10-05T19:08:00+02:00",
   "controls": {
-    "private_action_profile_execution": {
-      "state": "BLOCKED_EXTERNAL",
+    "central_profile_execution": {
+      "state": "PASS",
       "repairability": "J2",
       "evidence": [
-        "Motherpher/wpb unified-body compatibility run 36052385689 failed during job setup before CareerHub code execution.",
-        "Linus and Grace compatibility workflows showed the same private-action consumption barrier."
+        "Motherpher/wpb checkout-based unified-body compatibility passed on main in run 37345897747 after WP03 merge 842b31c477fdd083b109d4e43bc80bd3d448f421.",
+        "Motherpher/Gracey checkout-based unified-body compatibility passed on main in run 37345918372 after WP03 merge 1ff7dabb7aa004fd7c325026ffc33607468bb107.",
+        "Profile repositories consume Motherpher/CareerHubZero by checkout and direct canonical CLI execution; private cross-repository composite Action access is no longer required."
       ],
-      "required_action": "Enable Motherpher/CareerHubZero private Actions access for the profile repositories."
+      "required_action": null
     },
     "profile_cutover": {
-      "state": "BLOCKED_DEPENDENCY",
+      "state": "PASS",
       "repairability": "J2",
       "evidence": [
-        "Grace and Weronika still contain local motors because WP02 central-action invocation has not passed."
+        "Weronika local CareerHub/src, CareerHub/scripts, CareerHub/hrdm and CareerHub/requirements.txt were removed in main merge 842b31c477fdd083b109d4e43bc80bd3d448f421; main validation run 37345897861 passed.",
+        "Grace local CareerHub/src, CareerHub/scripts, CareerHub/hrdm and CareerHub/requirements.txt were removed in main merge 1ff7dabb7aa004fd7c325026ffc33607468bb107; main validation run 37345918421 passed.",
+        "Manifest-owned profile, search and state paths are preserved and rendered through the central motor."
       ]
     },
     "live_ai": {
@@ -29,7 +32,7 @@
       "state": "UNVERIFIED_EXTERNAL",
       "repairability": "J2",
       "evidence": [
-        "Live Maps/Places execution depends on GOOGLE_MAPS_API_KEY."
+        "Live Maps/Places execution depends on GOOGLE_MAPS_API_KEY and still requires full geography end-to-end proof."
       ]
     }
   }
