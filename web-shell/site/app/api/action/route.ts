@@ -11,6 +11,7 @@ const OPERATIONS = new Set([
   'profile_review',
   'profile_rebuild',
   'library_review',
+  'search_profile_update',
 ]);
 
 function githubConfig() {
