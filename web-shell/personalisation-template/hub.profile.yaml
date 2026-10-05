@@ -1,0 +1,55 @@
+schema_version: "1.0"
+
+identity:
+  display_name: "CareerHub User"
+  strapline: "A career workspace shaped around how this person actually works."
+  language: "en"
+
+experience:
+  mode: "editorial"
+  density: "balanced"
+  guidance: "standard"
+  motion: "subtle"
+
+home:
+  headline: "Career, in motion."
+  intro: "Find relevant work, understand what the role actually asks for, and move from evidence to application without losing the thread."
+  slots:
+    - identity
+    - next_action
+    - opportunities
+    - pipeline
+    - hrdm
+    - profile_health
+    - artifacts
+
+navigation:
+  primary:
+    - home
+    - find
+    - analyse
+    - apply
+    - track
+    - profile
+    - library
+  labels:
+    home: "Home"
+    find: "Find"
+    analyse: "Analyse"
+    apply: "Apply"
+    track: "Track"
+    profile: "Profile"
+    library: "Library"
+
+modules:
+  portfolio: true
+  analytics: true
+  profile_health: true
+  geography: true
+  hrdm_explainer: true
+
+visibility:
+  show_verified_sources: false
+  show_match_scores: true
+  show_hrdm_trace: false
+  show_application_history: true

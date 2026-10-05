@@ -1,0 +1,13 @@
+schema_version: "1.0"
+voice:
+  posture: "clear, specific, useful"
+  person: "second"
+  verbosity: "balanced"
+  avoid:
+    - "generic motivational language"
+    - "inflated claims"
+    - "HR boilerplate"
+  prefer:
+    - "concrete next actions"
+    - "evidence-bounded wording"
+    - "plain explanations of analytical outputs"

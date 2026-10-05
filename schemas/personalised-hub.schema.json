@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/personalised-hub.schema.json",
+  "title": "CareerHub Personalised Hub Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "identity", "experience", "home", "navigation"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0"},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["display_name"],
+      "properties": {
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "strapline": {"type": "string", "maxLength": 180},
+        "language": {"type": "string", "minLength": 2, "maxLength": 16},
+        "pronouns": {"type": "string", "maxLength": 40},
+        "avatar_path": {"type": ["string", "null"], "maxLength": 300}
+      }
+    },
+    "experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "density", "guidance"],
+      "properties": {
+        "mode": {"enum": ["editorial", "analytical", "guided", "portfolio", "compact", "custom"]},
+        "density": {"enum": ["airy", "balanced", "dense"]},
+        "guidance": {"enum": ["minimal", "standard", "high"]},
+        "motion": {"enum": ["reduced", "subtle", "expressive"]}
+      }
+    },
+    "home": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slots"],
+      "properties": {
+        "headline": {"type": "string", "maxLength": 180},
+        "intro": {"type": "string", "maxLength": 1000},
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "identity",
+              "priority",
+              "next_action",
+              "opportunities",
+              "pipeline",
+              "hrdm",
+              "profile_health",
+              "search_coverage",
+              "artifacts"
+            ]
+          }
+        }
+      }
+    },
+    "navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["home", "find", "analyse", "apply", "track", "profile", "library"]}
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "maxLength": 40}
+        }
+      }
+    },
+    "modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "portfolio": {"type": "boolean"},
+        "analytics": {"type": "boolean"},
+        "profile_health": {"type": "boolean"},
+        "geography": {"type": "boolean"},
+        "hrdm_explainer": {"type": "boolean"}
+      }
+    },
+    "visibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "show_verified_sources": {"type": "boolean"},
+        "show_match_scores": {"type": "boolean"},
+        "show_hrdm_trace": {"type": "boolean"},
+        "show_application_history": {"type": "boolean"}
+      }
+    }
+  }
+}

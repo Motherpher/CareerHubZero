@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "typography": {
+    "display": "ui-sans-serif, system-ui, sans-serif",
+    "body": "ui-sans-serif, system-ui, sans-serif",
+    "scale": "standard"
+  },
+  "shape": {
+    "radius": "soft",
+    "border": "quiet"
+  },
+  "surface": {
+    "treatment": "layered",
+    "shadow": "subtle"
+  },
+  "palette": {
+    "background": "#F6F5F2",
+    "foreground": "#181818",
+    "muted": "#6B6B68",
+    "accent": "#2357D8",
+    "accent_foreground": "#FFFFFF"
+  },
+  "imagery": {
+    "mode": "mixed",
+    "treatment": "natural"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "shell_source": "Motherpher/CareerHubZero:web-shell/site",
+  "managed_paths": [
+    "app",
+    "lib",
+    "package.json",
+    "next.config.mjs",
+    "tsconfig.json",
+    ".careerhub-managed.json"
+  ],
+  "protected_paths": [
+    "../personalisation",
+    "personal"
+  ]
+}
