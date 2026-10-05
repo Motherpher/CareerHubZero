@@ -80,9 +80,9 @@ jobs:
               [ -n "$LANE" ] || LANE="core"
               [ -n "$HY" ] || HY="No"
               cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
-              OUT="$CAREERHUB_ROOT/output/$ACTION_ID"
-              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT"
-              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action choose --job-json "$OUT/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
+              OUT_REL="output/$ACTION_ID"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT_REL"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action choose --job-json "$CAREERHUB_ROOT/$OUT_REL/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
               ;;
             track_status)
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
