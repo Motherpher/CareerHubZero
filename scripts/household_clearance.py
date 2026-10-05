@@ -56,11 +56,11 @@ def main():
                         "code":"LEGACY_STACK_PATH_ACTIVE","object":rel
                     })
         if wp=="WP02":
-            ctl=controls.get("private_action_profile_execution",{})
+            ctl=controls.get("central_profile_execution") or controls.get("private_action_profile_execution",{})
             if ctl.get("state")!="PASS":
                 findings.append({
                     "role":"JANITOR","severity":"CONTROL_DEFECT","repairability":"J2",
-                    "code":"PRIVATE_ACTION_ACCESS_BLOCKED","object":"Motherpher/CareerHubZero Actions access",
+                    "code":"CENTRAL_PROFILE_EXECUTION_NOT_PROVEN","object":"Profile execution against Motherpher/CareerHubZero",
                     "evidence":ctl.get("evidence",[])
                 })
         if wp=="WP03":

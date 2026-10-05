@@ -47,41 +47,24 @@
         {
           "id": "wp01-python-compile",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "compileall",
-            "-q",
-            "src",
-            "scripts"
-          ],
+          "command": ["python", "-m", "compileall", "-q", "src", "scripts"],
           "timeout": 120,
           "repairable": false
         },
         {
           "id": "wp01-unified-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_unified_body.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_unified_body.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP02": {
-      "depends_on": [
-        "WP01"
-      ],
+      "depends_on": ["WP01"],
       "required_paths": [
-        "action.yml",
+        "scripts/careerhub.py",
+        "templates/profile-workflows/careerhub-operations.yml",
         ".github/workflows/careerhub-household.yml",
         "stack/household/external-gates.json"
       ],
@@ -95,13 +78,13 @@
       "state": "ACTIVE",
       "checks": [
         {
-          "id": "wp02-private-action-access",
+          "id": "wp02-central-profile-execution",
           "type": "command",
           "command": [
             "python",
             "scripts/check_household_gate.py",
             "stack/household/external-gates.json",
-            "private_action_profile_access"
+            "central_profile_execution"
           ],
           "timeout": 30,
           "repairable": false
@@ -109,13 +92,8 @@
       ]
     },
     "WP03": {
-      "depends_on": [
-        "WP01",
-        "WP02"
-      ],
-      "required_paths": [
-        "stack/household/profile-cutover-evidence.json"
-      ],
+      "depends_on": ["WP01", "WP02"],
+      "required_paths": ["stack/household/profile-cutover-evidence.json"],
       "acceptance": [
         "dependency_pass",
         "required_paths_exist",
@@ -139,9 +117,7 @@
       ]
     },
     "WP04": {
-      "depends_on": [
-        "WP01"
-      ],
+      "depends_on": ["WP01"],
       "required_paths": [
         "src/careerhub/search_contract.py",
         "src/careerhub/matching.py",
@@ -159,25 +135,14 @@
         {
           "id": "wp04-search-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_search_kernel.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_search_kernel.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP05": {
-      "depends_on": [
-        "WP04"
-      ],
+      "depends_on": ["WP04"],
       "required_paths": [
         "src/careerhub/learning.py",
         "schemas/outcome_event.schema.json",
@@ -195,26 +160,14 @@
         {
           "id": "wp05-learning-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_learning.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_learning.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP06": {
-      "depends_on": [
-        "WP01",
-        "WP04"
-      ],
+      "depends_on": ["WP01", "WP04"],
       "required_paths": [
         "src/careerhub/geography.py",
         "src/careerhub/country_adapters.py",
@@ -235,34 +188,21 @@
         {
           "id": "wp06-geo-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "tests.test_geography",
-            "tests.test_sprint_integration"
-          ],
+          "command": ["python", "-m", "unittest", "tests.test_geography", "tests.test_sprint_integration"],
           "timeout": 120,
           "repairable": false
         },
         {
           "id": "wp06-live-gates",
           "type": "command",
-          "command": [
-            "python",
-            "scripts/check_household_gate.py",
-            "stack/household/external-gates.json",
-            "geo_runtime_complete"
-          ],
+          "command": ["python", "scripts/check_household_gate.py", "stack/household/external-gates.json", "geo_runtime_complete"],
           "timeout": 30,
           "repairable": false
         }
       ]
     },
     "WP07": {
-      "depends_on": [
-        "WP01"
-      ],
+      "depends_on": ["WP01"],
       "required_paths": [
         "src/careerhub/hrdm.py",
         "src/careerhub/hrdm_trace.py",
@@ -283,26 +223,14 @@
         {
           "id": "wp07-hrdm-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_hrdm*.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_hrdm*.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP08": {
-      "depends_on": [
-        "WP01",
-        "WP07"
-      ],
+      "depends_on": ["WP01", "WP07"],
       "required_paths": [
         "src/careerhub/state.py",
         "schemas/outcome_event.schema.json",
@@ -320,29 +248,14 @@
         {
           "id": "wp08-state-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_state_machine.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_state_machine.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP09": {
-      "depends_on": [
-        "WP04",
-        "WP05",
-        "WP06",
-        "WP07",
-        "WP08"
-      ],
+      "depends_on": ["WP04", "WP05", "WP06", "WP07", "WP08"],
       "required_paths": [
         "src/careerhub/runtime_dashboard.py",
         "src/careerhub/runtime_dashboard_en.py",
@@ -361,33 +274,14 @@
         {
           "id": "wp09-surface-tests",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_hub_surface.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_hub_surface.py"],
           "timeout": 120,
           "repairable": false
         }
       ]
     },
     "WP10": {
-      "depends_on": [
-        "WP01",
-        "WP02",
-        "WP03",
-        "WP04",
-        "WP05",
-        "WP06",
-        "WP07",
-        "WP08",
-        "WP09"
-      ],
+      "depends_on": ["WP01", "WP02", "WP03", "WP04", "WP05", "WP06", "WP07", "WP08", "WP09"],
       "required_paths": [
         "docs/AUDIT_1.0.md",
         "docs/HOUSEHOLD_AUDIT_STATE_ORDER.md",
@@ -405,27 +299,14 @@
         {
           "id": "wp10-full-audit-gate",
           "type": "command",
-          "command": [
-            "python",
-            "scripts/check_final_audit.py",
-            "stack/household/final-audit-status.json"
-          ],
+          "command": ["python", "scripts/check_final_audit.py", "stack/household/final-audit-status.json"],
           "timeout": 30,
           "repairable": false
         },
         {
           "id": "wp10-regression",
           "type": "command",
-          "command": [
-            "python",
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_*.py"
-          ],
+          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
           "timeout": 180,
           "repairable": false
         }
