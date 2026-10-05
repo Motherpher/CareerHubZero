@@ -61,11 +61,16 @@ current_recheck:
     WP08: PASS
     WP09: BLOCKED
     WP10: BLOCKED
+  issue_states:
+    WP02: CLOSED_COMPLETED
+    WP03: CLOSED_COMPLETED
   cleared_blockers:
     - private CareerHubZero composite-Action access to profile repositories
     - Weronika local-motor cutover
     - Grace local-motor cutover
     - duplicate authoritative runtime in Weronika and Grace profile nodes
+    - obsolete profile instance.yaml and stack.lock.yaml migration locks
+    - Grace pre-firewall application artifact as an active reusable asset
   remaining_blockers:
     - live Google Maps/routing and full geography end-to-end proof
     - WP09 dependency on WP06
@@ -74,12 +79,20 @@ current_recheck:
   evidence:
     careerhubzero_hardening_commit: ad348d46753c58f2eebc85e0eff500609a118979
     careerhubzero_validation_run: 37343706733
+    careerhubzero_recheck_commit: b4b87cfc7a07ebddd3eeee0af8ab3242e241a5de
+    careerhubzero_recheck_validation_run: 37347655464
+    household_director_run: 37347655415
     weronika_wp02_commit: d03a96e8bc0917164659809cf8c67607793ee371
-    weronika_wp03_commit: 842b31c477fdd083b109d4e43bc80bd3d448f421
-    weronika_main_validation_run: 37345897861
-    weronika_main_compatibility_run: 37345897747
+    weronika_initial_wp03_commit: 842b31c477fdd083b109d4e43bc80bd3d448f421
+    weronika_final_wp03_commit: 92f861dc4a29b1f52e92914297bb1b9135faf7fe
+    weronika_final_validation_run: 37348625867
+    weronika_final_compatibility_run: 37348625998
+    weronika_final_archive_validation_run: 37348626242
     grace_wp02_commit: 413adadf4e8906d193e028e0ab1c1a4b6d3ba2e0
-    grace_wp03_commit: 1ff7dabb7aa004fd7c325026ffc33607468bb107
-    grace_main_validation_run: 37345918421
-    grace_main_compatibility_run: 37345918372
+    grace_initial_wp03_commit: 1ff7dabb7aa004fd7c325026ffc33607468bb107
+    grace_final_wp03_commit: 066be5b3e4da5697c745ccfb487318ed17352bd0
+    grace_final_validation_run: 37348650361
+    grace_final_compatibility_run: 37348650378
+    linus_steady_state_commit: cd7d0933ca848274321f01f3f236309319fa941d
+    linus_steady_state_build_run: 37348676752
   release_1_0_allowed: false
