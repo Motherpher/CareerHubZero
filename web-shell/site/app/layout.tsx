@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { cssVars, loadHubProfile, loadTheme } from '@/lib/profile';
 import './globals.css';
+import './actions.css';
 
 export function generateMetadata(): Metadata {
   const hub = loadHubProfile();

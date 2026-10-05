@@ -14,6 +14,7 @@ type SearchResult = {
   matchedQuery: string;
   laneId: string;
   laneName: string;
+  laneBucket: string;
   score: number;
 };
 
@@ -24,6 +25,17 @@ type SearchResponse = {
   lane: string;
   overlayUsed: boolean;
 };
+
+function analyseHref(result: SearchResult) {
+  const params = new URLSearchParams({
+    job_url: result.url,
+    title: result.title,
+    company: result.company,
+    deadline: (result.deadline ?? '').slice(0, 10),
+    lane: ['core','adjacent','bridge'].includes(result.laneBucket) ? result.laneBucket : 'core',
+  });
+  return `/analyse?${params.toString()}`;
+}
 
 export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
   const [lane, setLane] = useState('all');
@@ -89,7 +101,8 @@ export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
                     <p className="muted">Matched: {result.matchedQuery}{result.deadline ? ` · deadline ${result.deadline.slice(0, 10)}` : ''}</p>
                   </div>
                   <div className="inline-actions">
-                    <a className="button button--primary" href={result.url} target="_blank" rel="noreferrer">Open role</a>
+                    <a className="button" href={result.url} target="_blank" rel="noreferrer">Open role</a>
+                    <a className="button button--primary" href={analyseHref(result)}>Analyse in CareerHub</a>
                   </div>
                 </article>
               ))}
