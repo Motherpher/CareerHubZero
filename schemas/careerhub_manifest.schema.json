@@ -2,104 +2,58 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CareerHub Profile Manifest",
   "type": "object",
-  "required": [
-    "schema_version",
-    "profile_id",
-    "profile",
-    "search",
-    "state",
-    "artifacts",
-    "ui"
-  ],
+  "required": ["schema_version", "profile_id", "profile", "search", "state", "artifacts", "ui"],
   "properties": {
-    "schema_version": {
-      "const": "1.0"
-    },
-    "profile_id": {
-      "type": "string",
-      "minLength": 1
-    },
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "minLength": 1},
     "profile": {
       "type": "object",
-      "required": [
-        "path"
-      ],
-      "properties": {
-        "path": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
+      "required": ["path"],
+      "properties": {"path": {"type": "string", "minLength": 1}},
       "additionalProperties": false
     },
     "search": {
       "type": "object",
-      "required": [
-        "path"
-      ],
-      "properties": {
-        "path": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
+      "required": ["path"],
+      "properties": {"path": {"type": "string", "minLength": 1}},
       "additionalProperties": false
     },
     "state": {
       "type": "object",
-      "required": [
-        "job_vault",
-        "applications",
-        "hrdm_ledger"
-      ],
+      "required": ["job_vault", "applications", "hrdm_ledger"],
       "properties": {
-        "job_vault": {
-          "type": "string",
-          "minLength": 1
-        },
-        "applications": {
-          "type": "string",
-          "minLength": 1
-        },
-        "hrdm_ledger": {
-          "type": "string",
-          "minLength": 1
-        }
+        "job_vault": {"type": "string", "minLength": 1},
+        "applications": {"type": "string", "minLength": 1},
+        "hrdm_ledger": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
     },
     "artifacts": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "hrdm_reports",
-        "hrdm_history"
-      ],
+      "required": ["hrdm_reports", "hrdm_history"],
       "properties": {
-        "hrdm_reports": {
-          "type": "string",
-          "minLength": 1
-        },
-        "hrdm_history": {
-          "type": "string",
-          "minLength": 1
-        }
+        "hrdm_reports": {"type": "string", "minLength": 1},
+        "hrdm_history": {"type": "string", "minLength": 1}
       }
     },
     "ui": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "language"
-      ],
+      "required": ["language"],
       "properties": {
-        "language": {
-          "type": "string",
-          "enum": [
-            "sv",
-            "en"
-          ]
-        }
+        "language": {"type": "string", "enum": ["sv", "en"]}
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "theme", "voice", "site_root"],
+      "properties": {
+        "profile": {"type": "string", "minLength": 1},
+        "theme": {"type": "string", "minLength": 1},
+        "voice": {"type": "string", "minLength": 1},
+        "site_root": {"type": "string", "minLength": 1}
       }
     }
   },
