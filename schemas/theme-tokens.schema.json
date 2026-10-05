@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/theme-tokens.schema.json",
+  "title": "CareerHub Theme Tokens",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "typography", "shape", "surface"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0"},
+    "typography": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["display", "body", "scale"],
+      "properties": {
+        "display": {"type": "string", "maxLength": 120},
+        "body": {"type": "string", "maxLength": 120},
+        "scale": {"enum": ["compact", "standard", "large"]}
+      }
+    },
+    "shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["radius"],
+      "properties": {
+        "radius": {"enum": ["square", "soft", "round"]},
+        "border": {"enum": ["none", "quiet", "defined"]}
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["treatment"],
+      "properties": {
+        "treatment": {"enum": ["flat", "layered", "editorial", "glass-light"]},
+        "shadow": {"enum": ["none", "subtle", "medium"]}
+      }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "foreground": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "muted": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "accent_foreground": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+      }
+    },
+    "imagery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["none", "portrait", "documentary", "graphic", "mixed"]},
+        "treatment": {"enum": ["natural", "monochrome", "muted", "high-contrast"]}
+      }
+    }
+  }
+}
