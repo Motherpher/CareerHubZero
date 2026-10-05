@@ -38,6 +38,19 @@ jobs:
           repository: Motherpher/CareerHubZero
           ref: main
           path: .careerhub-zero
+      - name: Resolve profile root
+        shell: bash
+        run: |
+          if [ -f careerhub.yaml ]; then
+            echo "CAREERHUB_ROOT=." >> "$GITHUB_ENV"
+            echo "CAREERHUB_MANIFEST=careerhub.yaml" >> "$GITHUB_ENV"
+          elif [ -f CareerHub/careerhub.yaml ]; then
+            echo "CAREERHUB_ROOT=CareerHub" >> "$GITHUB_ENV"
+            echo "CAREERHUB_MANIFEST=CareerHub/careerhub.yaml" >> "$GITHUB_ENV"
+          else
+            echo "No careerhub.yaml manifest found." >&2
+            exit 1
+          fi
       - name: Install central motor
         run: python -m pip install -r .careerhub-zero/requirements.txt
       - name: Decode action payload
@@ -67,22 +80,22 @@ jobs:
               [ -n "$LANE" ] || LANE="core"
               [ -n "$HY" ] || HY="No"
               cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
-              OUT="output/$ACTION_ID"
-              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT"
-              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action choose --job-json "$OUT/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
+              OUT="$CAREERHUB_ROOT/output/$ACTION_ID"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action choose --job-json "$OUT/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
               ;;
             track_status)
-              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
               ;;
             track_priority)
-              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action priority --issue-number "$(getv issue_number)" --priority "$(getv priority)"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action priority --issue-number "$(getv issue_number)" --priority "$(getv priority)"
               ;;
             track_event)
-              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action event --issue-number "$(getv issue_number)" --event-type "$(getv event_type)" --event-source "$(getv event_source)" --note "$(getv note)" --date "$(getv date)"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action event --issue-number "$(getv issue_number)" --event-type "$(getv event_type)" --event-source "$(getv event_source)" --note "$(getv note)" --date "$(getv date)"
               ;;
             profile_review|profile_rebuild|library_review)
-              mkdir -p data/review_requests
-              cp /tmp/careerhub-action/payload.json "data/review_requests/${ACTION_ID}.json"
+              mkdir -p "$CAREERHUB_ROOT/data/review_requests"
+              cp /tmp/careerhub-action/payload.json "$CAREERHUB_ROOT/data/review_requests/${ACTION_ID}.json"
               ;;
             *) echo "Unsupported operation: $OPERATION" >&2; exit 2 ;;
           esac
@@ -91,7 +104,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A data reports output CONTROL_ROOM.md APPLICATIONS.md JOB_VAULT.md 2>/dev/null || true
+          git add -A "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No repository state changes."
             exit 0
