@@ -1,0 +1,101 @@
+name: CareerHub · Operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        required: true
+        type: string
+      action_id:
+        required: true
+        type: string
+      payload:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: careerhub-operations-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  operate:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      CAREERHUB_MODEL: ${{ secrets.CAREERHUB_MODEL }}
+      OPERATION: ${{ inputs.operation }}
+      ACTION_ID: ${{ inputs.action_id }}
+      PAYLOAD: ${{ inputs.payload }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: Motherpher/CareerHubZero
+          ref: main
+          path: .careerhub-zero
+      - name: Install central motor
+        run: python -m pip install -r .careerhub-zero/requirements.txt
+      - name: Decode action payload
+        shell: bash
+        run: |
+          mkdir -p /tmp/careerhub-action
+          python - <<'PY'
+          import json, os, pathlib
+          p = json.loads(os.environ['PAYLOAD'] or '{}')
+          root = pathlib.Path('/tmp/careerhub-action')
+          for key, value in p.items():
+              if isinstance(value, (dict, list)):
+                  value = json.dumps(value, ensure_ascii=False)
+              (root / f'{key}.txt').write_text(str(value or ''), encoding='utf-8')
+          (root / 'payload.json').write_text(json.dumps(p, ensure_ascii=False, indent=2), encoding='utf-8')
+          PY
+      - name: Execute motor action
+        shell: bash
+        env:
+          PYTHONPATH: .careerhub-zero/src
+        run: |
+          getv() { [ -f "/tmp/careerhub-action/$1.txt" ] && cat "/tmp/careerhub-action/$1.txt" || true; }
+          case "$OPERATION" in
+            analyse_role)
+              URL="$(getv job_url)"; TITLE="$(getv title)"; COMPANY="$(getv company)"; DEADLINE="$(getv deadline)"; LANE="$(getv lane)"; HY="$(getv hy_filter)"
+              [ -n "$URL" ] || URL="https://careerhub.local/manual-role"
+              [ -n "$LANE" ] || LANE="core"
+              [ -n "$HY" ] || HY="No"
+              cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
+              OUT="output/$ACTION_ID"
+              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT"
+              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action choose --job-json "$OUT/job.json" --issue-number "${GITHUB_RUN_ID}" --issue-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3 --analysis-complete
+              ;;
+            track_status)
+              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
+              ;;
+            track_priority)
+              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action priority --issue-number "$(getv issue_number)" --priority "$(getv priority)"
+              ;;
+            track_event)
+              python .careerhub-zero/scripts/careerhub.py --manifest careerhub.yaml track --action event --issue-number "$(getv issue_number)" --event-type "$(getv event_type)" --event-source "$(getv event_source)" --note "$(getv note)" --date "$(getv date)"
+              ;;
+            profile_review|profile_rebuild|library_review)
+              mkdir -p data/review_requests
+              cp /tmp/careerhub-action/payload.json "data/review_requests/${ACTION_ID}.json"
+              ;;
+            *) echo "Unsupported operation: $OPERATION" >&2; exit 2 ;;
+          esac
+      - name: Commit CareerHub state and artifacts
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data reports output CONTROL_ROOM.md APPLICATIONS.md JOB_VAULT.md 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No repository state changes."
+            exit 0
+          fi
+          git commit -m "CareerHub: ${OPERATION} ${ACTION_ID}"
+          git pull --rebase origin main
+          git push origin HEAD:main
