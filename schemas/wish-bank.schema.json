@@ -4,9 +4,9 @@
   "title": "CareerHub Wish Bank Record",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "wish_id", "source", "submission", "triage", "development", "timestamps"],
+  "required": ["schema_version", "wish_id", "source", "submission", "segmentation", "triage", "development", "timestamps"],
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "1.1"},
     "wish_id": {"type": "string", "pattern": "^WISH-[A-Z0-9-]+$"},
     "source": {
       "type": "object",
@@ -26,10 +26,20 @@
       "required": ["text"],
       "properties": {
         "text": {"type": "string", "minLength": 3, "maxLength": 4000},
-        "user_category": {
-          "enum": ["navigation", "profile", "search", "geography", "analyse", "apply", "track", "library", "accessibility", "visual", "performance", "new_capability", "other", null]
-        },
+        "user_category": {"type": ["string", "null"]},
         "location_note": {"type": ["string", "null"], "maxLength": 300}
+      }
+    },
+    "segmentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "domain", "tags", "confidence", "review_required"],
+      "properties": {
+        "target": {"enum": ["MOTOR", "PROFILE", "BOTH", "UNTRIAGED"]},
+        "domain": {"enum": ["PROFILE", "SEARCH", "GEOGRAPHY", "ANALYSE", "APPLY", "TRACK", "LIBRARY", "UX", "ACCESSIBILITY", "PERFORMANCE", "NEW_CAPABILITY", "OTHER"]},
+        "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "confidence": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+        "review_required": {"type": "boolean"}
       }
     },
     "triage": {
@@ -38,19 +48,19 @@
       "required": ["status"],
       "properties": {
         "status": {"enum": ["NEW", "TRIAGED", "CLUSTERED", "STANDALONE", "CANDIDATE_WP", "ACCEPTED", "DEFERRED", "DECLINED", "WP_CREATED", "IN_DEVELOPMENT", "RELEASED", "VALIDATED", "REOPENED"]},
-        "assigned_categories": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "scope": {"enum": ["PERSONAL_HUB", "MULTI_HUB", "CENTRAL_MOTOR", "WEB_SHELL", "INTEGRATION", null]},
-        "severity": {"enum": ["S0", "S1", "S2", "S3", null]},
-        "development_leverage": {"enum": ["L1", "L2", "L3", null]},
         "cluster_id": {"type": ["string", "null"]},
-        "affected_capability": {"type": ["string", "null"]},
-        "affected_users": {"type": ["integer", "null"], "minimum": 1}
+        "severity": {"enum": ["S0", "S1", "S2", "S3", null]},
+        "development_leverage": {"enum": ["L1", "L2", "L3", null]}
       }
     },
     "development": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["motor_wishlist", "profile_wishlist", "profile_id"],
       "properties": {
+        "motor_wishlist": {"type": "boolean"},
+        "profile_wishlist": {"type": "boolean"},
+        "profile_id": {"type": ["string", "null"]},
         "candidate_wp_id": {"type": ["string", "null"]},
         "wp_id": {"type": ["string", "null"]},
         "release_version": {"type": ["string", "null"]},
