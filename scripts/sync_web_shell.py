@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy the canonical CareerHub web shell into a profile repository.
+"""Copy the canonical CareerHub web shell and operations bridge into a profile repository.
 
 Only centrally managed paths are touched. Person-owned personalisation paths are never
 removed or overwritten by this script.
@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "web-shell" / "site"
 MANIFEST = SOURCE / ".careerhub-managed.json"
+OPERATIONS_WORKFLOW = ROOT / "templates" / "profile-workflows" / "careerhub-operations.yml"
 
 
 def digest_tree(path: Path) -> str:
@@ -47,12 +48,26 @@ def copy_managed(source: Path, target: Path, managed_paths: list[str]) -> None:
             shutil.copy2(src, dst)
 
 
+def find_repo_root(profile_root: Path) -> Path:
+    cursor = profile_root
+    while True:
+        if (cursor / ".git").exists():
+            return cursor
+        if cursor.parent == cursor:
+            break
+        cursor = cursor.parent
+    if profile_root.name.lower() == "careerhub":
+        return profile_root.parent
+    return profile_root
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("profile_repo", help="Path to checked-out personalised CareerHub repository")
+    parser.add_argument("profile_repo", help="Path to checked-out personalised CareerHub profile root")
     args = parser.parse_args()
 
     profile_root = Path(args.profile_repo).resolve()
+    repo_root = find_repo_root(profile_root)
     target_site = profile_root / "site"
     personalisation = profile_root / "personalisation"
     personal_components = target_site / "personal"
@@ -66,6 +81,10 @@ def main() -> int:
     }
 
     copy_managed(SOURCE, target_site, managed_paths)
+
+    workflow_target = repo_root / ".github" / "workflows" / "careerhub-operations.yml"
+    workflow_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(OPERATIONS_WORKFLOW, workflow_target)
 
     after = {
         "personalisation": digest_tree(personalisation),
@@ -81,6 +100,7 @@ def main() -> int:
         "status": "ok",
         "target": str(target_site),
         "managed_paths": managed_paths,
+        "operations_workflow": str(workflow_target),
         "protected_hashes": after,
     }, indent=2))
     return 0
