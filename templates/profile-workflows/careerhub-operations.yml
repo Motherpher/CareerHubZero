@@ -93,6 +93,9 @@ jobs:
             track_event)
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action event --issue-number "$(getv issue_number)" --event-type "$(getv event_type)" --event-source "$(getv event_source)" --note "$(getv note)" --date "$(getv date)"
               ;;
+            search_profile_update)
+              python .careerhub-zero/scripts/update_search_profile.py --manifest "$CAREERHUB_MANIFEST" --anchors "$(getv anchors)" --remote-allowed "$(getv remote_allowed)" --engagement-types "$(getv engagement_types)" --saved-need "$(getv saved_need)"
+              ;;
             profile_review|profile_rebuild|library_review)
               mkdir -p "$CAREERHUB_ROOT/data/review_requests"
               cp /tmp/careerhub-action/payload.json "$CAREERHUB_ROOT/data/review_requests/${ACTION_ID}.json"
@@ -104,7 +107,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
+          git add -A "$CAREERHUB_ROOT/config" "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No repository state changes."
             exit 0
