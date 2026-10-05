@@ -8,19 +8,36 @@ The recheck is deliberately bounded to work that can be proven from GitHub repos
 
 ## Executive verdict
 
-**Repository gate verdict: BLOCKED, with WP02 and WP03 cleared.**
+**Repository gate verdict: BLOCKED, with WP02 and WP03 cleared and formally closed.**
 
 The historical distribution and profile-cutover blockers are resolved. CareerHub now has one authoritative central runtime in `Motherpher/CareerHubZero`; active profile nodes consume that runtime through checkout-based execution against their own manifest and no longer require authoritative local runtime copies.
 
 The remaining Silicon Sprint blockers are not WP02/WP03. WP06 still requires live geography/routing proof; WP09 remains dependent on WP06; WP10 remains dependent on the incomplete downstream gate set.
+
+Fresh Household Director run `37347655415` independently produced:
+
+```text
+WP01 PASS
+WP02 PASS
+WP03 PASS
+WP04 PASS
+WP05 PASS
+WP06 BLOCKED
+WP07 PASS
+WP08 PASS
+WP09 BLOCKED
+WP10 BLOCKED
+```
+
+The Household workflow therefore remains red by design while WP06/WP09/WP10 are unresolved; that red overall result does not reopen WP02 or WP03.
 
 ## Re-evaluated work packages
 
 | WP | 2026-09-25 | 2026-10-05 repository recheck | Basis |
 |---|---|---|---|
 | WP01 — Collapse Runtime to One CareerHub Body | PASS | PASS (carried forward) | Not reopened by this recheck. Central runtime remains canonical. |
-| WP02 — Invert Distribution | BLOCKED | **PASS** | Private composite-Action sharing was replaced by checkout-based central-body execution in both remaining profile repos. |
-| WP03 — Cut Over Profiles and Delete Legacy Motors | BLOCKED | **PASS** | Weronika and Grace workflows now execute CHZero; duplicate local runtimes were physically removed; profile-owned state validates/renders successfully on `main`. |
+| WP02 — Invert Distribution | BLOCKED | **PASS / CLOSED** | Private composite-Action sharing was replaced by checkout-based central-body execution in both remaining profile repos. Silicon issue #3 is closed as completed. |
+| WP03 — Cut Over Profiles and Delete Legacy Motors | BLOCKED | **PASS / CLOSED** | Weronika and Grace workflows execute CHZero; duplicate runtimes and migration-only locks are removed; profile-owned state validates/renders successfully on `main`. Silicon issue #4 is closed as completed. |
 | WP04 — Unify Search Kernel | PASS | PASS (carried forward) | Not reopened by this recheck. |
 | WP05 — Career Learning Loop | PASS | PASS (carried forward) | Not reopened by this recheck. |
 | WP06 — Unified Geography | BLOCKED | **BLOCKED** | Live Maps/routing and full geography end-to-end proof remain outstanding. |
@@ -53,23 +70,32 @@ The same checkout-based distribution path succeeds for Grace.
 
 The September blocker — private CareerHubZero Action access to profile repositories — is no longer part of the current architecture. Distribution is inverted without requiring central write-back tokens or cross-repository composite-Action access.
 
-**WP02: PASS.**
+Silicon issue `#3` was closed as **completed** on 2026-10-05 after the fresh Household Director run also returned WP02 PASS.
+
+**WP02: PASS / CLOSED.**
 
 ## WP03 evidence — profile cutover and legacy motor deletion
 
 ### Weronika Pérez Borjas
 
-- WP03 merge commit on `main`: `842b31c477fdd083b109d4e43bc80bd3d448f421`
-- PR latest-head archive validation: `37345589531` — success
-- PR latest-head CareerHub validation: `37345589643` — success
-- Post-merge `main` CareerHub validation: `37345897861` — success
-- Post-merge `main` unified-body compatibility: `37345897747` — success
+Initial central-motor cutover:
+- merge commit: `842b31c477fdd083b109d4e43bc80bd3d448f421`
+- post-cutover validation: `37345897861` — success
+- post-cutover compatibility: `37345897747` — success
 
-Removed from the profile runtime:
+Final WP03 closure cleanup:
+- merge commit: `92f861dc4a29b1f52e92914297bb1b9135faf7fe`
+- `Validate CareerHub`: `37348625867` — success
+- unified-body compatibility: `37348625998` — success
+- WPB archive validation: `37348626242` — success
+
+Removed from active CareerHub paths:
 - `CareerHub/src`
 - `CareerHub/scripts`
 - `CareerHub/hrdm`
 - `CareerHub/requirements.txt`
+- `CareerHub/instance.yaml`
+- `CareerHub/stack.lock.yaml`
 
 Rebound to central execution:
 - manual drill/application pack
@@ -91,27 +117,43 @@ Preserved as profile-owned state/context:
 
 ### Grace
 
-- WP03 merge commit on `main`: `1ff7dabb7aa004fd7c325026ffc33607468bb107`
-- PR latest-head profile validation: `37345560349` — success
-- PR latest-head unified-body compatibility: `37345560360` — success
-- Post-merge `main` unified-body compatibility: `37345918372` — success
-- Post-merge `main` profile validation/rendering: `37345918421` — success
+Initial central-motor cutover:
+- merge commit: `1ff7dabb7aa004fd7c325026ffc33607468bb107`
+- post-cutover compatibility: `37345918372` — success
+- post-cutover profile validation/rendering: `37345918421` — success
 
-Removed from the profile runtime:
+Final WP03 closure cleanup:
+- merge commit: `066be5b3e4da5697c745ccfb487318ed17352bd0`
+- post-cleanup validation/rendering: `37348650361` — success
+- post-cleanup unified-body compatibility: `37348650378` — success
+
+Removed from active CareerHub paths:
 - `CareerHub/src`
 - `CareerHub/scripts`
 - `CareerHub/hrdm`
 - `CareerHub/requirements.txt`
+- `CareerHub/instance.yaml`
+- `CareerHub/stack.lock.yaml`
 
-The validation gate is manifest-driven: it checks the profile/search/state paths declared by `CareerHub/careerhub.yaml` rather than assuming Linus/Weronika filenames. This preserves Grace's actual `profile/candidate.yaml`, search profile, job vault, applications and HRDM ledger.
+The validation gate is manifest-driven: it checks the profile/search/state paths declared by `CareerHub/careerhub.yaml` rather than assuming another profile's filenames. Grace-specific Swedish interaction copy remains profile-side.
 
-Grace-specific Swedish interaction copy remains profile-side. The quarantined pre-firewall Region Stockholm material was not promoted or altered by the cutover.
+The historical Region Stockholm pre-firewall application pack is now formally retired rather than merely quarantined. Repository state records `pre_firewall_artifact_retired` and `external_use_allowed: false`. The job/case remains saved for history and can only produce a future application through a completely fresh current-policy central CareerHub run.
+
+### Linus
+
+Linus was already a thin central-body profile node. The final steady-state shell/CI hardening was merged as:
+- commit `cd7d0933ca848274321f01f3f236309319fa941d`
+- post-merge managed-shell parity + protected-personalisation + production build run `37348676752` — success
+
+The site-build workflow is now read-only: it syncs CHZero into the CI workspace to detect drift, verifies `personalisation/**` and `site/personal/**` are untouched, and builds the committed shell. It no longer commits or pushes managed-shell changes from CI.
 
 ### WP03 conclusion
 
-Both previously duplicated profile runtimes have been removed, active operations are rebound to CHZero and the resulting profile-only nodes pass central validation/rendering on their actual `main` branches.
+All three active profiles are thin nodes executing the same central CareerHub body. The two duplicated local motors are gone, obsolete migration locks are gone, active operations are rebound centrally, and profile-owned evidence/search/state/history remain intact.
 
-**WP03: PASS.**
+Silicon issue `#4` was closed as **completed** on 2026-10-05. Fresh Household Director run `37347655415` returned WP03 PASS.
+
+**WP03: PASS / CLOSED.**
 
 ## Central runtime hardening evidence
 
@@ -121,8 +163,10 @@ The central WP3 action-completeness line was also revalidated before this rechec
 - central validation run `37340409335` — success, including production Next.js build
 - artifact-tracing hardening merge: `ad348d46753c58f2eebc85e0eff500609a118979`
 - central validation run `37343706733` — success
+- audit/control recheck merge: `b4b87cfc7a07ebddd3eeee0af8ab3242e241a5de`
+- central validation run `37347655464` — success
 
-The artifact API now scopes output tracing to the managed `.careerhub-artifacts` mirror rather than tracing parent directories or the whole project.
+The artifact API scopes output tracing to the managed `.careerhub-artifacts` mirror rather than tracing parent directories or the whole project.
 
 ## Current blocker set after recheck
 
@@ -140,12 +184,18 @@ The artifact API now scopes output tracing to the managed `.careerhub-artifacts`
    - requires the full dependency chain to pass
    - stable `1.0.0` remains prohibited
 
+### External proof still outstanding
+
+- live OpenAI HRDM/application execution after the previous API-credit exhaustion remains an external proof item
+
 ### No longer current blockers
 
 - private CareerHubZero composite-Action access
 - Weronika local-motor cutover
 - Grace local-motor cutover
 - duplicate authoritative runtime under either remaining profile node
+- obsolete `instance.yaml` / `stack.lock.yaml` profile migration locks
+- Grace's old pre-firewall application artifact as an active reusable asset
 
 ## Repository architecture after cutover
 
@@ -173,8 +223,8 @@ This recheck supersedes the **current-state interpretation** of WP02/WP03 in the
 
 ```text
 WP01 PASS
-WP02 PASS      ← changed from historical BLOCKED
-WP03 PASS      ← changed from historical BLOCKED
+WP02 PASS / CLOSED   ← changed from historical BLOCKED
+WP03 PASS / CLOSED   ← changed from historical BLOCKED
 WP04 PASS
 WP05 PASS
 WP06 BLOCKED
