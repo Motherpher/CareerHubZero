@@ -15,10 +15,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const hub = loadHubProfile();
   const theme = loadTheme();
   const style = cssVars(theme) as CSSProperties;
+  const swedish = (hub.identity.language ?? 'en').toLowerCase().startsWith('sv');
 
   return (
     <html lang={hub.identity.language ?? 'en'}>
-      <body style={style}>{children}</body>
+      <body style={style}>
+        {children}
+        <a className="wish-launcher" href="/wish" aria-label={swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub'}>
+          {swedish ? 'Jag önskar…' : 'I wish…'}
+        </a>
+      </body>
     </html>
   );
 }
