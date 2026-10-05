@@ -1,17 +1,29 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-09-25T00:55:00Z",
+  "updated_at": "2026-10-05T17:14:00Z",
   "gates": {
     "private_action_profile_access": {
-      "status": "BLOCKED_REPOSITORY_ADMIN_SETTING",
-      "evidence": "User authorized E01. Compatibility reruns on Linus, Weronika and Grace all failed again at GitHub Set up job before CareerHub code executed. CareerHubZero private Action access must be set to organization access.",
+      "status": "PASS",
+      "evidence": "Historical E01 mechanism retired. Profile execution no longer consumes CareerHubZero as a cross-repository composite Action. Weronika and Grace now checkout CareerHubZero and execute the canonical CLI directly; post-cutover main compatibility runs 37345897747 and 37345918372 passed.",
       "user_authorized": true,
       "verification_runs": {
-        "linus": 36052388116,
-        "weronika": 36052385689,
-        "grace": 36052392296
+        "linus": 37341325941,
+        "weronika": 37345897747,
+        "grace": 37345918372
       },
-      "required_action": "Motherpher/CareerHubZero → Settings → Actions → General → Access → Accessible from repositories in the Motherpher organization → Save"
+      "required_action": null,
+      "mechanism": "checkout_based_central_execution",
+      "historical_gate_name_retained_for_manifest_compatibility": true
+    },
+    "central_profile_execution": {
+      "status": "PASS",
+      "evidence": "All active profile nodes execute against the canonical CareerHubZero body without requiring private composite-Action sharing. Weronika main compatibility run 37345897747 and Grace main compatibility run 37345918372 passed after local-runtime deletion; Linus central managed-shell/action motor build passed in run 37341325941.",
+      "verification_runs": {
+        "linus": 37341325941,
+        "weronika": 37345897747,
+        "grace": 37345918372
+      },
+      "required_action": null
     },
     "geo_runtime_complete": {
       "status": "BLOCKED_MISSING_GOOGLE_MAPS_SECRET",
