@@ -12,8 +12,8 @@ export default function WishPage() {
       <h1>{swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub'}</h1>
       <p className="lead">
         {swedish
-          ? 'Berätta vad som skulle göra din CareerHub enklare, tydligare eller mer användbar. Önskemålet går till den gemensamma utvecklingsbanken och kan bli underlag för kommande utvecklingsarbete.'
-          : 'Tell us what would make your CareerHub easier, clearer or more useful. Your wish goes into the shared development bank and can become input to future development work.'}
+          ? 'Skriv vad som skulle göra din CareerHub enklare, tydligare eller mer användbar för dig. Vi sorterar önskemålet så att sådant som gäller just din profil kan utvecklas där, medan förbättringar som hör hemma i CareerHub-motorn kan komma alla CareerHubs till del.'
+          : 'Tell us what would make your CareerHub easier, clearer or more useful for you. We sort the wish so profile-specific improvements stay with your hub, while motor-level improvements can benefit every CareerHub.'}
       </p>
       <WishForm language={hub.identity.language ?? 'en'} />
     </main>
