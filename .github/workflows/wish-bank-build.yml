@@ -1,0 +1,31 @@
+name: Wish Bank Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/wish-bank/**'
+      - 'schemas/wish-bank.schema.json'
+      - 'docs/WISH_BANK_SEGMENTATION.md'
+  pull_request:
+    paths:
+      - 'services/wish-bank/**'
+      - 'schemas/wish-bank.schema.json'
+      - 'docs/WISH_BANK_SEGMENTATION.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: services/wish-bank/package.json
+      - name: Install dependencies
+        working-directory: services/wish-bank
+        run: npm install --no-audit --no-fund
+      - name: Build
+        working-directory: services/wish-bank
+        run: npm run build
