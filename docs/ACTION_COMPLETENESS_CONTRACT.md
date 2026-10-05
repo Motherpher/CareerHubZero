@@ -98,3 +98,5 @@ Action completeness never weakens the evidence policy.
 ## Acceptance gate
 
 A CHZero release affecting the personalised surface must fail review if any primary route contains a user-facing promise such as “can”, “run”, “update”, “upload”, “analyse”, “apply”, “track”, “review” or “rebuild” without a corresponding visible control and execution path.
+
+The central validation workflow must also sync CHZero into a fixture personal hub and complete a production Next.js build before the action surface can be merged.
