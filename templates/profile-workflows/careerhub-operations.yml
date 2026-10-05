@@ -102,12 +102,20 @@ jobs:
               ;;
             *) echo "Unsupported operation: $OPERATION" >&2; exit 2 ;;
           esac
+      - name: Mirror generated artifacts into deployable site
+        shell: bash
+        run: |
+          MIRROR="$CAREERHUB_ROOT/site/.careerhub-artifacts"
+          rm -rf "$MIRROR"
+          mkdir -p "$MIRROR/output" "$MIRROR/reports"
+          if [ -d "$CAREERHUB_ROOT/output" ]; then cp -a "$CAREERHUB_ROOT/output/." "$MIRROR/output/"; fi
+          if [ -d "$CAREERHUB_ROOT/reports" ]; then cp -a "$CAREERHUB_ROOT/reports/." "$MIRROR/reports/"; fi
       - name: Commit CareerHub state and artifacts
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A "$CAREERHUB_ROOT/config" "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
+          git add -A "$CAREERHUB_ROOT/config" "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/site/.careerhub-artifacts" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No repository state changes."
             exit 0
