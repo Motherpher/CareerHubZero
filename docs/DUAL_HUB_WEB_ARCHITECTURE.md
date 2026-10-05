@@ -15,7 +15,7 @@ The personalised hub is not a fork of CareerHub. It is an instance that consumes
 
 ## 2. Physical deployment model
 
-Every personalised repository is Vercel-deployable and contains three zones:
+Every personalised repository is Vercel-deployable and contains three ownership zones:
 
 ```text
 <profile-repository>/
@@ -26,27 +26,28 @@ Every personalised repository is Vercel-deployable and contains three zones:
 │   ├── hub.profile.yaml              # public-facing hub composition
 │   ├── theme.tokens.json             # visual identity tokens
 │   ├── voice.yaml                    # tone / copy behaviour
-│   ├── navigation.yaml               # information architecture
 │   └── content/                      # intros, labels, help copy, optional sections
 ├── data/                             # MACHINE-WRITTEN: jobs/application/runtime state
 ├── reports/                          # generated artifacts
-└── site/
-    ├── managed/                      # CENTRAL-OWNED: synced from CareerHubZero
-    │   ├── app/
-    │   ├── components/
-    │   ├── lib/
-    │   └── styles/
+└── site/                             # Vercel root directory
+    ├── app/                          # CENTRAL-OWNED managed shell
+    ├── components/                   # CENTRAL-OWNED reusable UI
+    ├── lib/                          # CENTRAL-OWNED contracts/adapters
+    ├── styles/                       # CENTRAL-OWNED accessibility/layout base
     ├── personal/                     # PERSON-OWNED optional custom components
-    ├── package.json
-    ├── next.config.mjs
-    └── tsconfig.json
+    ├── .careerhub-managed.json       # shell revision + managed-path manifest
+    ├── package.json                  # CENTRAL-OWNED
+    ├── next.config.mjs               # CENTRAL-OWNED
+    └── tsconfig.json                 # CENTRAL-OWNED
 ```
 
 Ownership invariant:
 
-- `site/managed/**` may be replaced by a CareerHub release.
-- `personalisation/**` and `site/personal/**` may never be overwritten by a central sync.
+- the exact paths named in `site/.careerhub-managed.json` may be replaced by a CareerHub release;
+- `personalisation/**` and `site/personal/**` may never be overwritten by a central sync;
 - `data/**` and generated reports are state/artifact surfaces, not design sources.
+
+This keeps the deployed Next.js application conventional while preserving hard ownership boundaries.
 
 ## 3. What belongs in the CareerHub Motor
 
@@ -180,20 +181,20 @@ The motor never infers private-life facts into the matchable career profile. The
 
 ## 9. Distribution model
 
-CareerHubZero publishes a **managed web-shell payload**.
+CareerHubZero publishes a **managed web-shell payload** from `web-shell/site/`.
 
 For each registered profile repository, the distribution process:
 
-1. checks the profile manifest and compatibility
-2. copies the current managed shell to `site/managed/`
-3. updates the shell release marker
-4. validates that personal-owned paths are unchanged
-5. runs schema and build checks
-6. opens or updates a release PR in the profile repository
-7. Vercel creates a preview deployment from that PR
-8. after validation, merge creates the production deployment
+1. checks the profile manifest and compatibility;
+2. copies only the allowlisted managed payload into `site/`;
+3. updates `site/.careerhub-managed.json` with shell revision and managed paths;
+4. verifies hashes for `personalisation/**` and `site/personal/**` are unchanged;
+5. validates personalisation schemas and runs the Next.js build;
+6. opens or updates a release PR in the profile repository;
+7. Vercel creates a preview deployment from that PR;
+8. after validation, merge creates the production deployment.
 
-No central release may silently modify `personalisation/**`.
+No central release may silently modify person-owned paths.
 
 ## 10. Vercel topology
 
@@ -209,7 +210,7 @@ Gracey            ── Vercel Project: careerhub-gracey
 ...
 ```
 
-Each personalised repository gets its own Vercel project, production URL/domain, preview deployments and environment settings.
+Each personalised repository gets its own Vercel project, production URL/domain, preview deployments and environment settings. Vercel root directory is `site`.
 
 This gives independent presentation and release validation while retaining one upstream product body.
 
@@ -217,12 +218,12 @@ This gives independent presentation and release validation while retaining one u
 
 A CareerHub release is valid only if:
 
-- central motor tests pass
-- managed shell tests pass
-- personalisation schema tests pass
-- each active profile manifest remains compatible
-- each active profile web build succeeds
-- protected personalisation paths are unchanged by sync
+- central motor tests pass;
+- managed shell tests pass;
+- personalisation schema tests pass;
+- each active profile manifest remains compatible;
+- each active profile web build succeeds;
+- protected personalisation paths are unchanged by sync.
 
 The central release ledger records the shell revision distributed to each profile.
 
