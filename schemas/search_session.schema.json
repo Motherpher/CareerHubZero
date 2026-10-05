@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/search_session.schema.json",
+  "title": "CareerHub Search Session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id", "session_id", "base_search_profile", "overrides", "effective_search", "persistence"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "base_search_profile": {"type": "object"},
+    "overrides": {"type": "object"},
+    "effective_search": {"type": "object"},
+    "persistence": {
+      "type": "string",
+      "enum": ["SESSION_ONLY", "SAVE_TO_PROFILE_PENDING", "SAVED_TO_PROFILE"]
+    },
+    "created_at": {"type": ["string", "null"], "format": "date-time"},
+    "completed_at": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

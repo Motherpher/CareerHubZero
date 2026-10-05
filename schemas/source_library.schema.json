@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/source_library.schema.json",
+  "title": "CareerHub Personal Source Library",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id", "sources", "index_state"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "filename", "content_type", "storage", "status", "uploaded_at", "hash", "extraction"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "filename": {"type": "string", "minLength": 1},
+          "content_type": {"type": "string", "minLength": 1},
+          "document_class": {"type": ["string", "null"]},
+          "storage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["provider", "pathname", "access"],
+            "properties": {
+              "provider": {"const": "vercel_blob"},
+              "pathname": {"type": "string", "minLength": 1},
+              "access": {"const": "private"}
+            }
+          },
+          "status": {"type": "string", "enum": ["STORED", "EXTRACTED", "REVIEW", "ACTIVE", "INACTIVE", "DELETED", "ERROR"]},
+          "uploaded_at": {"type": "string", "format": "date-time"},
+          "updated_at": {"type": ["string", "null"], "format": "date-time"},
+          "hash": {"type": "string", "minLength": 1},
+          "extraction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state"],
+            "properties": {
+              "state": {"type": "string", "enum": ["PENDING", "COMPLETE", "PARTIAL", "FAILED"]},
+              "extracted_text_ref": {"type": ["string", "null"]},
+              "completed_at": {"type": ["string", "null"], "format": "date-time"},
+              "error": {"type": ["string", "null"]}
+            }
+          },
+          "profile_contributions": {
+            "type": "array",
+            "items": {"type": "string"},
+            "default": []
+          }
+        }
+      }
+    },
+    "index_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "active_source_count"],
+      "properties": {
+        "status": {"type": "string", "enum": ["CURRENT", "STALE", "RELOADING", "ERROR"]},
+        "active_source_count": {"type": "integer", "minimum": 0},
+        "last_reloaded_at": {"type": ["string", "null"], "format": "date-time"},
+        "last_result": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
