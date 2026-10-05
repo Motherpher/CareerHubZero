@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  outputFileTracingIncludes: {
+    '/api/artifact': ['../output/**/*', '../reports/**/*']
+  },
   experimental: {
     externalDir: true
   }
