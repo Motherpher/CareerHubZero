@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/profile-derivation.schema.json",
+  "title": "CareerHub Profile Derivation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id", "status", "vectors", "decisions", "genericity_audit"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["DRAFT", "STRUCTURE_READY", "REFERENCE_PENDING", "PREVIEW_READY", "PERSONALISATION_LOCK"]},
+    "vectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "work_logic", "information_need", "career_surface", "voice", "visual_grammar", "interaction", "reference_provenance"],
+      "properties": {
+        "identity": {"type": "array", "items": {"type": "string"}},
+        "work_logic": {"type": "array", "items": {"type": "string"}},
+        "information_need": {"type": "array", "items": {"type": "string"}},
+        "career_surface": {"type": "array", "items": {"type": "string"}},
+        "voice": {"type": "array", "items": {"type": "string"}},
+        "visual_grammar": {"type": "array", "items": {"type": "string"}},
+        "interaction": {"type": "array", "items": {"type": "string"}},
+        "reference_provenance": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "dimension", "decision", "source_state", "source_refs"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "dimension": {"enum": ["information_hierarchy", "module_order", "career_surfaces", "voice", "density", "visual_grammar", "interaction_defaults", "content_framing"]},
+          "decision": {"type": "string", "minLength": 1},
+          "source_state": {"enum": ["VERIFIED_CAREER", "EXPLICIT_USER", "CHAT_PATTERN", "VISUAL_HARVEST", "USABILITY_TEST", "REFERENCE_PENDING"]},
+          "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "genericity_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible_dimensions", "changed_dimensions", "score", "result"],
+      "properties": {
+        "eligible_dimensions": {"type": "integer", "minimum": 1, "maximum": 8},
+        "changed_dimensions": {"type": "integer", "minimum": 0, "maximum": 8},
+        "score": {"type": "number", "minimum": 0, "maximum": 1},
+        "result": {"enum": ["FAIL", "WARN", "PASS"]}
+      }
+    }
+  }
+}
