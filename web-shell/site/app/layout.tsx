@@ -5,10 +5,7 @@ import './globals.css';
 
 export function generateMetadata(): Metadata {
   const hub = loadHubProfile();
-  return {
-    title: `${hub.identity.display_name} · CareerHub`,
-    description: hub.identity.strapline ?? 'Personal CareerHub'
-  };
+  return { title: `${hub.identity.display_name} · CareerHub`, description: hub.identity.strapline ?? 'Personal CareerHub' };
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -16,14 +13,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const theme = loadTheme();
   const style = cssVars(theme) as CSSProperties;
   const swedish = (hub.identity.language ?? 'en').toLowerCase().startsWith('sv');
-
   return (
     <html lang={hub.identity.language ?? 'en'}>
       <body style={style}>
         {children}
-        <a className="wish-launcher" href="/wish" aria-label={swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub'}>
-          {swedish ? 'Jag önskar…' : 'I wish…'}
-        </a>
+        <a className="wish-launcher" href="/wish" aria-label={swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub'}>{swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub'}</a>
       </body>
     </html>
   );
