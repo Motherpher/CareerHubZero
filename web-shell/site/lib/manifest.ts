@@ -5,6 +5,17 @@ import YAML from 'yaml';
 export type CareerHubManifest = {
   schema_version: string;
   profile_id: string;
+  profile?: { path?: string };
+  search?: { path?: string };
+  state?: {
+    job_vault?: string;
+    applications?: string;
+    hrdm_ledger?: string;
+  };
+  artifacts?: {
+    hrdm_reports?: string;
+    hrdm_history?: string;
+  };
   ui?: { language?: string };
 };
 
