@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   const requested = url.searchParams.get('path') || '';
   const artifact = safeArtifact(requested);
   if (!artifact) return NextResponse.json({ error: 'Artifact not found.' }, { status: 404 });
-  const buffer = fs.readFileSync(artifact.full);
+  const buffer = fs.readFileSync(/* turbopackIgnore: true */ artifact.full);
   const ext = path.extname(artifact.full).toLowerCase();
   const contentType = ext === '.json' ? 'application/json' : ext === '.docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : ext === '.md' ? 'text/markdown; charset=utf-8' : 'application/octet-stream';
   return new Response(new Uint8Array(buffer), {
