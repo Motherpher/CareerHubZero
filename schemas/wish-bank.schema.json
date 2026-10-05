@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/wish-bank.schema.json",
+  "title": "CareerHub Wish Bank Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "wish_id", "source", "submission", "triage", "development", "timestamps"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "wish_id": {"type": "string", "pattern": "^WISH-[A-Z0-9-]+$"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "route", "language"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1},
+        "display_label": {"type": "string", "maxLength": 120},
+        "route": {"type": "string", "maxLength": 300},
+        "language": {"type": "string", "minLength": 2, "maxLength": 16},
+        "careerhub_version": {"type": ["string", "null"]}
+      }
+    },
+    "submission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": {"type": "string", "minLength": 3, "maxLength": 4000},
+        "user_category": {
+          "enum": ["navigation", "profile", "search", "geography", "analyse", "apply", "track", "library", "accessibility", "visual", "performance", "new_capability", "other", null]
+        },
+        "location_note": {"type": ["string", "null"], "maxLength": 300}
+      }
+    },
+    "triage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["NEW", "TRIAGED", "CLUSTERED", "STANDALONE", "CANDIDATE_WP", "ACCEPTED", "DEFERRED", "DECLINED", "WP_CREATED", "IN_DEVELOPMENT", "RELEASED", "VALIDATED", "REOPENED"]},
+        "assigned_categories": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "scope": {"enum": ["PERSONAL_HUB", "MULTI_HUB", "CENTRAL_MOTOR", "WEB_SHELL", "INTEGRATION", null]},
+        "severity": {"enum": ["S0", "S1", "S2", "S3", null]},
+        "development_leverage": {"enum": ["L1", "L2", "L3", null]},
+        "cluster_id": {"type": ["string", "null"]},
+        "affected_capability": {"type": ["string", "null"]},
+        "affected_users": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "development": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "candidate_wp_id": {"type": ["string", "null"]},
+        "wp_id": {"type": ["string", "null"]},
+        "release_version": {"type": ["string", "null"]},
+        "validation_result": {"enum": ["PENDING", "PASSED", "FAILED", null]}
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["submitted_at"],
+      "properties": {
+        "submitted_at": {"type": "string", "format": "date-time"},
+        "triaged_at": {"type": ["string", "null"], "format": "date-time"},
+        "resolved_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    }
+  }
+}
