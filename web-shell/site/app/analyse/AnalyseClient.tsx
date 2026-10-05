@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 type Job = { id?: string; title?: string; company?: string; url?: string; deadline?: string; lane?: string };
 type Lane = { lane_id: string; name: string; bucket: string };
@@ -9,21 +9,34 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   const [selected, setSelected] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  function setField(name: string, value: string, form = formRef.current) {
+    if (!form) return;
+    const input = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+    if (input) input.value = value;
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setField('job_url', params.get('job_url') ?? '');
+    setField('title', params.get('title') ?? '');
+    setField('company', params.get('company') ?? '');
+    setField('deadline', (params.get('deadline') ?? '').slice(0, 10));
+    const bucket = params.get('lane');
+    if (bucket && ['core', 'adjacent', 'bridge'].includes(bucket)) setField('lane', bucket);
+  }, []);
 
   function chooseJob(value: string, form: HTMLFormElement | null) {
     setSelected(value);
     if (!form || !value) return;
     const job = jobs.find((item, index) => String(item.id ?? index) === value);
     if (!job) return;
-    const set = (name: string, value: string) => {
-      const input = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
-      if (input) input.value = value;
-    };
-    set('job_url', job.url ?? '');
-    set('title', job.title ?? '');
-    set('company', job.company ?? '');
-    set('deadline', (job.deadline ?? '').slice(0, 10));
-    if (job.lane) set('lane', job.lane);
+    setField('job_url', job.url ?? '', form);
+    setField('title', job.title ?? '', form);
+    setField('company', job.company ?? '', form);
+    setField('deadline', (job.deadline ?? '').slice(0, 10), form);
+    if (job.lane && ['core', 'adjacent', 'bridge'].includes(job.lane)) setField('lane', job.lane, form);
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -42,14 +55,14 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   }
 
   return (
-    <form className="action-form" onSubmit={submit}>
+    <form ref={formRef} className="action-form" onSubmit={submit}>
       <div className="action-form__grid">
         <label className="field field--full"><span>Saved role</span><select value={selected} onChange={(event) => chooseJob(event.target.value, event.currentTarget.form)}><option value="">Enter a role manually</option>{jobs.map((job, index) => <option key={String(job.id ?? index)} value={String(job.id ?? index)}>{job.title || 'Untitled role'}{job.company ? ` — ${job.company}` : ''}</option>)}</select></label>
         <label className="field field--full"><span>Job URL</span><input name="job_url" type="url" placeholder="https://…" /></label>
         <label className="field"><span>Role title</span><input name="title" /></label>
         <label className="field"><span>Employer</span><input name="company" /></label>
         <label className="field"><span>Deadline</span><input name="deadline" type="date" /></label>
-        <label className="field"><span>Search / application lane</span><select name="lane" defaultValue="core"><option value="core">Core</option><option value="adjacent">Adjacent</option><option value="bridge">Bridge</option>{lanes.filter((lane) => !['core','adjacent','bridge'].includes(lane.bucket)).map((lane) => <option key={lane.lane_id} value={lane.lane_id}>{lane.name}</option>)}</select></label>
+        <label className="field"><span>Search / application lane</span><select name="lane" defaultValue="core"><option value="core">Core</option><option value="adjacent">Adjacent</option><option value="bridge">Bridge</option></select></label>
         <label className="field"><span>Hybridianesque filter</span><select name="hy_filter" defaultValue="No"><option value="No">No</option><option value="Yes">Yes</option></select></label>
         <label className="field field--full"><span>Paste job text when the URL cannot be read</span><textarea name="job_text" rows={8} placeholder="Optional. Use this when the vacancy blocks automated retrieval." /></label>
       </div>
