@@ -16,13 +16,13 @@ contents:
   - canonical HRDM OPEN-to-FINAL trace lifecycle and Hybridianesque gate
   - Household CI produces audit artifacts and enforces recorded Director states
 known_external_blockers:
-  - private CareerHubZero Action access to profile repositories
   - live Google Maps/routing and full geography end-to-end proof
   - live OpenAI HRDM/application execution after previous credit exhaustion
-  - Grace and Weronika local-motor cutover pending central action parity
 closure_rule: Close development_open only when the S00-S13 Household end audit is committed.
 
 household_audit:
+  historical_snapshot: true
+  snapshot_date: 2026-09-25
   order_id: CH-HH-ORDER-2026-09-25-01
   evidence_run: 36073576772
   validation_run: 36073576839
@@ -43,4 +43,43 @@ household_audit:
   janitor:
     findings: 6
     blocking_findings: 0
+  release_1_0_allowed: false
+
+current_recheck:
+  date: 2026-10-05
+  scope: repository-only
+  report: docs/audit/CAREERHUB_REPOSITORY_GATE_RECHECK_2026-10-05.md
+  verdict: BLOCKED
+  wp_states:
+    WP01: PASS
+    WP02: PASS
+    WP03: PASS
+    WP04: PASS
+    WP05: PASS
+    WP06: BLOCKED
+    WP07: PASS
+    WP08: PASS
+    WP09: BLOCKED
+    WP10: BLOCKED
+  cleared_blockers:
+    - private CareerHubZero composite-Action access to profile repositories
+    - Weronika local-motor cutover
+    - Grace local-motor cutover
+    - duplicate authoritative runtime in Weronika and Grace profile nodes
+  remaining_blockers:
+    - live Google Maps/routing and full geography end-to-end proof
+    - WP09 dependency on WP06
+    - WP10 dependency on incomplete downstream gates
+    - live OpenAI HRDM/application execution after previous credit exhaustion remains an external proof item
+  evidence:
+    careerhubzero_hardening_commit: ad348d46753c58f2eebc85e0eff500609a118979
+    careerhubzero_validation_run: 37343706733
+    weronika_wp02_commit: d03a96e8bc0917164659809cf8c67607793ee371
+    weronika_wp03_commit: 842b31c477fdd083b109d4e43bc80bd3d448f421
+    weronika_main_validation_run: 37345897861
+    weronika_main_compatibility_run: 37345897747
+    grace_wp02_commit: 413adadf4e8906d193e028e0ab1c1a4b6d3ba2e0
+    grace_wp03_commit: 1ff7dabb7aa004fd7c325026ffc33607468bb107
+    grace_main_validation_run: 37345918421
+    grace_main_compatibility_run: 37345918372
   release_1_0_allowed: false
