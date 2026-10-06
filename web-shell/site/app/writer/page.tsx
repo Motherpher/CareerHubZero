@@ -56,7 +56,21 @@ export default function WriterPortfolioPage() {
           {sections.map((section, index) => {
             const slug = portfolioSectionSlug(section, index);
             const count = archive.length ? worksForPortfolioSection(archive, section).length : null;
-            return (
+            const content = (
+              <>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p className="meta-label">Area</p>
+                <h2>{section.label}</h2>
+                {portfolio ? (
+                  <p className="portfolio-department__action">
+                    {count === null ? 'Open area →' : `View ${count} ${count === 1 ? 'work' : 'works'} →`}
+                  </p>
+                ) : null}
+                {section.description ? <p>{section.description}</p> : null}
+              </>
+            );
+
+            return portfolio ? (
               <a
                 className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`}
                 href={`/writer/${slug}`}
@@ -64,14 +78,12 @@ export default function WriterPortfolioPage() {
                 style={{ color: 'inherit', textDecoration: 'none' }}
                 aria-label={`Open ${section.label}`}
               >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <p className="meta-label">Area</p>
-                <h2>{section.label}</h2>
-                <p className="portfolio-department__action">
-                  {count === null ? 'Open area →' : `View ${count} ${count === 1 ? 'work' : 'works'} →`}
-                </p>
-                {section.description ? <p>{section.description}</p> : null}
+                {content}
               </a>
+            ) : (
+              <article className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`} key={section.label}>
+                {content}
+              </article>
             );
           })}
         </section>
