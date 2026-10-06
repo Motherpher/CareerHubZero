@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-10-06T09:56:00+02:00",
+  "updated_at": "2026-10-06",
   "gates": {
     "private_action_profile_access": {
       "status": "PASS",
-      "evidence": "Historical E01 mechanism retired. Profile execution no longer consumes CareerHubZero as a cross-repository composite Action. Weronika and Grace now checkout CareerHubZero and execute the canonical CLI directly; post-cutover main compatibility runs 37345897747 and 37345918372 passed.",
+      "evidence": "Historical E01 mechanism retired. Profile execution no longer consumes CareerHubZero as a cross-repository composite Action. Weronika and Grace checkout CareerHubZero and execute the canonical CLI directly; post-cutover compatibility runs passed.",
       "user_authorized": true,
       "verification_runs": {
         "linus": 37341325941,
@@ -17,7 +17,7 @@
     },
     "central_profile_execution": {
       "status": "PASS",
-      "evidence": "All active profile nodes execute against the canonical CareerHubZero body without requiring private composite-Action sharing. Weronika main compatibility run 37345897747 and Grace main compatibility run 37345918372 passed after local-runtime deletion; Linus central managed-shell/action motor build passed in run 37341325941.",
+      "evidence": "All active profile nodes execute against the canonical CareerHubZero body without requiring private composite-Action sharing.",
       "verification_runs": {
         "linus": 37341325941,
         "weronika": 37345897747,
@@ -27,9 +27,9 @@
     },
     "geo_runtime_complete": {
       "status": "PASS",
-      "evidence": "CareerHub geography runtime is accepted without the paid Google Maps provider. On 2026-10-06 the user explicitly declined paid Google Maps API usage. Local Swedish administrative geography, labour-market geography and non-Google search geography remain the supported runtime; Google Places/Routes are optional and disabled by user choice.",
+      "evidence": "CareerHub geography runtime is accepted without the paid Google Maps provider. The user explicitly declined paid Google Maps API usage. Local Swedish administrative geography, labour-market geography and non-Google search geography remain the supported runtime; Google Places/Routes are optional and disabled by user choice.",
       "user_authorized": true,
-      "verification_run": null,
+      "verification_run": 37436076911,
       "required_action": null,
       "provider_policy": {
         "google_maps": "DISABLED_BY_USER_OPTIONAL",
@@ -37,11 +37,13 @@
       }
     },
     "live_ai_execution": {
-      "status": "BLOCKED_CREDIT_BALANCE_EXHAUSTED",
-      "evidence": "Live E03 probe reached OpenAI Responses API using gpt-5.6-sol and returned HTTP 429 credit_balance_exhausted / insufficient_quota. ChatGPT subscription billing does not fund API usage; API billing must have available balance in the organization owning OPENAI_API_KEY.",
+      "status": "PASS",
+      "evidence": "Live external-gate run 37436076911 reached the OpenAI Responses API using gpt-5.6-sol and returned CAREERHUB_GATE_OK after API credit was restored.",
       "user_authorized": true,
-      "verification_run": 37347655394,
-      "required_action": "Open the API Platform billing overview for the organization owning OPENAI_API_KEY and restore API billing capacity (buy API credits or resolve the API billing method), then rerun the external-gates workflow."
+      "verification_run": 37436076911,
+      "required_action": null,
+      "model": "gpt-5.6-sol",
+      "responses_api": "PASS"
     }
   },
   "authorization": {
