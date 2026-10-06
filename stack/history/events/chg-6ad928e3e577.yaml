@@ -1,0 +1,39 @@
+schema_version: '1.1'
+event_id: CHG-6ad928e3e577
+recorded_at: '2026-10-06T23:34:42Z'
+summary: G-WP1.8 — full editorial collage visual language
+decision_context: >-
+  Implement the profile-scoped visual language required for Grace CareerHub while
+  preserving the central CHZero body. The change adds the reusable editorial
+  collage stylesheet and keeps the visual grammar inactive unless a profile uses
+  experience.mode = custom.
+work_packages:
+  - WP1.8
+failure_ids:
+  - CI-37547324424
+subsystems:
+  - web_surface
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: push
+  base_sha: 70076254af972ac788ed3c30b98daa15be343dd0
+  head_sha: 6ad928e3e57700b0e88d6ccd5caedcd352187181
+  branch: main
+  actor: Hybrismannen
+  workflow_evidence:
+    failed_validation_run: 37547324424
+changes:
+  fingerprint: sha256:e52ebc4fd8c3f718b2a24c3eca6b90dbc2df7e88ac8442c084211e60dbb4f752
+  file_count: 1
+  files:
+    - status: A
+      path: web-shell/site/app/visual-language.css
+commits:
+  - sha: 6ad928e3e57700b0e88d6ccd5caedcd352187181
+    authored_at: '2026-10-06T23:34:42Z'
+    author: Hybrismannen
+    subject: G-WP1.8 add full editorial collage visual language
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
