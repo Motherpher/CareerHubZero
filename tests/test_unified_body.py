@@ -132,7 +132,7 @@ class UnifiedBodyTests(unittest.TestCase):
             self.assertTrue(incomplete["process_id"].endswith("-S09-A-R01-WARN"))
             self.assertEqual(incomplete["bank_eligible_outputs"], [])
 
-    def test_hybridianesque_requires_explicit_yes_for_deep_filter(self):
+    def test_hybridianesque_auto_activates_when_evidence_threshold_is_met(self):
         candidate = {
             "recommended": True,
             "why": "All four criteria are present.",
@@ -151,13 +151,16 @@ class UnifiedBodyTests(unittest.TestCase):
             "risk_remaining": [],
             "framing_if_active": "A bounded mediation function.",
         }
-        awaiting = finalize_hyfilter(candidate, None)
-        self.assertEqual(awaiting["status"], "awaiting_user_decision")
-        self.assertEqual(awaiting["participating_logics"], [])
+        automatic = finalize_hyfilter(candidate, None)
+        self.assertEqual(automatic["status"], "active")
+        self.assertTrue(automatic["activated"])
+        self.assertEqual(automatic["activation_mode"], "automatic")
+        self.assertEqual(automatic["participating_logics"], ["institution", "community"])
 
-        active = finalize_hyfilter(candidate, "Yes")
-        self.assertEqual(active["status"], "active")
-        self.assertEqual(active["participating_logics"], ["institution", "community"])
+        suppressed = finalize_hyfilter(candidate, "No")
+        self.assertEqual(suppressed["status"], "declined")
+        self.assertFalse(suppressed["activated"])
+        self.assertEqual(suppressed["participating_logics"], [])
 
     def test_expired_report_moves_off_active_shelf_but_stays_in_ledger(self):
         with tempfile.TemporaryDirectory() as tmp:

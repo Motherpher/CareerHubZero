@@ -4,6 +4,7 @@ import { cssVars, loadHubProfile, loadTheme } from '@/lib/profile';
 import './globals.css';
 import './actions.css';
 import './profile-shell.css';
+import './motor.css';
 
 export function generateMetadata(): Metadata {
   const hub = loadHubProfile();
