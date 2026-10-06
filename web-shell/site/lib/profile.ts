@@ -2,6 +2,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 
+export type ProfileRoomLink = {
+  label: string;
+  href: string;
+};
+
+export type ProfileRoom = {
+  id: string;
+  label: string;
+  eyebrow?: string;
+  description: string;
+  href: string;
+  cta?: string;
+  features?: string[];
+  links?: ProfileRoomLink[];
+};
+
 export type HubProfile = {
   schema_version: '1.0';
   identity: {
@@ -23,6 +39,12 @@ export type HubProfile = {
   navigation: {
     primary: string[];
     labels?: Record<string, string>;
+  };
+  profile_shell?: {
+    enabled?: boolean;
+    headline?: string;
+    intro?: string;
+    rooms?: ProfileRoom[];
   };
 };
 
