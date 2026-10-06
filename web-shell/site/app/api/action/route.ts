@@ -67,11 +67,13 @@ export async function POST(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: stored ? 'QUEUED' : 'UNCONFIGURED',
+      user_state: stored ? 'waiting_for_motor_connection' : 'not_started',
       dispatched: false,
       stored,
       message: stored
-        ? 'Action queued. Connect the CareerHub GitHub dispatcher to execute motor operations.'
-        : 'CareerHub action execution is not configured for this deployment.',
+        ? 'Request saved, but not started yet. This CareerHub is waiting for its secure motor connection, so no analysis or update is running. The request reference is kept for tracing.'
+        : 'Request not started. This CareerHub deployment is not connected to the motor and could not store the request.',
+      next_step: 'Connect the CareerHub GitHub dispatcher for this deployment, then submit the action again.',
     }, { status: stored ? 202 : 503 });
   }
 
@@ -97,9 +99,12 @@ export async function POST(request: Request) {
   if (!response.ok) {
     const detail = await response.text();
     return NextResponse.json({
-      error: 'CareerHub motor dispatch failed.',
+      error: 'CareerHub could not start the motor operation.',
       action_id: actionId,
       stored,
+      user_state: 'dispatch_failed',
+      message: 'The request was received, but the secure motor hand-off failed. Nothing is running yet.',
+      next_step: 'Try again. If it repeats, use the ACT reference when checking the dispatcher configuration.',
       detail: detail.slice(0, 500),
     }, { status: 502 });
   }
@@ -107,8 +112,10 @@ export async function POST(request: Request) {
   return NextResponse.json({
     action_id: actionId,
     state: 'DISPATCHED',
+    user_state: 'running_in_background',
     dispatched: true,
     stored,
-    message: 'Action sent to the CareerHub motor.',
+    message: 'Started. CareerHub handed the request to the motor, which is now working in the background.',
+    next_step: 'You can keep using CareerHub. The relevant profile, analysis, application or tracking view updates after the motor finishes and the site refreshes.',
   }, { status: 202 });
 }
