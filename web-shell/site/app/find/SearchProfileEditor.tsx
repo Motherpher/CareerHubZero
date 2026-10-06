@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import ProcessIndicator from '@/app/_components/ProcessIndicator';
+import MotorRunIndicator from '@/app/_components/MotorRunIndicator';
 
 type Lane = {
   lane_id: string;
@@ -34,11 +35,13 @@ export default function SearchProfileEditor({
 }) {
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
+  const [motorActionId, setMotorActionId] = useState('');
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setFeedback(null);
+    setMotorActionId('');
     const form = new FormData(event.currentTarget);
     const laneUpdates = lanes.map((lane) => ({
       lane_id: lane.lane_id,
@@ -60,6 +63,7 @@ export default function SearchProfileEditor({
       });
       const data = await response.json().catch(() => ({}));
       setFeedback(response.ok ? data : { ...data, message: data.error ?? data.message ?? 'Search Profile could not be updated.' });
+      if (response.ok && data.user_state === 'running_in_background' && data.action_id) setMotorActionId(String(data.action_id));
     } catch {
       setFeedback({ message: 'CareerHub could not send the Search Profile update. Try again.' });
     } finally {
@@ -69,6 +73,7 @@ export default function SearchProfileEditor({
 
   return <form className="action-form" onSubmit={submit}>
     <ProcessIndicator active={busy} label="Updating your Search Profile…" detail="CareerHub is sending the new defaults to the governed motor." />
+    <MotorRunIndicator actionId={motorActionId} />
     <div className="explainer">
       <strong>Changes here become your future search defaults.</strong>
       <p>Use the search runner above when you only want to change one search. Use this editor when you want CareerHub to remember the change next time.</p>
