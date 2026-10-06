@@ -98,16 +98,24 @@ class ActionCompletenessTests(unittest.TestCase):
             "@vercel/connect",
             "github/amber-bell",
             "subject: { type: 'app' }",
+            "careerhub-semantic.yml",
+            "issueSignedToken",
+            "semantic-results",
+            "central-semantic-motor",
         )
         self.assert_file_contains(
             "web-shell/site/package.json",
             '"@vercel/connect"',
+            '"@vercel/blob"',
         )
         self.assert_file_contains(
             "web-shell/site/app/api/action/status/route.ts",
             "@vercel/connect",
             "github/amber-bell",
             "subject: { type: 'app' }",
+            "careerhub-semantic.yml",
+            "materialize_analysis",
+            "issueSignedToken",
             "WAITING_FOR_EXECUTION",
             "RUNNING",
             "COMPLETED",
@@ -115,13 +123,28 @@ class ActionCompletenessTests(unittest.TestCase):
             "authSource",
         )
         self.assert_file_contains(
+            ".github/workflows/careerhub-semantic.yml",
+            "Verify central semantic dependency",
+            "Execute canonical HRDM-R",
+            "Semantic HRDM execution verified",
+            "Upload result bundle to profile private storage",
+            "OPENAI_API_KEY",
+        )
+        self.assert_file_contains(
             "templates/profile-workflows/careerhub-operations.yml",
             "analyse_role",
+            "materialize_analysis",
+            "materialize_semantic_bundle.py",
             "search_profile_update",
             "track_status",
             "profile_review",
             "library_review",
-            "Verify HRDM semantic dependency",
+        )
+        self.assert_file_contains(
+            "scripts/materialize_semantic_bundle.py",
+            "Bundle action mismatch",
+            "Bundle path escapes profile root",
+            "files_written",
         )
         self.assert_file_contains(
             "scripts/sync_web_shell.py",
