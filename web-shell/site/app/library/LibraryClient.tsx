@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import ProcessIndicator from '@/app/_components/ProcessIndicator';
+import MotorRunIndicator from '@/app/_components/MotorRunIndicator';
 
 type LibraryFile = {
   pathname: string;
@@ -34,8 +35,9 @@ export default function LibraryClient() {
   const [detail, setDetail] = useState('');
   const [reference, setReference] = useState('');
   const [busy, setBusy] = useState(false);
+  const [motorActionId, setMotorActionId] = useState('');
 
-  function clearFeedback() { setMessage(''); setDetail(''); setReference(''); }
+  function clearFeedback() { setMessage(''); setDetail(''); setReference(''); setMotorActionId(''); }
 
   const refreshFiles = useCallback(async () => {
     const response = await fetch('/api/library', { cache: 'no-store' });
@@ -80,6 +82,7 @@ export default function LibraryClient() {
       setMessage(response.ok ? (data.message ?? 'Evidence review requested.') : (data.error ?? data.message ?? 'Review request failed.'));
       setDetail(data.next_step ?? '');
       setReference(data.action_id ?? '');
+      if (response.ok && data.user_state === 'running_in_background' && data.action_id) setMotorActionId(String(data.action_id));
     } catch {
       setMessage('CareerHub could not send the evidence-review request. Try again.');
     } finally {
@@ -98,6 +101,7 @@ export default function LibraryClient() {
   return (
     <div className="section-stack">
       <ProcessIndicator active={busy} label="CareerHub is updating your Library…" detail="Keep this window open while the current upload, source change or review request is being handled." />
+      <MotorRunIndicator actionId={motorActionId} />
       <div className="explainer"><strong>Library changes the evidence base; Profile shows the reviewed result.</strong><p>Upload or activate a source here. If it should change how CareerHub describes you, request evidence review and then check Profile.</p></div>
       <form className="action-form" onSubmit={upload}>
         <div className="action-form__grid">
