@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
+import GlobalProcessTray from '@/app/_components/GlobalProcessTray';
 import { cssVars, loadHubProfile, loadProfileShell, loadTheme } from '@/lib/profile';
 import './globals.css';
 import './actions.css';
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang={hub.identity.language ?? 'en'}>
       <body style={style}>
         {children}
+        <GlobalProcessTray language={hub.identity.language ?? 'en'} />
         <a className="wish-launcher" href="/wish" aria-label={improveLabel}>{improveLabel}</a>
       </body>
     </html>
