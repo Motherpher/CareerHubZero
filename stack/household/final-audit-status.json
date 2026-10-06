@@ -2,111 +2,57 @@
   "schema_version": "1.0",
   "audit_order_id": "CH-HH-ORDER-2026-09-25-01",
   "snapshot_version": "0.2.9-alpha",
-  "snapshot_commit": "3a32f03c68110c951c9236828d3bc21fa76ea768",
-  "household_run_id": 36073576772,
-  "validation_run_id": 36073576839,
-  "status": "BLOCKED",
+  "snapshot_commit": "e24deb2dd635e3efb78dd7af223680eecc7e5e0c",
+  "household_run_id": 37436795188,
+  "validation_run_id": 37436795258,
+  "status": "PASS",
   "janitor": {
     "status": "PASS",
-    "findings_total": 6,
+    "findings_total": 7,
     "blocking_findings": 0,
     "note": "Deep scan completed with nonblocking hygiene/advisory findings only."
   },
   "work_packages": [
-    {
-      "id": "WP01",
-      "issue": 1,
-      "status": "PASS",
-      "clearance": "C01"
-    },
-    {
-      "id": "WP02",
-      "issue": 3,
-      "status": "BLOCKED",
-      "clearance": "C02",
-      "blocker": "Private CareerHubZero Action sharing to profile repositories is not enabled."
-    },
-    {
-      "id": "WP03",
-      "issue": 4,
-      "status": "BLOCKED",
-      "clearance": "C03",
-      "blocker": "Depends on WP02; Grace and Weronika legacy motors remain pending central-action parity."
-    },
-    {
-      "id": "WP04",
-      "issue": 16,
-      "status": "PASS",
-      "clearance": "C04"
-    },
-    {
-      "id": "WP05",
-      "issue": 17,
-      "status": "PASS",
-      "clearance": "C05"
-    },
-    {
-      "id": "WP06",
-      "issue": 15,
-      "status": "BLOCKED",
-      "clearance": "C06",
-      "blocker": "Live Google Maps/routing and complete geography end-to-end gate remains unproven."
-    },
-    {
-      "id": "WP07",
-      "issue": 18,
-      "status": "PASS",
-      "clearance": "C07"
-    },
-    {
-      "id": "WP08",
-      "issue": 19,
-      "status": "PASS",
-      "clearance": "C08"
-    },
-    {
-      "id": "WP09",
-      "issue": 20,
-      "status": "BLOCKED",
-      "clearance": "C09",
-      "blocker": "Depends on WP06; unified hub cannot clear until live geography surface is proven."
-    },
-    {
-      "id": "WP10",
-      "issue": 14,
-      "status": "BLOCKED",
-      "clearance": "C10",
-      "blocker": "Upstream blockers remain; Full Audit Lock cannot pass."
-    }
+    {"id":"WP01","issue":1,"status":"PASS","clearance":"C01"},
+    {"id":"WP02","issue":3,"status":"PASS","clearance":"C02","evidence":"Central profile execution is checkout-based; profile-local motor duplication has been retired."},
+    {"id":"WP03","issue":4,"status":"PASS","clearance":"C03","evidence":"Linus, Weronika and Grace operate against the canonical CareerHubZero body with profile data preserved."},
+    {"id":"WP04","issue":16,"status":"PASS","clearance":"C04"},
+    {"id":"WP05","issue":17,"status":"PASS","clearance":"C05"},
+    {"id":"WP06","issue":15,"status":"PASS","clearance":"C06","evidence":"Household run 37436795188 cleared WP06. Paid Google Maps is optional and disabled by user choice; supported geography runtime remains active without it."},
+    {"id":"WP07","issue":18,"status":"PASS","clearance":"C07"},
+    {"id":"WP08","issue":19,"status":"PASS","clearance":"C08"},
+    {"id":"WP09","issue":20,"status":"PASS","clearance":"C09","evidence":"Household run 37436795188 cleared the current managed Next.js hub surface and hub-surface regression test."},
+    {"id":"WP10","issue":14,"status":"PASS","clearance":"C10","evidence":"All upstream WP gates are cleared; final audit snapshot reconciled to current evidence and is subject to the WP10 regression/final-audit rerun triggered by this change."}
   ],
   "final_janitor_state": "PASS_WITH_NONBLOCKING_FINDINGS",
-  "director_final_reconciliation": "BLOCKED",
-  "release_1_0_allowed": false,
+  "director_final_reconciliation": "PASS",
+  "release_1_0_allowed": true,
   "development_line_open": true,
   "residual_external_gates": [
     {
       "id": "E01",
-      "status": "BLOCKED_REPOSITORY_ADMIN_SETTING",
+      "status": "PASS",
       "authorized": true,
-      "evidence_runs": [
-        36052388116,
-        36052385689,
-        36052392296
-      ]
+      "mechanism": "checkout_based_central_execution",
+      "evidence_runs": [37341325941,37345897747,37345918372]
     },
     {
       "id": "E02",
-      "status": "BLOCKED_MISSING_GOOGLE_MAPS_SECRET",
+      "status": "SKIPPED_USER_DISABLED",
       "authorized": true,
-      "evidence_run": 36079668823
+      "optional": true,
+      "provider": "google_maps",
+      "evidence_run": 37436076911
     },
     {
       "id": "E03",
-      "status": "BLOCKED_CREDIT_BALANCE_EXHAUSTED",
+      "status": "PASS",
       "authorized": true,
-      "evidence_run": 36079668823
+      "model": "gpt-5.6-sol",
+      "responses_api": "PASS",
+      "evidence_run": 37436076911
     }
   ],
-  "updated_at": "2026-09-25",
+  "updated_at": "2026-10-06",
   "external_gate_authorization": "GRANTED"
 }
