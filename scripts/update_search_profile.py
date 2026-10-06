@@ -3,8 +3,20 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import sys
 
 import yaml
+
+# Direct execution from scripts/ otherwise places scripts/careerhub.py ahead of
+# the canonical src/careerhub package on sys.path. Pin src/ first so this helper
+# behaves identically in GitHub Actions and local execution.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPO_ROOT / 'src'
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+else:
+    sys.path.remove(str(SRC_ROOT))
+    sys.path.insert(0, str(SRC_ROOT))
 
 from careerhub.instance import load_profile_node, validate_profile_node_paths
 
