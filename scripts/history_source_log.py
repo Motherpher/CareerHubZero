@@ -146,6 +146,10 @@ def change_fingerprint(changes: Iterable[dict[str, str]]) -> str:
     return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
+def file_identity(item: dict[str, str]) -> tuple[str, str, str]:
+    return (item.get("status", ""), item.get("old_path", ""), item.get("path", ""))
+
+
 def collect_commits(base: str, head: str, cwd: Path | None = None) -> list[dict[str, str]]:
     fmt = "%H%x1f%aI%x1f%an%x1f%s"
     output = run_git("log", "--reverse", f"--format={fmt}", f"{base}..{head}", cwd=cwd)
@@ -322,8 +326,8 @@ def validate_event_shape(event: dict[str, Any], path: Path) -> list[str]:
         errors.append(f"{path}: changes.files must be a list")
     else:
         for item in files:
-            if not item.get("delta_sha256"):
-                errors.append(f"{path}: every changed file requires delta_sha256")
+            if not item.get("status") or not item.get("path"):
+                errors.append(f"{path}: every changed file requires status and path")
     return errors
 
 
@@ -351,6 +355,7 @@ def validate_history(base: str, head: str, root: Path) -> tuple[bool, list[str]]
             "Substantive change set has no changed stack/history/events/*.yaml record.",
             f"Expected fingerprint: {expected}",
         ]
+    expected_files = sorted(file_identity(item) for item in changes)
     errors: list[str] = []
     for path in event_paths:
         try:
@@ -362,12 +367,17 @@ def validate_history(base: str, head: str, root: Path) -> tuple[bool, list[str]]
         if shape_errors:
             errors.extend(shape_errors)
             continue
-        if (event.get("changes") or {}).get("fingerprint") != expected:
+        event_changes = event.get("changes") or {}
+        if event_changes.get("fingerprint") != expected:
             continue
-        recorded_files = substantive_changes((event.get("changes") or {}).get("files") or [])
-        if change_fingerprint(recorded_files) != expected:
-            errors.append(f"{path}: recorded file deltas do not reproduce the event fingerprint")
+        recorded_files = substantive_changes(event_changes.get("files") or [])
+        if sorted(file_identity(item) for item in recorded_files) != expected_files:
+            errors.append(f"{path}: recorded file coverage does not match the substantive diff")
             continue
+        if all(item.get("delta_sha256") for item in recorded_files):
+            if change_fingerprint(recorded_files) != expected:
+                errors.append(f"{path}: recorded file deltas do not reproduce the event fingerprint")
+                continue
         return True, [f"Sourced history coverage OK: {path.relative_to(root)} ({expected})"]
     errors.append(f"No changed history event matches substantive diff fingerprint {expected}")
     return False, errors
