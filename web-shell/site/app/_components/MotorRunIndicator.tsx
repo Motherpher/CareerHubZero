@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import ProcessIndicator from './ProcessIndicator';
 
-type MotorStatus = 'idle' | 'locating' | 'queued' | 'in_progress' | 'completed' | 'unknown';
+type MotorStatus = 'idle' | 'locating' | 'queued' | 'in_progress' | 'completed' | 'not_found' | 'unconfigured' | 'unknown';
 
 export default function MotorRunIndicator({ actionId }: { actionId: string }) {
   const [status, setStatus] = useState<MotorStatus>(actionId ? 'locating' : 'idle');
