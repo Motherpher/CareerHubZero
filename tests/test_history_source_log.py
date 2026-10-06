@@ -110,6 +110,47 @@ class HistorySourceLogTests(unittest.TestCase):
             ok, _ = hsl.validate_history(base, broken_head, root)
             self.assertFalse(ok)
 
+    def test_bootstrap_event_can_list_files_without_per_file_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            self._init_repo(root)
+            (root / "README.md").write_text("baseline\n", encoding="utf-8")
+            self._commit_all(root, "baseline")
+            base = self._git(root, "rev-parse", "HEAD")
+
+            (root / "CHANGELOG.md").write_text("# Change\n", encoding="utf-8")
+            self._commit_all(root, "WP40.0 bootstrap change")
+            source_head = self._git(root, "rev-parse", "HEAD")
+            actual = hsl.substantive_changes(hsl.collect_changes(base, source_head, cwd=root))
+            fingerprint = hsl.change_fingerprint(actual)
+
+            event = {
+                "schema_version": "1.1",
+                "event_id": "PR-BOOTSTRAP",
+                "summary": "bootstrap",
+                "work_packages": ["WP40.0"],
+                "subsystems": ["development_history"],
+                "source": {
+                    "repository": "Motherpher/CareerHubZero",
+                    "base_sha": base,
+                    "head_sha": source_head,
+                },
+                "changes": {
+                    "fingerprint": fingerprint,
+                    "file_count": 1,
+                    "files": [{"status": "A", "path": "CHANGELOG.md"}],
+                },
+                "commits": [],
+            }
+            event_path = root / "stack/history/events/bootstrap.yaml"
+            event_path.parent.mkdir(parents=True)
+            event_path.write_text(yaml.safe_dump(event, sort_keys=False), encoding="utf-8")
+            self._commit_all(root, "history: add bootstrap event")
+            head = self._git(root, "rev-parse", "HEAD")
+
+            ok, messages = hsl.validate_history(base, head, root)
+            self.assertTrue(ok, messages)
+
     def _init_repo(self, root: Path) -> None:
         self._git(root, "init")
         self._git(root, "config", "user.email", "test@example.com")
