@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from 'react';
 
-type Lane = { lane_id: string; name: string; bucket: string; priority: number };
 type SearchResult = {
   id: string;
   title: string;
@@ -37,9 +36,8 @@ function analyseHref(result: SearchResult) {
   return `/analyse?${params.toString()}`;
 }
 
-export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]; language?: string }) {
+export default function SearchRunner({ language = 'en' }: { language?: string }) {
   const sv = language.toLowerCase().startsWith('sv');
-  const [lane, setLane] = useState('all');
   const [overlay, setOverlay] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -53,7 +51,7 @@ export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]
       const response = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lane, overlay: overlay.trim(), limit: 60 }),
+        body: JSON.stringify({ lane: 'all', overlay: overlay.trim(), limit: 60 }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || (sv ? 'Sökningen kunde inte genomföras.' : 'Search could not be completed.'));
@@ -68,13 +66,6 @@ export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]
   return (
     <div className="search-runner">
       <form className="search-controls" onSubmit={runSearch}>
-        <label>
-          <span className="meta-label">{sv ? 'Sökspår' : 'Search lane'}</span>
-          <select value={lane} onChange={(event) => setLane(event.target.value)}>
-            <option value="all">{sv ? 'Alla sparade spår' : 'All saved lanes'}</option>
-            {lanes.map((item) => <option key={item.lane_id} value={item.lane_id}>{item.name}</option>)}
-          </select>
-        </label>
         <label className="search-overlay">
           <span className="meta-label">{sv ? 'Specifika önskemål eller behov' : 'Specific wishes or needs'}</span>
           <input
@@ -90,8 +81,8 @@ export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]
 
       <p className="muted search-note">
         {sv
-          ? 'Din verifierade karriärprofil är basen. Texten i rutan ovan är ett sökraster för just denna sökning och blir aldrig kandidatfakta.'
-          : 'Your verified career profile is the baseline. The field above is a search-only raster for this run and never becomes candidate evidence.'}
+          ? 'Din verifierade karriärprofil är basen. Texten i rutan ovan är ett extra raster för just denna sökning och blir aldrig kandidatfakta.'
+          : 'Your verified career profile is the baseline. The field above is an extra raster for this search and never becomes candidate evidence.'}
       </p>
       {error ? <p className="wish-status wish-status--error" role="alert">{error}</p> : null}
 
@@ -123,7 +114,7 @@ export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]
             </div>
           ) : (
             <div className="empty-state">
-              {sv ? 'Inga matchande möjligheter hittades i den här sökningen. Justera sökrastret eller sökspåret och försök igen.' : 'No matching opportunities were returned for this run. Adjust the search raster or lane and try again.'}
+              {sv ? 'Inga matchande möjligheter hittades i den här sökningen. Ändra dina specifika önskemål eller behov och försök igen.' : 'No matching opportunities were returned for this run. Adjust your specific wishes or needs and try again.'}
             </div>
           )}
         </section>
