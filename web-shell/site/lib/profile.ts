@@ -87,6 +87,12 @@ export type ThemeTokens = {
     muted?: string;
     accent?: string;
     accent_foreground?: string;
+    secondary?: string;
+    secondary_foreground?: string;
+    highlight?: string;
+    highlight_foreground?: string;
+    signal?: string;
+    signal_foreground?: string;
   };
   imagery?: {
     mode?: 'none' | 'portrait' | 'documentary' | 'graphic' | 'mixed';
@@ -139,16 +145,37 @@ function shadowValue(shadow: ThemeTokens['surface']['shadow']): string {
 
 export function cssVars(theme: ThemeTokens): Record<string, string> {
   const p = theme.palette ?? {};
+  const background = p.background ?? '#F6F5F2';
+  const foreground = p.foreground ?? '#181818';
+  const muted = p.muted ?? '#6B6B68';
+  const accent = p.accent ?? '#2357D8';
+  const accentForeground = p.accent_foreground ?? '#FFFFFF';
+  const secondary = p.secondary ?? muted;
+  const secondaryForeground = p.secondary_foreground ?? foreground;
+  const highlight = p.highlight ?? accent;
+  const highlightForeground = p.highlight_foreground ?? foreground;
+  const signal = p.signal ?? accent;
+  const signalForeground = p.signal_foreground ?? '#FFFFFF';
+
   return {
-    '--ch-bg': p.background ?? '#F6F5F2',
-    '--ch-fg': p.foreground ?? '#181818',
-    '--ch-muted': p.muted ?? '#6B6B68',
-    '--ch-accent': p.accent ?? '#2357D8',
-    '--ch-accent-fg': p.accent_foreground ?? '#FFFFFF',
+    '--ch-bg': background,
+    '--ch-fg': foreground,
+    '--ch-muted': muted,
+    '--ch-accent': accent,
+    '--ch-accent-fg': accentForeground,
+    '--ch-secondary': secondary,
+    '--ch-secondary-fg': secondaryForeground,
+    '--ch-highlight': highlight,
+    '--ch-highlight-fg': highlightForeground,
+    '--ch-signal': signal,
+    '--ch-signal-fg': signalForeground,
     '--ch-surface': 'var(--ch-bg)',
     '--ch-surface-alt': 'color-mix(in srgb, var(--ch-bg) 90%, var(--ch-fg) 10%)',
     '--ch-border': 'color-mix(in srgb, var(--ch-fg) 22%, transparent)',
     '--ch-accent-soft': 'color-mix(in srgb, var(--ch-accent) 16%, var(--ch-bg))',
+    '--ch-secondary-soft': 'color-mix(in srgb, var(--ch-secondary) 24%, var(--ch-bg))',
+    '--ch-highlight-soft': 'color-mix(in srgb, var(--ch-highlight) 26%, var(--ch-bg))',
+    '--ch-signal-soft': 'color-mix(in srgb, var(--ch-signal) 15%, var(--ch-bg))',
     '--ch-display-font': theme.typography.display,
     '--ch-body-font': theme.typography.body,
     '--ch-radius': radiusValue(theme.shape.radius),
