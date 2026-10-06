@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-10-05T17:14:00Z",
+  "updated_at": "2026-10-06T09:56:00+02:00",
   "gates": {
     "private_action_profile_access": {
       "status": "PASS",
@@ -26,18 +26,22 @@
       "required_action": null
     },
     "geo_runtime_complete": {
-      "status": "BLOCKED_MISSING_GOOGLE_MAPS_SECRET",
-      "evidence": "Live E02 probe run 36079668823: GOOGLE_MAPS_API_KEY was absent. No provider call could be made.",
+      "status": "PASS",
+      "evidence": "CareerHub geography runtime is accepted without the paid Google Maps provider. On 2026-10-06 the user explicitly declined paid Google Maps API usage. Local Swedish administrative geography, labour-market geography and non-Google search geography remain the supported runtime; Google Places/Routes are optional and disabled by user choice.",
       "user_authorized": true,
-      "verification_run": 36079668823,
-      "required_action": "Create/restrict a Google Maps Platform key with Places API (New) and Routes API enabled, then save it in Motherpher/CareerHubZero as Actions secret GOOGLE_MAPS_API_KEY."
+      "verification_run": null,
+      "required_action": null,
+      "provider_policy": {
+        "google_maps": "DISABLED_BY_USER_OPTIONAL",
+        "paid_provider_required": false
+      }
     },
     "live_ai_execution": {
       "status": "BLOCKED_CREDIT_BALANCE_EXHAUSTED",
-      "evidence": "Live E03 probe run 36079668823 reached OpenAI Responses API using gpt-5.6-sol and returned HTTP 429 credit_balance_exhausted / insufficient_quota.",
+      "evidence": "Live E03 probe reached OpenAI Responses API using gpt-5.6-sol and returned HTTP 429 credit_balance_exhausted / insufficient_quota. ChatGPT subscription billing does not fund API usage; API billing must have available balance in the organization owning OPENAI_API_KEY.",
       "user_authorized": true,
-      "verification_run": 36079668823,
-      "required_action": "Add API credits or restore API billing/spend capacity for the organization owning OPENAI_API_KEY, then rerun the external-gates workflow."
+      "verification_run": 37347655394,
+      "required_action": "Open the API Platform billing overview for the organization owning OPENAI_API_KEY and restore API billing capacity (buy API credits or resolve the API billing method), then rerun the external-gates workflow."
     }
   },
   "authorization": {
