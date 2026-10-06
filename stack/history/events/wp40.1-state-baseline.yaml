@@ -1,0 +1,78 @@
+schema_version: "1.1"
+event_id: WP40.1-STATE-BASELINE
+recorded_at: "2026-10-07T01:45:00+02:00"
+summary: "WP40.1 — State Integrity, Reset & Profile Isolation"
+decision_context: >-
+  Establish explicit fleet profile/repository binding, fail-closed profile namespaces,
+  bounded reset classification, and state-integrity regression guards before WP40.2.
+  Fleet evidence outside CareerHubZero: Linus binding commit
+  84f8322e3d2a7d9aba66bf1f6c44b07fd5b57915; Weronika binding commit
+  f31a6bc53174f7432049485c3b07d612593b2304; Weronika bounded synthetic reset
+  commits 9e853b070b1bacdc7fdad61eaefc30ef14173b9e,
+  7143328f1f0dcd671eb6da99698bd70f26236056,
+  5e6f876fcec8f4c2d2c143a8748307c722b3cf31,
+  609e9d2823c2531526049a7949c26142ef5c1898 and
+  ba66ce17dc0ba7f23cbedc4343386e9d29006b28; Grace binding commit
+  3e06f1448be93f97c140416f06f7957fbfef08ac.
+work_packages:
+  - WP40.1
+failure_ids:
+  - FAIL-020
+  - FAIL-022
+subsystems:
+  - contracts_schemas
+  - developer_tooling
+  - development_history
+  - library_evidence
+  - profile_identity
+  - state_integrity
+  - test_regression
+  - web_surface
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 2cd6ab9a6dda98b3fb97190cdbbff0c54940aeb1
+  head_sha: 446982259f89f6d74d42f565a8e3ce09d4acc2d5
+  branch: wp40-1/state-integrity-profile-isolation
+  actor: Hybrismannen
+  pull_request:
+    number: 48
+    title: "WP40.1 — State Integrity, Reset & Profile Isolation"
+    url: https://github.com/Motherpher/CareerHubZero/pull/48
+changes:
+  fingerprint: sha256:717c5879e5b583b73d9fd9f31457e20db5992916a73f87d5da3a4c0a3bde159e
+  file_count: 14
+  files:
+    - status: M
+      path: CHANGELOG.md
+    - status: M
+      path: schemas/careerhub_manifest.schema.json
+    - status: M
+      path: scripts/check_body_version.py
+    - status: A
+      path: scripts/profile_state_reset.py
+    - status: A
+      path: src/careerhub/state_integrity.py
+    - status: M
+      path: stack/history/wp-registry.yaml
+    - status: M
+      path: stack/registry.yaml
+    - status: A
+      path: tests/test_state_integrity.py
+    - status: M
+      path: web-shell/site/app/api/library/file/route.ts
+    - status: M
+      path: web-shell/site/app/api/library/reload/route.ts
+    - status: M
+      path: web-shell/site/app/api/library/route.ts
+    - status: A
+      path: web-shell/site/app/api/profile-context/route.ts
+    - status: M
+      path: web-shell/site/lib/manifest.ts
+    - status: A
+      path: web-shell/site/lib/profile-context.ts
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
