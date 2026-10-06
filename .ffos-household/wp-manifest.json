@@ -35,281 +35,113 @@
         "schemas/careerhub_manifest.schema.json",
         "action.yml"
       ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp01-python-compile",
-          "type": "command",
-          "command": ["python", "-m", "compileall", "-q", "src", "scripts"],
-          "timeout": 120,
-          "repairable": false
-        },
-        {
-          "id": "wp01-unified-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_unified_body.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp01-python-compile","type":"command","command":["python","-m","compileall","-q","src","scripts"],"timeout":120,"repairable":false},
+        {"id":"wp01-unified-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_unified_body.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP02": {
       "depends_on": ["WP01"],
-      "required_paths": [
-        "scripts/careerhub.py",
-        "templates/profile-workflows/careerhub-operations.yml",
-        ".github/workflows/careerhub-household.yml",
-        "stack/household/external-gates.json"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "required_paths": ["scripts/careerhub.py","templates/profile-workflows/careerhub-operations.yml",".github/workflows/careerhub-household.yml","stack/household/external-gates.json"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp02-central-profile-execution",
-          "type": "command",
-          "command": [
-            "python",
-            "scripts/check_household_gate.py",
-            "stack/household/external-gates.json",
-            "central_profile_execution"
-          ],
-          "timeout": 30,
-          "repairable": false
-        }
+        {"id":"wp02-central-profile-execution","type":"command","command":["python","scripts/check_household_gate.py","stack/household/external-gates.json","central_profile_execution"],"timeout":30,"repairable":false}
       ]
     },
     "WP03": {
-      "depends_on": ["WP01", "WP02"],
+      "depends_on": ["WP01","WP02"],
       "required_paths": ["stack/household/profile-cutover-evidence.json"],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp03-profile-cutover",
-          "type": "command",
-          "command": [
-            "python",
-            "scripts/check_profile_cutover.py",
-            "stack/household/profile-cutover-evidence.json"
-          ],
-          "timeout": 30,
-          "repairable": false
-        }
+        {"id":"wp03-profile-cutover","type":"command","command":["python","scripts/check_profile_cutover.py","stack/household/profile-cutover-evidence.json"],"timeout":30,"repairable":false}
       ]
     },
     "WP04": {
       "depends_on": ["WP01"],
-      "required_paths": [
-        "src/careerhub/search_contract.py",
-        "src/careerhub/matching.py",
-        "tests/test_unified_body.py"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "required_paths": ["src/careerhub/search_contract.py","src/careerhub/matching.py","tests/test_unified_body.py"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp04-search-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_search_kernel.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp04-search-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_search_kernel.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP05": {
       "depends_on": ["WP04"],
-      "required_paths": [
-        "src/careerhub/learning.py",
-        "schemas/outcome_event.schema.json",
-        "tests/test_learning.py"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "required_paths": ["src/careerhub/learning.py","schemas/outcome_event.schema.json","tests/test_learning.py"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp05-learning-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_learning.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp05-learning-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_learning.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP06": {
-      "depends_on": ["WP01", "WP04"],
-      "required_paths": [
-        "src/careerhub/geography.py",
-        "src/careerhub/country_adapters.py",
-        "data/geography/sweden_admin_2026.json",
-        "data/geography/sweden_local_labour_markets.json",
-        "tests/test_geography.py",
-        "tests/test_sprint_integration.py"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "depends_on": ["WP01","WP04"],
+      "required_paths": ["src/careerhub/geography.py","src/careerhub/country_adapters.py","data/geography/sweden_admin_2026.json","data/geography/sweden_local_labour_markets.json","tests/test_geography.py","tests/test_sprint_integration.py"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp06-geo-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "tests.test_geography", "tests.test_sprint_integration"],
-          "timeout": 120,
-          "repairable": false
-        },
-        {
-          "id": "wp06-live-gates",
-          "type": "command",
-          "command": ["python", "scripts/check_household_gate.py", "stack/household/external-gates.json", "geo_runtime_complete"],
-          "timeout": 30,
-          "repairable": false
-        }
+        {"id":"wp06-geo-tests","type":"command","command":["python","-m","unittest","tests.test_geography","tests.test_sprint_integration"],"timeout":120,"repairable":false},
+        {"id":"wp06-live-gates","type":"command","command":["python","scripts/check_household_gate.py","stack/household/external-gates.json","geo_runtime_complete"],"timeout":30,"repairable":false}
       ]
     },
     "WP07": {
       "depends_on": ["WP01"],
-      "required_paths": [
-        "src/careerhub/hrdm.py",
-        "src/careerhub/hrdm_trace.py",
-        "src/careerhub/hybridianesque.py",
-        "src/careerhub/hrdm_reports.py",
-        "core/hrdm/hrdm_result.schema.json",
-        "tests/test_unified_body.py"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "required_paths": ["src/careerhub/hrdm.py","src/careerhub/hrdm_trace.py","src/careerhub/hybridianesque.py","src/careerhub/hrdm_reports.py","core/hrdm/hrdm_result.schema.json","tests/test_unified_body.py"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp07-hrdm-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_hrdm*.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp07-hrdm-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_hrdm*.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP08": {
-      "depends_on": ["WP01", "WP07"],
-      "required_paths": [
-        "src/careerhub/state.py",
-        "schemas/outcome_event.schema.json",
-        "tests/test_state_machine.py"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "depends_on": ["WP01","WP07"],
+      "required_paths": ["src/careerhub/state.py","schemas/outcome_event.schema.json","tests/test_state_machine.py"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp08-state-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_state_machine.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp08-state-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_state_machine.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP09": {
-      "depends_on": ["WP04", "WP05", "WP06", "WP07", "WP08"],
+      "depends_on": ["WP04","WP05","WP06","WP07","WP08"],
       "required_paths": [
-        "src/careerhub/runtime_dashboard.py",
-        "src/careerhub/runtime_dashboard_en.py",
+        "web-shell/site/app/page.tsx",
+        "web-shell/site/app/find/page.tsx",
+        "web-shell/site/app/analyse/page.tsx",
+        "web-shell/site/app/apply/page.tsx",
+        "web-shell/site/app/track/page.tsx",
+        "web-shell/site/app/library/page.tsx",
         "src/careerhub/hrdm_reports.py",
         "tests/test_hub_surface.py"
       ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp09-surface-tests",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_hub_surface.py"],
-          "timeout": 120,
-          "repairable": false
-        }
+        {"id":"wp09-surface-tests","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_hub_surface.py"],"timeout":120,"repairable":false}
       ]
     },
     "WP10": {
-      "depends_on": ["WP01", "WP02", "WP03", "WP04", "WP05", "WP06", "WP07", "WP08", "WP09"],
-      "required_paths": [
-        "docs/AUDIT_1.0.md",
-        "docs/HOUSEHOLD_AUDIT_STATE_ORDER.md",
-        "stack/household/final-audit-status.json"
-      ],
-      "acceptance": [
-        "dependency_pass",
-        "required_paths_exist",
-        "no_unresolved_machine_errors",
-        "audit_record_written"
-      ],
+      "depends_on": ["WP01","WP02","WP03","WP04","WP05","WP06","WP07","WP08","WP09"],
+      "required_paths": ["docs/AUDIT_1.0.md","docs/HOUSEHOLD_AUDIT_STATE_ORDER.md","stack/household/final-audit-status.json"],
+      "acceptance": ["dependency_pass","required_paths_exist","no_unresolved_machine_errors","audit_record_written"],
       "human_gate": false,
       "state": "ACTIVE",
       "checks": [
-        {
-          "id": "wp10-full-audit-gate",
-          "type": "command",
-          "command": ["python", "scripts/check_final_audit.py", "stack/household/final-audit-status.json"],
-          "timeout": 30,
-          "repairable": false
-        },
-        {
-          "id": "wp10-regression",
-          "type": "command",
-          "command": ["python", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
-          "timeout": 180,
-          "repairable": false
-        }
+        {"id":"wp10-full-audit-gate","type":"command","command":["python","scripts/check_final_audit.py","stack/household/final-audit-status.json"],"timeout":30,"repairable":false},
+        {"id":"wp10-regression","type":"command","command":["python","-m","unittest","discover","-s","tests","-p","test_*.py"],"timeout":180,"repairable":false}
       ]
     }
   }
