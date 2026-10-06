@@ -1,0 +1,198 @@
+name: CareerHub · Semantic Motor
+run-name: CareerHub semantic · ${{ inputs.action_id }} · ${{ inputs.profile_repository }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      action_id:
+        required: true
+        type: string
+      profile_repository:
+        required: true
+        type: string
+      payload:
+        required: true
+        type: string
+      result_upload_url:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: careerhub-semantic-${{ inputs.profile_repository }}-${{ inputs.action_id }}
+  cancel-in-progress: false
+
+jobs:
+  semantic:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      CAREERHUB_MODEL: ${{ secrets.CAREERHUB_MODEL }}
+      ACTION_ID: ${{ inputs.action_id }}
+      PROFILE_REPOSITORY: ${{ inputs.profile_repository }}
+      PAYLOAD: ${{ inputs.payload }}
+      RESULT_UPLOAD_URL: ${{ inputs.result_upload_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify central semantic dependency
+        shell: bash
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured in CareerHubZero." >&2
+            exit 1
+          fi
+          echo "::add-mask::$RESULT_UPLOAD_URL"
+
+      - name: Clone profile state repository
+        shell: bash
+        run: |
+          case "$PROFILE_REPOSITORY" in
+            Motherpher/*) ;;
+            *) echo "Profile repository is outside the governed Motherpher namespace." >&2; exit 1 ;;
+          esac
+          git clone --depth 1 "https://github.com/${PROFILE_REPOSITORY}.git" .profile
+          if [ -f .profile/careerhub.yaml ]; then
+            echo "CAREERHUB_ROOT_FS=.profile" >> "$GITHUB_ENV"
+            echo "CAREERHUB_MANIFEST=.profile/careerhub.yaml" >> "$GITHUB_ENV"
+          elif [ -f .profile/CareerHub/careerhub.yaml ]; then
+            echo "CAREERHUB_ROOT_FS=.profile/CareerHub" >> "$GITHUB_ENV"
+            echo "CAREERHUB_MANIFEST=.profile/CareerHub/careerhub.yaml" >> "$GITHUB_ENV"
+          else
+            echo "No careerhub.yaml manifest found in profile repository." >&2
+            exit 1
+          fi
+
+      - name: Install canonical Motor
+        run: python -m pip install -r requirements.txt
+
+      - name: Decode action payload
+        shell: bash
+        run: |
+          mkdir -p /tmp/careerhub-action
+          python - <<'PY'
+          import json, os, pathlib
+          payload = json.loads(os.environ['PAYLOAD'] or '{}')
+          root = pathlib.Path('/tmp/careerhub-action')
+          for key, value in payload.items():
+              if isinstance(value, (dict, list)):
+                  value = json.dumps(value, ensure_ascii=False)
+              (root / f'{key}.txt').write_text(str(value or ''), encoding='utf-8')
+          (root / 'payload.json').write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+          PY
+
+      - name: Execute canonical HRDM-R
+        shell: bash
+        env:
+          PYTHONPATH: src
+        run: |
+          getv() { [ -f "/tmp/careerhub-action/$1.txt" ] && cat "/tmp/careerhub-action/$1.txt" || true; }
+          URL="$(getv job_url)"; TITLE="$(getv title)"; COMPANY="$(getv company)"; DEADLINE="$(getv deadline)"; LANE="$(getv lane)"
+          [ -n "$URL" ] || URL="https://careerhub.local/manual-role"
+          [ -n "$LANE" ] || LANE="core"
+          cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
+          OUT_REL="output/$ACTION_ID"
+          python scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --out "$OUT_REL"
+          python scripts/bind_web_action.py --manifest "$CAREERHUB_MANIFEST" --out "$OUT_REL" --case-id "${GITHUB_RUN_ID}" --case-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3
+
+      - name: Verify semantic completion
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, pathlib
+          path = pathlib.Path(os.environ['CAREERHUB_ROOT_FS']) / 'output' / os.environ['ACTION_ID'] / 'HRDM_result.json'
+          if not path.exists():
+              raise SystemExit('HRDM_result.json was not generated.')
+          result = json.loads(path.read_text(encoding='utf-8'))
+          if result.get('ai_status') == 'not_run':
+              raise SystemExit('Semantic HRDM did not execute; fallback output is forbidden for web completion.')
+          if not (result.get('process_id') or (result.get('trace') or {}).get('process_id')):
+              raise SystemExit('Semantic HRDM result is missing Process-ID trace identity.')
+          print('Semantic HRDM execution verified.')
+          PY
+
+      - name: Mirror generated artifacts into deployable profile shell
+        shell: bash
+        run: |
+          MIRROR="$CAREERHUB_ROOT_FS/site/.careerhub-artifacts"
+          rm -rf "$MIRROR"
+          mkdir -p "$MIRROR/output" "$MIRROR/reports"
+          if [ -d "$CAREERHUB_ROOT_FS/output" ]; then cp -a "$CAREERHUB_ROOT_FS/output/." "$MIRROR/output/"; fi
+          if [ -d "$CAREERHUB_ROOT_FS/reports" ]; then cp -a "$CAREERHUB_ROOT_FS/reports/." "$MIRROR/reports/"; fi
+
+      - name: Build governed result bundle
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, json, os, pathlib, subprocess
+
+          repo = pathlib.Path('.profile').resolve()
+          root = pathlib.Path(os.environ['CAREERHUB_ROOT_FS']).resolve()
+          action_id = os.environ['ACTION_ID']
+
+          def names(args):
+              raw = subprocess.check_output(['git', '-C', str(repo), *args])
+              return [pathlib.Path(x.decode('utf-8')) for x in raw.split(b'\0') if x]
+
+          changed = set(names(['diff', '--name-only', '--diff-filter=ACMRTUXB', '-z', 'HEAD']))
+          changed.update(names(['ls-files', '--others', '--exclude-standard', '-z']))
+          deleted = set(names(['diff', '--name-only', '--diff-filter=D', '-z', 'HEAD']))
+
+          files = []
+          deleted_paths = []
+          for relative_repo in sorted(changed, key=lambda p: p.as_posix()):
+              absolute = (repo / relative_repo).resolve()
+              try:
+                  relative_profile = absolute.relative_to(root)
+              except ValueError:
+                  continue
+              if not absolute.is_file():
+                  continue
+              files.append({
+                  'path': relative_profile.as_posix(),
+                  'encoding': 'base64',
+                  'content': base64.b64encode(absolute.read_bytes()).decode('ascii'),
+              })
+
+          for relative_repo in sorted(deleted, key=lambda p: p.as_posix()):
+              absolute = (repo / relative_repo).resolve()
+              try:
+                  relative_profile = absolute.relative_to(root)
+              except ValueError:
+                  continue
+              deleted_paths.append(relative_profile.as_posix())
+
+          hrdm_path = root / 'output' / action_id / 'HRDM_result.json'
+          application_path = root / 'output' / action_id / 'application_package.json'
+          bundle = {
+              'schema_version': '1.0',
+              'action_id': action_id,
+              'profile_repository': os.environ['PROFILE_REPOSITORY'],
+              'generated_at': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),
+              'files': files,
+              'deleted_paths': deleted_paths,
+              'hrdm': json.loads(hrdm_path.read_text(encoding='utf-8')),
+              'application': json.loads(application_path.read_text(encoding='utf-8')) if application_path.exists() else None,
+          }
+          out = pathlib.Path('/tmp/careerhub-semantic-result.json')
+          out.write_text(json.dumps(bundle, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+          print(json.dumps({'files': len(files), 'deleted_paths': len(deleted_paths), 'bundle_bytes': out.stat().st_size}, indent=2))
+          PY
+
+      - name: Upload result bundle to profile private storage
+        shell: bash
+        run: |
+          curl --fail --silent --show-error \
+            -X PUT \
+            -H 'content-type: application/json' \
+            --data-binary @/tmp/careerhub-semantic-result.json \
+            "$RESULT_UPLOAD_URL"
+          echo "Semantic result bundle uploaded."
