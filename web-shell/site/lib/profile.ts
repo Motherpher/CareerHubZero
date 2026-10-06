@@ -27,6 +27,38 @@ export type ProfileShell = {
   rooms: ProfileRoom[];
 };
 
+export type PortfolioSection = {
+  label: string;
+  description?: string;
+};
+
+export type PortfolioItem = {
+  title: string;
+  outlet?: string;
+  year?: string;
+  type?: string;
+  description: string;
+  href?: string;
+};
+
+export type PortfolioProfile = {
+  schema_version: '1.0';
+  eyebrow?: string;
+  headline?: string;
+  intro?: string;
+  sections?: PortfolioSection[];
+  featured?: PortfolioItem[];
+  archive?: {
+    count?: number;
+    label?: string;
+    note?: string;
+  };
+  boundary?: {
+    title?: string;
+    text?: string;
+  };
+};
+
 export type HubProfile = {
   schema_version: '1.0';
   identity: {
@@ -125,6 +157,10 @@ export function loadHubProfile(): HubProfile {
 
 export function loadProfileShell(): ProfileShell | null {
   return readYamlOptional<ProfileShell>('profile.shell.yaml');
+}
+
+export function loadPortfolioProfile(): PortfolioProfile | null {
+  return readYamlOptional<PortfolioProfile>('portfolio.yaml');
 }
 
 export function loadTheme(): ThemeTokens {
