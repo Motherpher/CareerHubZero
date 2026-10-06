@@ -1,4 +1,5 @@
 name: CareerHub · Operations
+run-name: CareerHub · ${{ inputs.operation }} · ${{ inputs.action_id }}
 
 on:
   workflow_dispatch:
