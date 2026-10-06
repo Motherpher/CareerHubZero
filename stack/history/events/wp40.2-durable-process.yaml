@@ -1,0 +1,44 @@
+schema_version: "1.1"
+event_id: WP40.2-DURABLE-PROCESS
+recorded_at: "2026-10-07T01:58:00+02:00"
+summary: "WP40.2 — Durable Library, Evidence Pipeline & Background Analysis"
+decision_context: >-
+  Establish governed Library ingestion and ACTIVE evidence use, preserve the
+  persistence-before-completion invariant, and make Job Analysis navigation/reload-safe
+  through durable action state, a stable result address and a global process indicator.
+work_packages:
+  - WP40.2
+failure_ids:
+  - FAIL-015
+  - FAIL-018
+  - FAIL-021
+  - FAIL-023
+  - FAIL-025
+subsystems:
+  - library_evidence
+  - evidence_ingestion
+  - background_analysis
+  - durable_persistence
+  - product_language
+  - web_surface
+  - test_regression
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 2272068af146ffce524f2e59795bc9e40fa2c292
+  head_sha: 27f4cf0e82f9c5ae796d2f11065b165d75aa8653
+  branch: wp40-2/durable-library-background-analysis
+  actor: Hybrismannen
+  pull_request:
+    number: 0
+    title: "WP40.2 — Durable Library, Evidence Pipeline & Background Analysis"
+    url: pending
+changes:
+  fingerprint: pending
+  file_count: 20
+  files: []
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
