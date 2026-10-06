@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import ProcessIndicator from '@/app/_components/ProcessIndicator';
+import MotorRunIndicator from '@/app/_components/MotorRunIndicator';
 
 type Job = { id?: string; title?: string; company?: string; url?: string; deadline?: string; lane?: string };
 type Lane = { lane_id: string; name: string; bucket: string };
@@ -11,6 +12,7 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   const [selected, setSelected] = useState('');
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
   const [busy, setBusy] = useState(false);
+  const [motorActionId, setMotorActionId] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
   function setField(name: string, value: string, form = formRef.current) {
@@ -44,6 +46,7 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFeedback(null);
+    setMotorActionId('');
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(Array.from(form.entries()).map(([key, value]) => [key, String(value)]));
     if (!String(payload.job_url ?? '').trim() && !String(payload.job_text ?? '').trim()) {
@@ -59,6 +62,7 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
       });
       const data = await response.json().catch(() => ({}));
       setFeedback(response.ok ? data : { ...data, message: data.error ?? data.message ?? 'Analysis could not be started.' });
+      if (response.ok && data.user_state === 'running_in_background' && data.action_id) setMotorActionId(String(data.action_id));
     } catch {
       setFeedback({ message: 'CareerHub could not send the analysis request. Try again.' });
     } finally {
@@ -69,6 +73,7 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   return (
     <form ref={formRef} className="action-form" onSubmit={submit}>
       <ProcessIndicator active={busy} label="Starting HRDM-R…" detail="CareerHub is validating the role and handing the request to the governed analysis path." />
+      <MotorRunIndicator actionId={motorActionId} />
       <div className="explainer">
         <strong>What happens when you run HRDM-R?</strong>
         <p>CareerHub analyses this role against the active verified profile, then prepares the governed application package. Search preferences can guide sourcing, but they are not treated as evidence about you.</p>
