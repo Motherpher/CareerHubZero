@@ -6,8 +6,10 @@ import HrdmReport from './HrdmReport';
 type Job = { id?: string; title?: string; company?: string; url?: string; deadline?: string; lane?: string };
 type Lane = { lane_id: string; name: string; bucket: string };
 type ProcessState = 'IDLE' | 'PREPARING' | 'WAITING_FOR_EXECUTION' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'BLOCKED';
+const STORAGE_KEY = 'careerhub.active.analysis';
 
-export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lane[] }) {
+export default function AnalyseClient({ jobs, lanes, language = 'en' }: { jobs: Job[]; lanes: Lane[]; language?: string }) {
+  const sv = language.toLowerCase().startsWith('sv');
   const [selected, setSelected] = useState('');
   const [message, setMessage] = useState('');
   const [detail, setDetail] = useState('');
@@ -17,6 +19,13 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
   const [report, setReport] = useState<any>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function announceProcess(id: string, title: string) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ actionId: id, title: title || (sv ? 'Jobbanalys' : 'Job analysis'), startedAt: new Date().toISOString() }));
+      window.dispatchEvent(new Event('careerhub-process-updated'));
+    } catch { /* local storage is optional; execution is server-side */ }
+  }
 
   function setField(name: string, value: string, form = formRef.current) {
     if (!form) return;
@@ -31,8 +40,8 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
       setReady(Boolean(response.ok && data.ready));
       if (!response.ok || !data.ready) {
         setState('BLOCKED');
-        setMessage(data.message || 'CareerHub Motor execution is not available from this deployment yet.');
-        setDetail(data.detail || 'Execution preflight did not pass.');
+        setMessage(sv ? 'Analystjänsten är inte tillgänglig för den här CareerHub-sidan ännu.' : 'The analysis service is not available for this CareerHub yet.');
+        setDetail(data.detail || 'Execution connection is incomplete.');
         return false;
       }
       if (state === 'BLOCKED') setState('IDLE');
@@ -40,8 +49,8 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
     } catch {
       setReady(false);
       setState('BLOCKED');
-      setMessage('CareerHub could not verify the Motor connection.');
-      setDetail('Execution preflight failed before the analysis was submitted.');
+      setMessage(sv ? 'CareerHub kunde inte kontrollera analystjänsten.' : 'CareerHub could not verify the analysis service.');
+      setDetail(sv ? 'Försök igen om en stund.' : 'Try again in a moment.');
       return false;
     }
   }
@@ -77,23 +86,27 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
       const data = await response.json().catch(() => ({}));
       const next = (data.state || 'FAILED') as ProcessState;
       setState(next);
-      setMessage(data.message || 'CareerHub is checking the Motor state.');
-      setDetail(data.run_url ? `Technical execution: ${data.run_url}` : '');
+      setMessage(data.message || (sv ? 'CareerHub kontrollerar analysstatus.' : 'CareerHub is checking analysis status.'));
+      setDetail('');
       if (next === 'COMPLETED' && data.hrdm) {
         setReport(data.hrdm);
+        window.dispatchEvent(new Event('careerhub-process-updated'));
         return;
       }
-      if (next === 'FAILED') return;
-      pollTimer.current = setTimeout(() => { void poll(id); }, 2500);
+      if (next === 'FAILED') {
+        window.dispatchEvent(new Event('careerhub-process-updated'));
+        return;
+      }
+      pollTimer.current = setTimeout(() => { void poll(id); }, 4000);
     } catch {
-      setState('FAILED');
-      setMessage('CareerHub lost contact with the execution status endpoint.');
+      setMessage(sv ? 'Statusuppdateringen avbröts tillfälligt. Analysen fortsätter i bakgrunden.' : 'Status updates were interrupted temporarily. The analysis continues in the background.');
+      pollTimer.current = setTimeout(() => { void poll(id); }, 8000);
     }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage('Checking Motor readiness…');
+    setMessage(sv ? 'Kontrollerar analystjänsten…' : 'Checking analysis service…');
     setDetail('');
     setReport(null);
     setState('PREPARING');
@@ -103,7 +116,7 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
     const payload = Object.fromEntries(Array.from(form.entries()).map(([key, value]) => [key, String(value)]));
     if (!String(payload.job_url ?? '').trim() && !String(payload.job_text ?? '').trim()) {
       setState('IDLE');
-      setMessage('Add a public job URL or paste the vacancy text before starting HRDM-R.');
+      setMessage(sv ? 'Lägg till en offentlig annonslänk eller klistra in annonstexten.' : 'Add a public job URL or paste the vacancy text before starting.');
       return;
     }
 
@@ -115,26 +128,35 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.action_id) {
       setState('FAILED');
-      setMessage(data.error || data.message || 'The HRDM-R analysis could not be started.');
+      setMessage(data.error || data.message || (sv ? 'Jobbanalysen kunde inte startas.' : 'The job analysis could not be started.'));
       setDetail(data.detail || '');
       return;
     }
 
     setActionId(data.action_id);
     setState('WAITING_FOR_EXECUTION');
-    setMessage(data.message || 'The action was accepted and is waiting for the Motor.');
-    setDetail(`Technical reference: ${data.action_id}`);
+    setMessage(sv ? 'Analysen är startad. Du kan lämna sidan – den fortsätter i bakgrunden.' : 'Analysis started. You can leave this page — it continues in the background.');
+    setDetail(sv ? 'Normalt tar en rapport cirka 2–5 minuter.' : 'A report normally takes about 2–5 minutes.');
+    announceProcess(data.action_id, String(payload.title ?? ''));
     void poll(data.action_id);
   }
 
   const active = ['PREPARING', 'WAITING_FOR_EXECUTION', 'RUNNING'].includes(state);
+  const stateLabel = state === 'IDLE'
+    ? (ready === null ? (sv ? 'Kontrollerar' : 'Checking') : ready ? (sv ? 'Redo' : 'Ready') : (sv ? 'Inte tillgänglig' : 'Unavailable'))
+    : state === 'WAITING_FOR_EXECUTION' ? (sv ? 'Väntar på start' : 'Waiting to start')
+    : state === 'RUNNING' ? (sv ? 'Analys pågår' : 'Analysis running')
+    : state === 'COMPLETED' ? (sv ? 'Klar' : 'Complete')
+    : state === 'FAILED' ? (sv ? 'Misslyckades' : 'Failed')
+    : state === 'BLOCKED' ? (sv ? 'Blockerad' : 'Blocked')
+    : (sv ? 'Förbereder' : 'Preparing');
 
   return (
     <div className="analysis-runner">
       <div className={`process-status process-status--${state.toLowerCase()}`} aria-live="polite">
         <span className={`process-status__dot ${active ? 'process-status__dot--active' : ''}`} aria-hidden="true" />
         <div>
-          <strong>{state === 'IDLE' ? (ready === null ? 'Checking Motor' : ready ? 'Motor ready' : 'Motor unavailable') : state.replaceAll('_', ' ')}</strong>
+          <strong>{stateLabel}</strong>
           {message ? <p>{message}</p> : null}
           {detail ? <p className="muted technical-detail">{detail}</p> : null}
         </div>
@@ -142,19 +164,19 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
 
       <form ref={formRef} className="action-form" onSubmit={submit}>
         <div className="action-form__grid">
-          <label className="field field--full"><span>Saved role</span><select value={selected} onChange={(event) => chooseJob(event.target.value, event.currentTarget.form)}><option value="">Enter a role manually</option>{jobs.map((job, index) => <option key={String(job.id ?? index)} value={String(job.id ?? index)}>{job.title || 'Untitled role'}{job.company ? ` — ${job.company}` : ''}</option>)}</select></label>
-          <label className="field field--full"><span>Job URL</span><input name="job_url" type="url" placeholder="https://…" /></label>
-          <label className="field"><span>Role title</span><input name="title" /></label>
-          <label className="field"><span>Employer</span><input name="company" /></label>
-          <label className="field"><span>Deadline</span><input name="deadline" type="date" /></label>
-          <label className="field"><span>Search / application lane</span><select name="lane" defaultValue="core">{lanes.length ? lanes.map((lane) => <option key={lane.lane_id} value={lane.bucket}>{lane.name}</option>) : <><option value="core">Core</option><option value="adjacent">Adjacent</option><option value="bridge">Bridge</option></>}</select></label>
-          <label className="field field--full"><span>Paste job text when the URL cannot be read</span><textarea name="job_text" rows={8} placeholder="Use this when the vacancy blocks automated retrieval, or when you want to analyse pasted vacancy text directly." /></label>
+          <label className="field field--full"><span>{sv ? 'Sparat jobb' : 'Saved role'}</span><select value={selected} onChange={(event) => chooseJob(event.target.value, event.currentTarget.form)}><option value="">{sv ? 'Ange ett jobb manuellt' : 'Enter a role manually'}</option>{jobs.map((job, index) => <option key={String(job.id ?? index)} value={String(job.id ?? index)}>{job.title || (sv ? 'Namnlöst jobb' : 'Untitled role')}{job.company ? ` — ${job.company}` : ''}</option>)}</select></label>
+          <label className="field field--full"><span>{sv ? 'Länk till jobbannons' : 'Job URL'}</span><input name="job_url" type="url" placeholder="https://…" /></label>
+          <label className="field"><span>{sv ? 'Jobbtitel' : 'Role title'}</span><input name="title" /></label>
+          <label className="field"><span>{sv ? 'Arbetsgivare' : 'Employer'}</span><input name="company" /></label>
+          <label className="field"><span>{sv ? 'Sista ansökningsdag' : 'Deadline'}</span><input name="deadline" type="date" /></label>
+          <label className="field"><span>{sv ? 'Sök-/ansökningsspår' : 'Search / application lane'}</span><select name="lane" defaultValue="core">{lanes.length ? lanes.map((lane) => <option key={lane.lane_id} value={lane.bucket}>{lane.name}</option>) : <><option value="core">Core</option><option value="adjacent">Adjacent</option><option value="bridge">Bridge</option></>}</select></label>
+          <label className="field field--full"><span>{sv ? 'Klistra in annonstext om länken inte kan läsas' : 'Paste job text when the URL cannot be read'}</span><textarea name="job_text" rows={8} placeholder={sv ? 'Använd detta om annonsen blockerar automatisk läsning.' : 'Use this when the vacancy blocks automated retrieval.'} /></label>
         </div>
-        <div className="inline-actions"><button className="button button--primary" disabled={active || ready === false} type="submit">{active ? 'Motor working…' : 'Run HRDM-R and prepare application'}</button></div>
-        <p className="muted">Hybridianesque is evaluated automatically inside HRDM-R. When relevant, the report explains why it was activated, what structural work it performs and what it changes in the role interpretation.</p>
+        <div className="inline-actions"><button className="button button--primary" disabled={active || ready === false} type="submit">{active ? (sv ? 'Analys pågår…' : 'Analysis running…') : (sv ? 'Analysera jobbannons' : 'Analyse job opening')}</button></div>
+        <p className="muted">{sv ? 'Rapporten tar normalt cirka 2–5 minuter. Du kan byta rum eller lämna sidan – processen fortsätter tills den är klar.' : 'The report normally takes about 2–5 minutes. You can change rooms or leave this page — the process continues until it finishes.'}</p>
       </form>
 
-      {actionId && !report ? <p className="muted">You can reopen this run at <a className="text-link" href={`/analyse/${encodeURIComponent(actionId)}`}>its stable analysis page</a>.</p> : null}
+      {actionId && !report ? <p className="muted">{sv ? 'Stabil resultatsida:' : 'Stable result page:'} <a className="text-link" href={`/analyse/${encodeURIComponent(actionId)}`}>{sv ? 'visa analysen' : 'view analysis'}</a>.</p> : null}
       {report ? <HrdmReport report={report} actionId={actionId} /> : null}
     </div>
   );
