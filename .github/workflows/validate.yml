@@ -76,6 +76,22 @@ jobs:
           fi
           python scripts/check_release_change.py --base "$BASE"
 
+      - name: Enforce sourced development history
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            HEAD_REF="${{ github.event.pull_request.head.sha }}"
+            git fetch --no-tags origin "${{ github.base_ref }}" "$HEAD_REF"
+            BASE="$(git merge-base "origin/${{ github.base_ref }}" "$HEAD_REF")"
+            HEAD="$HEAD_REF"
+          else
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.sha }}"
+            if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+              BASE="$(git rev-parse "$HEAD^" 2>/dev/null || git rev-parse "$HEAD")"
+            fi
+          fi
+          python scripts/history_source_log.py validate --base "$BASE" --head "$HEAD"
+
       - name: Guard against profiled data in central repository
         run: |
           python - <<'PY'

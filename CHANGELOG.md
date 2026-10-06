@@ -2,105 +2,124 @@
 
 The authoritative per-version content register is `stack/releases/<version>.yaml`.
 
+## Changelog ID contract
+
+Every release section and every individual change entry has a permanent identifier.
+
+- Release ID: `CHZ-REL-<normalized-version>`
+- Change ID: `CHZ-CHG-<normalized-version>-<ordinal>`
+- `normalized-version` removes punctuation and represents `alpha` as `A`; for example `0.2.9-alpha` → `029A`.
+- IDs are immutable once merged. If an entry is corrected or superseded, preserve its ID and add a new sourced change record rather than renumbering history.
+
 ## 0.2.9-alpha — 2026-09-25; repository recheck 2026-10-05
+**Release ID:** `CHZ-REL-029A`  
 **Household Silicon Sprint integration line + central profile cutover.**
 
-- Preserve the 2026-09-25 Household audit as the historical sprint snapshot.
-- Replace the blocked cross-repository composite-Action distribution path with checkout-based execution of CareerHubZero in profile repositories.
-- Clear WP02 after central-body compatibility passes for Weronika and Grace.
-- Rebind Weronika and Grace operational workflows to the central CareerHub motor.
-- Delete the duplicated local `src`, `scripts`, `hrdm` and requirements runtimes from both remaining profile nodes.
-- Clear WP03 after manifest-driven validation/rendering succeeds on both profile `main` branches.
-- Harden the action-complete managed web shell and artifact delivery path; scope artifact tracing to `.careerhub-artifacts`.
-- Canonicalise the user journey as Profile → Search → Analyse → Apply → Track, with Library and Improve my CareerHub as supporting workspaces.
-- Keep WP06, WP09 and WP10 blocked pending geography/routing and dependent end-gate proof.
+- **`CHZ-CHG-029A-001`** Preserve the 2026-09-25 Household audit as the historical sprint snapshot.
+- **`CHZ-CHG-029A-002`** Replace the blocked cross-repository composite-Action distribution path with checkout-based execution of CareerHubZero in profile repositories.
+- **`CHZ-CHG-029A-003`** Clear WP02 after central-body compatibility passes for Weronika and Grace.
+- **`CHZ-CHG-029A-004`** Rebind Weronika and Grace operational workflows to the central CareerHub motor.
+- **`CHZ-CHG-029A-005`** Delete the duplicated local `src`, `scripts`, `hrdm` and requirements runtimes from both remaining profile nodes.
+- **`CHZ-CHG-029A-006`** Clear WP03 after manifest-driven validation/rendering succeeds on both profile `main` branches.
+- **`CHZ-CHG-029A-007`** Harden the action-complete managed web shell and artifact delivery path; scope artifact tracing to `.careerhub-artifacts`.
+- **`CHZ-CHG-029A-008`** Canonicalise the user journey as Profile → Search → Analyse → Apply → Track, with Library and Improve my CareerHub as supporting workspaces.
+- **`CHZ-CHG-029A-009`** Keep WP06, WP09 and WP10 blocked pending geography/routing and dependent end-gate proof.
 
 ## 0.2.7-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-027A`  
 **Integrated execution spine + HRDM report/ledger lifecycle.**
 
-- Add one manifest-driven central CLI spanning sourcing through rendering.
-- Add central composite GitHub Action for profile-side execution.
-- Add canonical HRDM Process-ID/run-registry support.
-- Add HRDM active report shelf and immutable historical ledger.
-- Archive reports from the active shelf after vacancy deadline while retaining history.
-- Add HRDM Markdown, DOCX and PDF artifacts.
-- Install Hybridianesque Hy-Filter as an optional, explicitly gated HRDM depth filter.
-- Preserve precise vacancy address/coordinates for geotagging.
-- Add search-profile normalization across all active profile-node shapes.
-- Add executable capability audit and explicit remaining 1.0 blockers.
+- **`CHZ-CHG-027A-001`** Add one manifest-driven central CLI spanning sourcing through rendering.
+- **`CHZ-CHG-027A-002`** Add central composite GitHub Action for profile-side execution.
+- **`CHZ-CHG-027A-003`** Add canonical HRDM Process-ID/run-registry support.
+- **`CHZ-CHG-027A-004`** Add HRDM active report shelf and immutable historical ledger.
+- **`CHZ-CHG-027A-005`** Archive reports from the active shelf after vacancy deadline while retaining history.
+- **`CHZ-CHG-027A-006`** Add HRDM Markdown, DOCX and PDF artifacts.
+- **`CHZ-CHG-027A-007`** Install Hybridianesque Hy-Filter as an optional, explicitly gated HRDM depth filter.
+- **`CHZ-CHG-027A-008`** Preserve precise vacancy address/coordinates for geotagging.
+- **`CHZ-CHG-027A-009`** Add search-profile normalization across all active profile-node shapes.
+- **`CHZ-CHG-027A-010`** Add executable capability audit and explicit remaining 1.0 blockers.
 
 ## 0.2.6-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-026A`  
 **Unified CareerHub body architecture.**
 
-- Replace the permanent engine + stack-lock model with one CareerHub software body and one VERSION.
-- Add versionless `careerhub.yaml` manifests to Linus, Weronika and Grace.
-- Make `instance.yaml` and `stack.lock.yaml` migration-only artifacts.
-- Remove cross-repository version propagation from the stable release path.
-- Remove `CAREERHUB_STACK_TOKEN` as a stable architecture requirement.
-- Add unified-body validation and a 1.0 Full Audit Lock guard.
-- Begin centralising reusable Grace/Weronika runtime modules into CareerHubZero.
+- **`CHZ-CHG-026A-001`** Replace the permanent engine + stack-lock model with one CareerHub software body and one VERSION.
+- **`CHZ-CHG-026A-002`** Add versionless `careerhub.yaml` manifests to Linus, Weronika and Grace.
+- **`CHZ-CHG-026A-003`** Make `instance.yaml` and `stack.lock.yaml` migration-only artifacts.
+- **`CHZ-CHG-026A-004`** Remove cross-repository version propagation from the stable release path.
+- **`CHZ-CHG-026A-005`** Remove `CAREERHUB_STACK_TOKEN` as a stable architecture requirement.
+- **`CHZ-CHG-026A-006`** Add unified-body validation and a 1.0 Full Audit Lock guard.
+- **`CHZ-CHG-026A-007`** Begin centralising reusable Grace/Weronika runtime modules into CareerHubZero.
 
 ## 0.2.5-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-025A`  
 **Precision-aware vacancy geotagging + zoom-aware map aggregation.**
 
-- Add Google Places API (New) geotagging adapter for sourced vacancies.
-- Prefer source coordinates and explicit vacancy addresses before broader locality geocoding.
-- Preserve geographic precision instead of inventing street-level locations.
-- Add zoom-aware country/region/locality clusters and high-zoom point expansion.
-- Track both total jobs and newly sourced jobs in cluster payloads.
-- Add canonical job-geo schema, CLI and unit tests.
-- Reserve country-matrix enrichment as a separate, provider-independent layer.
+- **`CHZ-CHG-025A-001`** Add Google Places API (New) geotagging adapter for sourced vacancies.
+- **`CHZ-CHG-025A-002`** Prefer source coordinates and explicit vacancy addresses before broader locality geocoding.
+- **`CHZ-CHG-025A-003`** Preserve geographic precision instead of inventing street-level locations.
+- **`CHZ-CHG-025A-004`** Add zoom-aware country/region/locality clusters and high-zoom point expansion.
+- **`CHZ-CHG-025A-005`** Track both total jobs and newly sourced jobs in cluster payloads.
+- **`CHZ-CHG-025A-006`** Add canonical job-geo schema, CLI and unit tests.
+- **`CHZ-CHG-025A-007`** Reserve country-matrix enrichment as a separate, provider-independent layer.
 
 ## 0.2.4-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-024A`  
 **Grace stack recovery + Motherpher ownership and 1.0 audit-lock governance.**
 
-- Register Grace as the third active CareerHub profile instance.
-- Correct stale central engine metadata from 0.2.2-alpha to the current line.
-- Require Grace pre-firewall application artifacts to be revalidated before external use.
-- Expand 0.3.0-alpha cutover scope to both WPB and Grace legacy motors.
-- Set Motherpher ownership as the repository boundary for all CareerHub repositories; ownership migration completed for Linus, Weronika and Grace.
-- Define CareerHubZero 1.0.0 as the Full Audit Lock release, not a feature-count milestone.
-- Correct the example candidate profile to use the canonical `verification_queue` field.
+- **`CHZ-CHG-024A-001`** Register Grace as the third active CareerHub profile instance.
+- **`CHZ-CHG-024A-002`** Correct stale central engine metadata from 0.2.2-alpha to the current line.
+- **`CHZ-CHG-024A-003`** Require Grace pre-firewall application artifacts to be revalidated before external use.
+- **`CHZ-CHG-024A-004`** Expand 0.3.0-alpha cutover scope to both WPB and Grace legacy motors.
+- **`CHZ-CHG-024A-005`** Set Motherpher ownership as the repository boundary for all CareerHub repositories; ownership migration completed for Linus, Weronika and Grace.
+- **`CHZ-CHG-024A-006`** Define CareerHubZero 1.0.0 as the Full Audit Lock release, not a feature-count milestone.
+- **`CHZ-CHG-024A-007`** Correct the example candidate profile to use the canonical `verification_queue` field.
 
 ## 0.2.3-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-023A`  
 **Verified-career evidence firewall + search-only user raster.**
 
-- Hard-block private-life fields from the matchable candidate profile.
-- Require every matchable claim to bind to a verified, permitted career source.
-- Separate user-entered "specific wishes or needs" into a search-only overlay.
-- Forbid the search overlay from becoming CV evidence, HRDM proof points or application claims.
-- Add runtime policy validation and regression tests.
-- Tighten candidate/search schemas and profiled-instance documentation.
+- **`CHZ-CHG-023A-001`** Hard-block private-life fields from the matchable candidate profile.
+- **`CHZ-CHG-023A-002`** Require every matchable claim to bind to a verified, permitted career source.
+- **`CHZ-CHG-023A-003`** Separate user-entered "specific wishes or needs" into a search-only overlay.
+- **`CHZ-CHG-023A-004`** Forbid the search overlay from becoming CV evidence, HRDM proof points or application claims.
+- **`CHZ-CHG-023A-005`** Add runtime policy validation and regression tests.
+- **`CHZ-CHG-023A-006`** Tighten candidate/search schemas and profiled-instance documentation.
 
 ## 0.2.2-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-022A`  
 **Harmonised stack version governance.**
 
-- Establish `VERSION` as the single motor-version source.
-- Add full stack registry.
-- Add per-version machine-readable release ledger/backlog.
-- Add generated profile `stack.lock.yaml`.
-- Add central remote sync and compatibility checks.
-- Block stack release if an active profile is behind or contains its own motor.
-- Remove independent package-version drift.
+- **`CHZ-CHG-022A-001`** Establish `VERSION` as the single motor-version source.
+- **`CHZ-CHG-022A-002`** Add full stack registry.
+- **`CHZ-CHG-022A-003`** Add per-version machine-readable release ledger/backlog.
+- **`CHZ-CHG-022A-004`** Add generated profile `stack.lock.yaml`.
+- **`CHZ-CHG-022A-005`** Add central remote sync and compatibility checks.
+- **`CHZ-CHG-022A-006`** Block stack release if an active profile is behind or contains its own motor.
+- **`CHZ-CHG-022A-007`** Remove independent package-version drift.
 
 ## 0.2.1-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-021A`  
 **Base-contract drift correction.**
 
-- Restore canonical user flow: Find → Analyse? → Apply.
-- Remove Napp/market-response as a base CareerHub command/subsystem.
-- Restore job vault + applications as canonical state core.
-- Preserve evidence-bounded profile support.
+- **`CHZ-CHG-021A-001`** Restore canonical user flow: Find → Analyse? → Apply.
+- **`CHZ-CHG-021A-002`** Remove Napp/market-response as a base CareerHub command/subsystem.
+- **`CHZ-CHG-021A-003`** Restore job vault + applications as canonical state core.
+- **`CHZ-CHG-021A-004`** Preserve evidence-bounded profile support.
 
 ## 0.2.0-alpha — 2026-09-24
+**Release ID:** `CHZ-REL-020A`  
 **Profiled-instance expansion.**
 
-- Add profile/search/evidence contracts and instance loader.
-- Add dashboard renderer.
-- Added experimental market-response layer later identified as base-contract drift.
+- **`CHZ-CHG-020A-001`** Add profile/search/evidence contracts and instance loader.
+- **`CHZ-CHG-020A-002`** Add dashboard renderer.
+- **`CHZ-CHG-020A-003`** Add experimental market-response layer later identified as base-contract drift.
 
 ## 0.1.0-alpha — 2026-09
+**Release ID:** `CHZ-REL-010A`  
 **Centralisation baseline.**
 
-- Establish CareerHubZero.
-- Define central operations vs profiled instance boundary.
-- Preserve HRDM core and migration plan from WPB.
+- **`CHZ-CHG-010A-001`** Establish CareerHubZero.
+- **`CHZ-CHG-010A-002`** Define central operations vs profiled instance boundary.
+- **`CHZ-CHG-010A-003`** Preserve HRDM core and migration plan from WPB.

@@ -46,6 +46,48 @@ Open [`CHZERO_PROVENANCE_MAP.md`](./CHZERO_PROVENANCE_MAP.md).
 
 It defines the evidence hierarchy and the rule for historical documents whose old status is still correct for its date but no longer current.
 
+## Mandatory sourced change record — WP40.0+
+
+From WP40.0 onward, substantive CareerHubZero changes are not allowed to exist without a machine-readable source event.
+
+The canonical script is:
+
+```bash
+python scripts/history_source_log.py capture \
+  --base <BASE_SHA_OR_REF> \
+  --head HEAD \
+  --wp WP40.1 \
+  --summary "Describe the actual change"
+```
+
+The script derives the changed-file list and commit provenance directly from Git, infers affected subsystems, captures GitHub PR/workflow context when `GITHUB_EVENT_PATH` is present, and writes the event under:
+
+```text
+stack/history/events/
+```
+
+The event carries a deterministic fingerprint of the **substantive diff**. The fingerprint, rather than only the branch HEAD SHA, is the coverage key so the record survives squash-merge SHA changes.
+
+CI runs:
+
+```bash
+python scripts/history_source_log.py validate --base <BASE> --head HEAD
+```
+
+and fails when substantive files change without a matching sourced history event. Files inside `stack/history/events/*.yaml` are the only self-referential exemption; changing history documentation, source code, schemas, workflows, tests or any other repository content still requires an event.
+
+### Developer/agent sequence
+
+1. Create or identify the governing WP.
+2. Make the substantive change.
+3. Run `history_source_log.py capture` against the full branch diff.
+4. Commit the generated/updated event with the change set.
+5. Open/update the PR.
+6. CI verifies that the event fingerprint exactly covers the substantive diff.
+7. Do not rewrite a merged event to make history look cleaner; corrections are new sourced events.
+
+This is now part of the development contract, not optional documentation hygiene.
+
 ## Machine-readable indexes
 
 For scripts/agents/grep/search tooling:
@@ -53,6 +95,7 @@ For scripts/agents/grep/search tooling:
 - [`../../stack/history/development-ledger.yaml`](../../stack/history/development-ledger.yaml)
 - [`../../stack/history/wp-registry.yaml`](../../stack/history/wp-registry.yaml)
 - [`../../stack/history/failure-index.yaml`](../../stack/history/failure-index.yaml)
+- `../../stack/history/events/*.yaml` — sourced per-change events from WP40.0 onward
 
 ## Status rule
 

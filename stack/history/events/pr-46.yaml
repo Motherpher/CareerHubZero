@@ -1,0 +1,74 @@
+schema_version: '1.1'
+event_id: PR-46
+recorded_at: '2026-10-06T23:23:19Z'
+summary: WP40.0 — enforce sourced development history before WP40
+decision_context: >-
+  Before WP40 implementation, the user required a mechanism that always sources
+  and logs development changes. WP40.0 installs the capture/validation script,
+  makes sourced history a CI-enforced development contract, and assigns stable
+  IDs to every existing changelog release and individual change entry.
+work_packages:
+  - WP40.0
+failure_ids: []
+subsystems:
+  - ci_operations
+  - developer_tooling
+  - development_history
+  - documentation
+  - repository_core
+  - test_regression
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 185ac4dfee288f135e79e54ec1e801ab52d2b0af
+  head_sha: 1807c02b93ebd14a793850c0f8b973afd6ba30d7
+  branch: wp40-0/history-source-gate
+  actor: Hybrismannen
+  pull_request:
+    number: 46
+    title: WP40.0 — enforce sourced development history before WP40
+    url: https://github.com/Motherpher/CareerHubZero/pull/46
+  workflow_evidence:
+    bootstrap_validation_run: 37546285568
+changes:
+  fingerprint: sha256:cad1c8615b8928613e4b589312c45d21fb566649c4186f1494ce90bd6e1ae4da
+  file_count: 5
+  files:
+    - status: M
+      path: .github/workflows/validate.yml
+    - status: M
+      path: CHANGELOG.md
+    - status: M
+      path: docs/history/README.md
+    - status: A
+      path: scripts/history_source_log.py
+    - status: A
+      path: tests/test_history_source_log.py
+commits:
+  - sha: 922a7ca2f8052fb2c5e80c8f98285bc3c249e55b
+    subject: 'WP40.0: add sourced development history logger'
+  - sha: a4aec8d4e0b7dc53f45a8cb7ebe876c69cd4fa88
+    subject: 'WP40.0: test sourced history logger'
+  - sha: 05bf857f9235dff241c899ec5867e414a7d3d1f2
+    subject: 'WP40.0: enforce sourced history in CI'
+  - sha: 752bb08752fbd1c8893bdb63291f21b45ace145f
+    subject: 'WP40.0: document mandatory sourced change logging'
+  - sha: 3b6ed449b2eaf2e7270a1218d09964badb568688
+    subject: 'WP40.0: bootstrap sourced history event'
+  - sha: c30602f7d8ab35964f49596f10537e986aa08581
+    subject: 'WP40.0: make history fingerprint content-sensitive'
+  - sha: 9463ff121193e19175e3540e52fe75582adbf56f
+    subject: 'WP40.0: test content-sensitive history fingerprints'
+  - sha: a54f32daa549774b03ae908a4f75fc6f4a0eabb0
+    subject: 'WP40.0: bind history gate to actual PR branch diff'
+  - sha: b268eeee60e62da27a2b01022b2ce76ffe340f2a
+    subject: 'WP40.0: assign stable IDs to all changelog entries'
+  - sha: 33abb0762322f7682af9d1b9a0239101b1f6ab12
+    subject: 'WP40.0: validate bootstrap by file coverage and content fingerprint'
+  - sha: 1807c02b93ebd14a793850c0f8b973afd6ba30d7
+    subject: 'WP40.0: test bootstrap-compatible file coverage'
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
+  bootstrap_event: true
