@@ -32,12 +32,13 @@ function analyseHref(result: SearchResult) {
     title: result.title,
     company: result.company,
     deadline: (result.deadline ?? '').slice(0, 10),
-    lane: ['core','adjacent','bridge'].includes(result.laneBucket) ? result.laneBucket : 'core',
+    lane: ['core', 'adjacent', 'bridge'].includes(result.laneBucket) ? result.laneBucket : 'core',
   });
   return `/analyse?${params.toString()}`;
 }
 
-export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
+export default function SearchRunner({ lanes, language = 'en' }: { lanes: Lane[]; language?: string }) {
+  const sv = language.toLowerCase().startsWith('sv');
   const [lane, setLane] = useState('all');
   const [overlay, setOverlay] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,10 +56,10 @@ export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
         body: JSON.stringify({ lane, overlay: overlay.trim(), limit: 60 }),
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.error || 'Search could not be completed.');
+      if (!response.ok) throw new Error(payload?.error || (sv ? 'Sökningen kunde inte genomföras.' : 'Search could not be completed.'));
       setData(payload);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search could not be completed.');
+      setError(err instanceof Error ? err.message : (sv ? 'Sökningen kunde inte genomföras.' : 'Search could not be completed.'));
     } finally {
       setLoading(false);
     }
@@ -68,46 +69,63 @@ export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
     <div className="search-runner">
       <form className="search-controls" onSubmit={runSearch}>
         <label>
-          <span className="meta-label">Search lane</span>
+          <span className="meta-label">{sv ? 'Sökspår' : 'Search lane'}</span>
           <select value={lane} onChange={(event) => setLane(event.target.value)}>
-            <option value="all">All saved lanes</option>
+            <option value="all">{sv ? 'Alla sparade spår' : 'All saved lanes'}</option>
             {lanes.map((item) => <option key={item.lane_id} value={item.lane_id}>{item.name}</option>)}
           </select>
         </label>
         <label className="search-overlay">
-          <span className="meta-label">This-search need</span>
-          <input value={overlay} onChange={(event) => setOverlay(event.target.value)} placeholder="Optional: e.g. AI, Uppsala, interim, children’s rights" />
+          <span className="meta-label">{sv ? 'Specifika önskemål eller behov' : 'Specific wishes or needs'}</span>
+          <input
+            value={overlay}
+            onChange={(event) => setOverlay(event.target.value)}
+            placeholder={sv ? 'Valfritt – skriv vad just den här sökningen ska ta hänsyn till' : 'Optional — add what this search should take into account'}
+          />
         </label>
-        <button className="button button--primary" type="submit" disabled={loading}>{loading ? 'Searching…' : 'Run search'}</button>
+        <button className="button button--primary" type="submit" disabled={loading}>
+          {loading ? (sv ? 'Söker…' : 'Searching…') : (sv ? 'Sök jobb' : 'Run search')}
+        </button>
       </form>
 
-      <p className="muted search-note">Uses the saved Search Profile as the baseline. Lane and need changes here are session-only and do not rewrite your defaults.</p>
+      <p className="muted search-note">
+        {sv
+          ? 'Din verifierade karriärprofil är basen. Texten i rutan ovan är ett sökraster för just denna sökning och blir aldrig kandidatfakta.'
+          : 'Your verified career profile is the baseline. The field above is a search-only raster for this run and never becomes candidate evidence.'}
+      </p>
       {error ? <p className="wish-status wish-status--error" role="alert">{error}</p> : null}
 
       {data ? (
         <section className="search-results" aria-live="polite">
           <div className="search-results__head">
-            <div><p className="meta-label">Search complete</p><h2>{data.results.length} opportunities</h2></div>
-            <p className="muted">{data.source} · {data.searchedQueries} query runs</p>
+            <div>
+              <p className="meta-label">{sv ? 'Sökning klar' : 'Search complete'}</p>
+              <h2>{data.results.length} {sv ? 'möjligheter' : 'opportunities'}</h2>
+            </div>
+            <p className="muted">{data.source} · {data.searchedQueries} {sv ? 'sökkörningar' : 'query runs'}</p>
           </div>
           {data.results.length ? (
             <div className="search-result-list">
               {data.results.map((result) => (
                 <article className="search-result" key={`${result.id}-${result.laneId}`}>
                   <div className="search-result__main">
-                    <p className="meta-label">{result.laneName} · score {result.score}</p>
+                    <p className="meta-label">{result.laneName} · {sv ? 'poäng' : 'score'} {result.score}</p>
                     <h3>{result.title}</h3>
-                    <p><strong>{result.company || 'Employer not stated'}</strong>{result.location ? ` · ${result.location}` : ''}</p>
-                    <p className="muted">Matched: {result.matchedQuery}{result.deadline ? ` · deadline ${result.deadline.slice(0, 10)}` : ''}</p>
+                    <p><strong>{result.company || (sv ? 'Arbetsgivare ej angiven' : 'Employer not stated')}</strong>{result.location ? ` · ${result.location}` : ''}</p>
+                    <p className="muted">{sv ? 'Träff' : 'Matched'}: {result.matchedQuery}{result.deadline ? ` · ${sv ? 'sista dag' : 'deadline'} ${result.deadline.slice(0, 10)}` : ''}</p>
                   </div>
                   <div className="inline-actions">
-                    <a className="button" href={result.url} target="_blank" rel="noreferrer">Open role</a>
-                    <a className="button button--primary" href={analyseHref(result)}>Analyse in CareerHub</a>
+                    <a className="button" href={result.url} target="_blank" rel="noreferrer">{sv ? 'Öppna jobbet' : 'Open role'}</a>
+                    <a className="button button--primary" href={analyseHref(result)}>{sv ? 'Analysera i CareerHub' : 'Analyse in CareerHub'}</a>
                   </div>
                 </article>
               ))}
             </div>
-          ) : <div className="empty-state">No matching opportunities were returned for this run. Broaden the lane or remove the session-only need.</div>}
+          ) : (
+            <div className="empty-state">
+              {sv ? 'Inga matchande möjligheter hittades i den här sökningen. Justera sökrastret eller sökspåret och försök igen.' : 'No matching opportunities were returned for this run. Adjust the search raster or lane and try again.'}
+            </div>
+          )}
         </section>
       ) : null}
     </div>
