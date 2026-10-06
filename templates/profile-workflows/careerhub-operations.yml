@@ -29,8 +29,20 @@ jobs:
       CAREERHUB_MODEL: ${{ secrets.CAREERHUB_MODEL }}
       OPERATION: ${{ inputs.operation }}
       ACTION_ID: ${{ inputs.action_id }}
-      PAYLOAD: ${{ inputs.payload }}
     steps:
+      - name: Mask materialization credential
+        if: inputs.operation == 'materialize_analysis'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          event = json.load(open(os.environ['GITHUB_EVENT_PATH'], encoding='utf-8'))
+          payload = json.loads(str((event.get('inputs') or {}).get('payload') or '{}'))
+          url = str(payload.get('bundle_url') or '')
+          if url:
+              print(f'::add-mask::{url}')
+          PY
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -68,7 +80,8 @@ jobs:
           mkdir -p /tmp/careerhub-action
           python - <<'PY'
           import json, os, pathlib
-          p = json.loads(os.environ['PAYLOAD'] or '{}')
+          event = json.load(open(os.environ['GITHUB_EVENT_PATH'], encoding='utf-8'))
+          p = json.loads(str((event.get('inputs') or {}).get('payload') or '{}'))
           root = pathlib.Path('/tmp/careerhub-action')
           for key, value in p.items():
               if isinstance(value, (dict, list)):
@@ -130,7 +143,27 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A "$CAREERHUB_ROOT/config" "$CAREERHUB_ROOT/data" "$CAREERHUB_ROOT/reports" "$CAREERHUB_ROOT/output" "$CAREERHUB_ROOT/site/.careerhub-artifacts" "$CAREERHUB_ROOT/CONTROL_ROOM.md" "$CAREERHUB_ROOT/APPLICATIONS.md" "$CAREERHUB_ROOT/JOB_VAULT.md" 2>/dev/null || true
+
+          stage_if_exists() {
+            [ -e "$1" ] && git add -A "$1" || true
+          }
+
+          stage_if_exists "$CAREERHUB_ROOT/config"
+          stage_if_exists "$CAREERHUB_ROOT/data"
+          stage_if_exists "$CAREERHUB_ROOT/reports"
+          stage_if_exists "$CAREERHUB_ROOT/CONTROL_ROOM.md"
+          stage_if_exists "$CAREERHUB_ROOT/APPLICATIONS.md"
+          stage_if_exists "$CAREERHUB_ROOT/JOB_VAULT.md"
+          stage_if_exists "$CAREERHUB_ROOT/HRDM_LEDGER.md"
+          stage_if_exists "$CAREERHUB_ROOT/HRDM_REPORTS.md"
+
+          if [ -d "$CAREERHUB_ROOT/output/$ACTION_ID" ]; then
+            git add -f "$CAREERHUB_ROOT/output/$ACTION_ID"
+          fi
+          if [ -d "$CAREERHUB_ROOT/site/.careerhub-artifacts" ]; then
+            git add -f "$CAREERHUB_ROOT/site/.careerhub-artifacts"
+          fi
+
           if git diff --cached --quiet; then
             echo "No repository state changes."
             exit 0
