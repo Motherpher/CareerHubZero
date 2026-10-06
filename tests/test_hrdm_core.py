@@ -1,9 +1,14 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
+from careerhub.hrdm import _strictify_openai_schema
 from careerhub.hrdm_trace import create_reverse_trace, finalize_reverse_trace, validate_process_id
 from careerhub.hybridianesque import finalize_hyfilter
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class HRDMCoreTests(unittest.TestCase):
@@ -52,6 +57,32 @@ class HRDMCoreTests(unittest.TestCase):
         self.assertEqual(automatic["status"], "not_recommended")
         self.assertFalse(automatic["activated"])
         self.assertEqual(automatic["participating_logics"], [])
+
+    def test_openai_schema_adapter_closes_every_object(self):
+        canonical = json.loads((ROOT / "core/hrdm/hrdm_result.schema.json").read_text(encoding="utf-8"))
+        strict = _strictify_openai_schema(canonical)
+
+        def assert_strict(node, path="$"):
+            if isinstance(node, list):
+                for index, item in enumerate(node):
+                    assert_strict(item, f"{path}[{index}]")
+                return
+            if not isinstance(node, dict):
+                return
+            if node.get("type") == "object":
+                self.assertIs(node.get("additionalProperties"), False, path)
+                properties = node.get("properties")
+                self.assertIsInstance(properties, dict, path)
+                self.assertEqual(set(node.get("required", [])), set(properties), path)
+            for key, value in node.items():
+                assert_strict(value, f"{path}.{key}")
+
+        assert_strict(strict)
+        self.assertEqual(strict["properties"]["job"]["properties"], {})
+        field_logic = strict["properties"]["field_logic"]
+        self.assertEqual(field_logic["additionalProperties"], False)
+        self.assertIn("dominant_logics", field_logic["properties"])
+        self.assertIn("summary", field_logic["properties"])
 
 
 if __name__ == "__main__":
