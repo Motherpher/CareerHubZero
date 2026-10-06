@@ -4,6 +4,20 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
+
+# When a Python file under scripts/ is executed directly, Python places that
+# directory before PYTHONPATH entries. Because scripts/careerhub.py exists,
+# `import careerhub...` can otherwise resolve that file as a top-level module
+# instead of the canonical src/careerhub package. Pin src/ first so this script
+# is safe both in GitHub Actions and when invoked locally.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPO_ROOT / 'src'
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+else:
+    sys.path.remove(str(SRC_ROOT))
+    sys.path.insert(0, str(SRC_ROOT))
 
 from careerhub.instance import load_profile_node, validate_profile_node_paths
 from careerhub.models import Job
