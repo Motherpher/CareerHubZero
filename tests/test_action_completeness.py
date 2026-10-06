@@ -21,8 +21,10 @@ class ActionCompletenessTests(unittest.TestCase):
         )
         self.assert_file_contains(
             "web-shell/site/app/find/SearchProfileEditor.tsx",
-            "Save Search Profile defaults",
+            "Save future search defaults",
             "search_profile_update",
+            "Lane name",
+            "Search terms",
         )
         self.assert_file_contains("web-shell/site/app/api/search/route.ts", "Platsbanken")
 
@@ -69,8 +71,21 @@ class ActionCompletenessTests(unittest.TestCase):
         self.assert_file_contains(
             "web-shell/site/app/profile/ProfileActions.tsx",
             "Add or update evidence",
-            "Request profile rebuild",
+            "Rebuild profile from active sources",
             "Request review",
+        )
+
+    def test_guidance_and_q_and_a_are_managed(self):
+        self.assert_file_contains(
+            "web-shell/site/app/_components/WorkspaceHeader.tsx",
+            "How this works",
+            "Open searchable Q&A",
+        )
+        self.assert_file_contains(
+            "web-shell/site/app/help/HelpSearch.tsx",
+            "What is the Career Profile?",
+            "What is a role lane?",
+            "What does the blinking red dot mean?",
         )
 
     def test_motor_action_bridge_is_managed(self):
@@ -89,6 +104,7 @@ class ActionCompletenessTests(unittest.TestCase):
             "track_status",
             "profile_review",
             "library_review",
+            "run-name: CareerHub",
         )
         self.assert_file_contains(
             "scripts/sync_web_shell.py",
