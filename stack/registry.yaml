@@ -1,8 +1,9 @@
-schema_version: "2.0"
+schema_version: "2.1"
 product: careerhub
 version_source: VERSION
 architecture: unified_body
 rule: "CareerHub has one software version. Profile repositories contain data/context manifests only and do not pin or fork the runtime."
+profile_binding_required: true
 
 profiles:
   - profile_id: linus-fast
@@ -21,7 +22,7 @@ profiles:
     migration:
       legacy_instance_path: CareerHub/instance.yaml
       legacy_lock_path: CareerHub/stack.lock.yaml
-      legacy_motor_present: true
+      legacy_motor_present: false
 
   - profile_id: grace
     repository: Motherpher/Gracey
