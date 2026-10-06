@@ -1,13 +1,15 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import ProcessIndicator from '@/app/_components/ProcessIndicator';
 
 type Job = { id?: string; title?: string; company?: string; url?: string; deadline?: string; lane?: string };
 type Lane = { lane_id: string; name: string; bucket: string };
+type ActionFeedback = { message?: string; next_step?: string; action_id?: string; user_state?: string; error?: string };
 
 export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lane[] }) {
   const [selected, setSelected] = useState('');
-  const [message, setMessage] = useState('');
+  const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
   const [busy, setBusy] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -41,26 +43,36 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage('');
+    setFeedback(null);
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(Array.from(form.entries()).map(([key, value]) => [key, String(value)]));
     if (!String(payload.job_url ?? '').trim() && !String(payload.job_text ?? '').trim()) {
-      setMessage('Add a public job URL or paste the vacancy text before starting HRDM-R.');
+      setFeedback({ message: 'Add a public job URL or paste the vacancy text before starting HRDM-R.' });
       return;
     }
     setBusy(true);
-    const response = await fetch('/api/action', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ operation: 'analyse_role', payload }),
-    });
-    const data = await response.json().catch(() => ({}));
-    setMessage(response.ok ? `${data.message ?? 'Analysis started.'}${data.action_id ? ` Reference: ${data.action_id}` : ''}` : (data.error ?? data.message ?? 'Analysis could not be started.'));
-    setBusy(false);
+    try {
+      const response = await fetch('/api/action', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ operation: 'analyse_role', payload }),
+      });
+      const data = await response.json().catch(() => ({}));
+      setFeedback(response.ok ? data : { ...data, message: data.error ?? data.message ?? 'Analysis could not be started.' });
+    } catch {
+      setFeedback({ message: 'CareerHub could not send the analysis request. Try again.' });
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <form ref={formRef} className="action-form" onSubmit={submit}>
+      <ProcessIndicator active={busy} label="Starting HRDM-R…" detail="CareerHub is validating the role and handing the request to the governed analysis path." />
+      <div className="explainer">
+        <strong>What happens when you run HRDM-R?</strong>
+        <p>CareerHub analyses this role against the active verified profile, then prepares the governed application package. Search preferences can guide sourcing, but they are not treated as evidence about you.</p>
+      </div>
       <div className="action-form__grid">
         <label className="field field--full"><span>Saved role</span><select value={selected} onChange={(event) => chooseJob(event.target.value, event.currentTarget.form)}><option value="">Enter a role manually</option>{jobs.map((job, index) => <option key={String(job.id ?? index)} value={String(job.id ?? index)}>{job.title || 'Untitled role'}{job.company ? ` — ${job.company}` : ''}</option>)}</select></label>
         <label className="field field--full"><span>Job URL</span><input name="job_url" type="url" placeholder="https://…" /></label>
@@ -71,9 +83,9 @@ export default function AnalyseClient({ jobs, lanes }: { jobs: Job[]; lanes: Lan
         <label className="field"><span>Hybridianesque filter</span><select name="hy_filter" defaultValue="No"><option value="No">No</option><option value="Yes">Yes</option></select></label>
         <label className="field field--full"><span>Paste job text when the URL cannot be read</span><textarea name="job_text" rows={8} placeholder="Use this when the vacancy blocks automated retrieval, or when you want to analyse pasted vacancy text directly." /></label>
       </div>
-      <div className="inline-actions"><button className="button button--primary" disabled={busy} type="submit">{busy ? 'Starting analysis…' : 'Run HRDM-R and prepare application'}</button></div>
+      <div className="inline-actions"><button className="button button--primary" disabled={busy} type="submit">{busy ? 'Starting analysis…' : 'Run HRDM-R and prepare application'}</button><a className="button" href="/help">Explain HRDM-R</a></div>
       <p className="muted">Provide either the public vacancy URL or pasted vacancy text. The role analysis and application package are one governed run, bounded by the active verified profile.</p>
-      {message ? <p className="wish-status" role="status">{message}</p> : null}
+      {feedback ? <div className="action-state" role="status"><strong>{feedback.message ?? 'Analysis request registered.'}</strong>{feedback.next_step ? <small>{feedback.next_step}</small> : null}{feedback.action_id ? <small>Reference for troubleshooting: {feedback.action_id}</small> : null}</div> : null}
     </form>
   );
 }
