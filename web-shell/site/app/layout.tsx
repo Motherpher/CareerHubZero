@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { cssVars, loadHubProfile, loadProfileShell, loadTheme } from '@/lib/profile';
 import './globals.css';
+import './visual-language.css';
 import './actions.css';
 import './profile-shell.css';
 import './motor.css';
