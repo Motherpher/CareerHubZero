@@ -11,7 +11,7 @@ export default function WriterPortfolioPage() {
 
   const sections = portfolio?.sections?.length
     ? portfolio.sections
-    : (room.features ?? []).map((feature) => ({ label: feature }));
+    : (room.features ?? []).map((feature) => ({ label: feature, description: undefined }));
   const featured = portfolio?.featured ?? [];
 
   return (
