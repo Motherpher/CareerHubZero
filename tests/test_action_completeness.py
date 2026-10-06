@@ -105,10 +105,14 @@ class ActionCompletenessTests(unittest.TestCase):
         )
         self.assert_file_contains(
             "web-shell/site/app/api/action/status/route.ts",
+            "@vercel/connect",
+            "github/amber-bell",
+            "subject: { type: 'app' }",
             "WAITING_FOR_EXECUTION",
             "RUNNING",
             "COMPLETED",
             "FAILED",
+            "authSource",
         )
         self.assert_file_contains(
             "templates/profile-workflows/careerhub-operations.yml",
