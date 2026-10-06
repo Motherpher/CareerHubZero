@@ -95,6 +95,13 @@ class ActionCompletenessTests(unittest.TestCase):
             "profile_review",
             "library_review",
             "executionPreflight",
+            "@vercel/connect",
+            "github/amber-bell",
+            "subject: { type: 'app' }",
+        )
+        self.assert_file_contains(
+            "web-shell/site/package.json",
+            '"@vercel/connect"',
         )
         self.assert_file_contains(
             "web-shell/site/app/api/action/status/route.ts",
