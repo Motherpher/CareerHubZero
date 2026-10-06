@@ -1,4 +1,4 @@
-schema_version: "1.0"
+schema_version: "1.1"
 registry_id: CHZERO-WP-REGISTRY-001
 cutoff_date: "2026-10-07"
 
@@ -8,6 +8,7 @@ namespace_rules:
   OCT-WP: october_web_action_execution_packages
   WP38_WP39: project_aliases_for_issues_38_39
   WP40: product_integrity_work_package_issue_41
+  WP40.x: sequential_product_integrity_sprints
 
 collision_rules:
   - alias: WP2
@@ -189,14 +190,14 @@ operational_product_line:
     formal_name: WP-CHM-UX-01 — Motor Interaction Clarity & Guidance
     issue: 38
     implementation_pr: 40
-    github_state_at_cutoff: open
+    github_issue_state_at_cutoff: open
     reconciled_status: IMPLEMENTED_AND_FLEET_SYNCED
     trigger_tags: [queued-message, active-process, profile-lanes, help]
   WP39:
     formal_name: WP-CHM-OPS-02 — Restore HRDM-R Results, Auto-Hybridianesque, Search Delta & Wish Routing
     issue: 39
     implementation_pr: 40
-    github_state_at_cutoff: open
+    github_issue_state_at_cutoff: open
     reconciled_status: IMPLEMENTED_AND_HARDENED
     trigger_tags: [report-not-returned, hybridianesque-user-gate, search-delta, wish-routing]
     e2e_action_id: ACT-20261006155733-2c2a00a7
@@ -205,8 +206,8 @@ operational_product_line:
   WP40:
     formal_name: CareerHub Reset, Background Execution & Search/Library Usability
     issue: 41
-    github_state_at_cutoff: open
-    current_reconciled_status: OPEN
+    github_issue_state_at_cutoff: open
+    current_reconciled_status: IN_PROGRESS
     original_workstreams:
       A: safe_reset_and_test_residue_cleanup
       B: library_profile_isolation_and_actual_evidence_use
@@ -214,18 +215,29 @@ operational_product_line:
       D: ordinary_job_site_search_ux
       E: central_help_q_and_a
       F: deployment_configuration
-    chat_sprints:
+    sprints:
+      WP40.0:
+        name: Sourced Development History Gate
+        issue: 44
+        pr: 46
+        status: COMPLETE
+        gate: HISTORY_SOURCE_LOCK
       WP40.1:
         name: State Integrity, Reset & Profile Isolation
+        issue: 47
+        status: IN_PROGRESS
         gate: STATE_BASELINE_LOCK
       WP40.2:
         name: Durable Library, Evidence Pipeline & Background Analysis
+        status: PENDING
         gate: DURABLE_PROCESS_LOCK
       WP40.3:
         name: Search Workspace & Job Decision Flow
+        status: PENDING
         gate: SEARCH_WORKFLOW_LOCK
       WP40.4:
         name: Help, Fleet Hardening, Release Audit & WP40 Lock
+        status: PENDING
         gate: FLEET_ACCEPTANCE_LOCK
 
 companion_non_wp_items:
