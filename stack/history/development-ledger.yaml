@@ -1,0 +1,443 @@
+schema_version: "1.0"
+ledger_id: CHZERO-DEV-LEDGER-001
+cutoff_date: "2026-10-07"
+canonical_repository: Motherpher/CareerHubZero
+purpose: >-
+  Machine-readable development spine for chronology, work-package lookup,
+  failure search, supersession tracing and current/historical state reconciliation.
+
+repositories:
+  - id: CHZERO
+    repo: Motherpher/CareerHubZero
+    role: canonical_motor_and_history
+  - id: WERONIKA
+    repo: Motherpher/wpb
+    profile_path: CareerHub
+    role: origin_implementation_and_profile_node
+  - id: GRACE
+    repo: Motherpher/Gracey
+    profile_path: CareerHub
+    role: profile_node_and_legacy_motor_migration
+  - id: LINUS
+    repo: Motherpher/CareerHub-LinusF
+    role: profile_node_001_and_reference_managed_site
+
+status_precedence:
+  current_state:
+    - current_machine_state
+    - audit_state
+    - merged_implementation_evidence
+    - historical_documents
+    - chat_design_evidence
+  rules:
+    - historical_snapshots_are_never_rewritten_as_current
+    - github_issue_state_is_separate_from_functional_status
+    - release_permission_is_not_release_proof
+    - current_release_state_requires_version_or_tag_evidence
+
+current_reconciled_state:
+  version_file: 0.2.9-alpha
+  final_audit: PASS
+  final_audit_run: 37436795188
+  validation_run: 37436795258
+  director_reconciliation: PASS
+  release_1_0_allowed: true
+  release_1_0_proven: false
+  reason_release_not_proven: >-
+    VERSION remains 0.2.9-alpha at reconstruction cut-off; permission to release
+    does not prove that VERSION/tag/release 1.0.0 was created.
+  external_gates:
+    E01:
+      status: PASS
+      mechanism: checkout_based_central_execution
+      evidence_runs: [37341325941, 37345897747, 37345918372]
+    E02:
+      status: SKIPPED_USER_DISABLED
+      optional: true
+      provider: google_maps
+    E03:
+      status: PASS
+      model: gpt-5.6-sol
+      evidence_run: 37436076911
+
+phases:
+  - id: PHASE-A
+    date: "2026-09-23"
+    name: WPB CareerHub genesis
+    repositories: [WERONIKA]
+    summary: >-
+      First working CareerHub built profile-locally in wpb: sourcing, matching,
+      HRDM, control room, job vault, application lifecycle, reminders and UX.
+    representative_commits:
+      - 1db6126bc16a445b7873baa1aba85b48e55d063b
+      - c614bde82c5a2f75d066d533e1472fb1ed9b6385
+      - 40257ea5b6cc546ac361d34dad4cb65f6c0e1e7b
+      - aa5296ddd78b5c07fc1c985eae63fb3b68193bcc
+      - 0ece2f65f1ec37dc58c0151dd33024fe68a55a06
+  - id: PHASE-B
+    date: "2026-09-23"
+    name: CareerHubZero centralisation baseline
+    repositories: [CHZERO, WERONIKA]
+    version: 0.1.0-alpha
+    summary: Central capability/profile-state boundary established; WPB left live during extraction.
+  - id: PHASE-C
+    date_range: "2026-09-23/2026-09-24"
+    name: Profile contracts, drift correction and stack governance
+    versions: [0.2.0-alpha, 0.2.1-alpha, 0.2.2-alpha, 0.2.3-alpha]
+    key_events:
+      - profiled_instance_contract
+      - market_response_drift_then_removal
+      - version_registry_and_stack_governance
+      - verified_career_evidence_firewall
+  - id: PHASE-D
+    date: "2026-09-24"
+    name: Grace recovery and unified body
+    versions: [0.2.4-alpha, 0.2.5-alpha, 0.2.6-alpha, 0.2.7-alpha]
+    key_events:
+      - Grace_registered_as_third_profile
+      - Motherpher_repository_ownership
+      - precision_geography
+      - one_body_one_VERSION
+      - versionless_careerhub_yaml
+      - canonical_HRDM_ledger
+  - id: PHASE-E
+    date_range: "2026-09-24/2026-09-25"
+    name: CareerHub 1.0 Silicon Sprint
+    sprint_id: CH-1.0-SILICON
+    work_packages: [SIL-WP01, SIL-WP02, SIL-WP03, SIL-WP04, SIL-WP05, SIL-WP06, SIL-WP07, SIL-WP08, SIL-WP09, SIL-WP10]
+    historical_blockers: [E01, E02, E03]
+  - id: PHASE-F
+    date: "2026-10-05"
+    name: Distribution recovery and profile cutover
+    key_events:
+      - checkout_based_central_execution
+      - Weronika_legacy_motor_removed
+      - Grace_legacy_motor_removed
+      - WP02_WP03_recheck_PASS
+  - id: PHASE-G
+    date: "2026-10-05"
+    name: Personalised managed web architecture
+    prs: [21, 22, 23, 24, 25, 26, 27]
+    key_events:
+      - dual_motor_profile_presentation_contract
+      - personal_workspace
+      - non_generic_personalisation
+      - Wish_Bank
+      - central_managed_shell
+  - id: PHASE-H
+    date: "2026-10-05"
+    name: October web/action execution packages
+    work_packages: [OCT-WP2, OCT-WP3]
+    prs: [28, 29, 30, 31, 32]
+  - id: PHASE-I
+    date: "2026-10-06"
+    name: External gate and Full Audit reconciliation
+    prs: [34, 35, 36]
+    result: WP01_WP10_PASS
+  - id: PHASE-J
+    date: "2026-10-06"
+    name: Motor closed-loop WP38-WP39
+    work_packages: [WP38, WP39]
+    issues: [38, 39]
+    implementation_pr: 40
+    e2e_action_id: ACT-20261006155733-2c2a00a7
+    e2e_process_id: HRDM-R-20261006-0001-S09-A-R01-FINAL
+  - id: PHASE-K
+    date: "2026-10-06"
+    name: WP40 product-integrity line
+    work_packages: [WP40]
+    issue: 41
+    status: OPEN
+
+migration_milestones:
+  - id: M0
+    name: Governance and evidence firewall
+    historical_status: COMPLETE
+    reconciled_status: COMPLETE
+    successors: [SIL-WP01]
+  - id: M1
+    name: Unified body contract
+    historical_status: COMPLETE
+    reconciled_status: COMPLETE
+    successors: [SIL-WP01]
+  - id: M2
+    name: Central runtime extraction
+    historical_status: ACTIVE
+    reconciled_status: COMPLETE
+    successors: [SIL-WP01, SIL-WP03]
+    companion_issue: 2
+  - id: M3
+    name: Reusable distribution
+    historical_status: OPEN
+    reconciled_status: SUPERSEDED_AND_COMPLETED
+    successors: [SIL-WP02]
+    superseded_mechanism: checkout_based_central_execution
+  - id: M4
+    name: Profile cutover
+    historical_status: OPEN
+    reconciled_status: COMPLETE
+    successors: [SIL-WP03]
+  - id: M5
+    name: Geography completion
+    historical_status: ACTIVE
+    reconciled_status: FUNCTIONALLY_PASS
+    successors: [SIL-WP06]
+    note: Google Maps provider later optional/user-disabled.
+  - id: M6
+    name: Full Audit Lock
+    historical_status: NOT_STARTED
+    reconciled_status: PASS
+    successors: [SIL-WP10]
+
+work_packages:
+  - id: SIL-WP01
+    display_id: WP01
+    name: Collapse Runtime to One CareerHub Body
+    issue: 1
+    depends_on: []
+    final_audit_status: PASS
+    final_clearance: C01
+    github_issue_state_at_cutoff: open
+    tags: [one-body, runtime-authority, duplicate-motor, profile-local-code]
+  - id: SIL-WP02
+    display_id: WP02
+    name: Invert Distribution
+    issue: 3
+    depends_on: [SIL-WP01]
+    historical_blockers: [E01]
+    resolution: checkout_based_central_execution
+    final_audit_status: PASS
+    final_clearance: C02
+    github_issue_state_at_cutoff: closed
+    formal_recheck_pr: 33
+    tags: [distribution, private-action, checkout-central, stack-token]
+  - id: SIL-WP03
+    display_id: WP03
+    name: Cut Over Profiles and Delete Legacy Motors
+    issue: 4
+    depends_on: [SIL-WP01, SIL-WP02, SIL-WP07, SIL-WP08]
+    final_audit_status: PASS
+    final_clearance: C03
+    github_issue_state_at_cutoff: closed
+    profile_commits:
+      Weronika: [842b31c477fdd083b109d4e43bc80bd3d448f421, 92f861dc4a29b1f52e92914297bb1b9135faf7fe]
+      Grace: [1ff7dabb7aa004fd7c325026ffc33607468bb107, 066be5b3e4da5697c745ccfb487318ed17352bd0]
+    tags: [cutover, legacy-motor, parity, migration-metadata]
+  - id: SIL-WP04
+    display_id: WP04
+    name: Unify the Search Kernel
+    issue: 16
+    depends_on: [SIL-WP01]
+    final_audit_status: PASS
+    final_clearance: C04
+    github_issue_state_at_cutoff: open
+    tags: [search-kernel, query-plan, lane-normalization, provenance]
+  - id: SIL-WP05
+    display_id: WP05
+    name: Career Learning Loop
+    issue: 17
+    depends_on: [SIL-WP04]
+    final_audit_status: PASS
+    final_clearance: C05
+    github_issue_state_at_cutoff: open
+    invariants: [learning_must_not_mutate_verified_candidate_evidence]
+    tags: [learning-loop, ranking, outcome-events, candidate-truth]
+  - id: SIL-WP06
+    display_id: WP06
+    name: Unified Geography
+    issue: 15
+    depends_on: [SIL-WP01, SIL-WP04]
+    historical_blockers: [E02]
+    final_audit_status: PASS
+    final_clearance: C06
+    github_issue_state_at_cutoff: open
+    provider_policy: google_maps_optional_user_disabled
+    tags: [geography, E02, google-maps, precision]
+  - id: SIL-WP07
+    display_id: WP07
+    name: Canonical HRDM
+    issue: 18
+    depends_on: [SIL-WP01]
+    final_audit_status: PASS
+    final_clearance: C07
+    github_issue_state_at_cutoff: open
+    later_policy_changes: [WP39_auto_hybridianesque_relevance]
+    tags: [HRDM, Process-ID, HCC, Hybridianesque, report-ledger]
+  - id: SIL-WP08
+    display_id: WP08
+    name: One Application and Outcome State Machine
+    issue: 19
+    depends_on: [SIL-WP01, SIL-WP07]
+    final_audit_status: PASS
+    final_clearance: C08
+    github_issue_state_at_cutoff: open
+    tags: [application-state, case-event, reminders, outcomes]
+  - id: SIL-WP09
+    display_id: WP09
+    name: One Hub Surface
+    issue: 20
+    depends_on: [SIL-WP04, SIL-WP05, SIL-WP06, SIL-WP07, SIL-WP08]
+    final_audit_status: PASS
+    final_clearance: C09
+    github_issue_state_at_cutoff: open
+    surface_reconciliation_pr: 35
+    tags: [hub-surface, Next.js, navigation, user-flow]
+  - id: SIL-WP10
+    display_id: WP10
+    name: Contract Audit and Lock CareerHub 1.0
+    issue: 14
+    depends_on: [SIL-WP01, SIL-WP02, SIL-WP03, SIL-WP04, SIL-WP05, SIL-WP06, SIL-WP07, SIL-WP08, SIL-WP09]
+    final_audit_status: PASS
+    final_clearance: C10
+    github_issue_state_at_cutoff: open
+    release_1_0_allowed: true
+    release_1_0_proven: false
+    tags: [full-audit, release-lock, Janitor, Director, 1.0]
+  - id: OCT-WP1
+    name: Managed workspace promotion and fleet sync
+    naming_source: chat_execution_alias
+    formal_github_wp: false
+    primary_pr: 27
+    status: MERGED
+    tags: [managed-shell, workspace, sync]
+  - id: OCT-WP2
+    name: Add interactive web search activation
+    github_title_id: WP2
+    collision_with: SIL-WP02
+    primary_pr: 28
+    status: MERGED
+    tags: [find, search-activation, Platsbanken, session-override]
+  - id: OCT-WP3
+    name: Complete CareerHub action surfaces and motor handoffs
+    github_title_id: WP3
+    collision_with: SIL-WP03
+    prs: [29, 30, 31, 32]
+    status: MERGED_AND_HARDENED
+    tags: [action-completeness, api-action, artifacts, Turbopack]
+  - id: WP38
+    formal_name: WP-CHM-UX-01 — Motor Interaction Clarity & Guidance
+    issue: 38
+    implementation_pr: 40
+    github_issue_state_at_cutoff: open
+    reconciled_implementation_status: IMPLEMENTED_AND_FLEET_SYNCED
+    tags: [Motor-UX, active-process, workflow-help, profile-lanes]
+  - id: WP39
+    formal_name: WP-CHM-OPS-02 — Restore HRDM-R Results, Auto-Hybridianesque, Search Delta & Wish Routing
+    issue: 39
+    implementation_pr: 40
+    github_issue_state_at_cutoff: open
+    reconciled_implementation_status: IMPLEMENTED_AND_HARDENED
+    e2e_action_id: ACT-20261006155733-2c2a00a7
+    e2e_process_id: HRDM-R-20261006-0001-S09-A-R01-FINAL
+    persistence_commits:
+      - b55547e47ded3573aa7ae3c67ba671d4f68d3d8f
+      - c08e639512d567f40ae871a0358c746f7b6f0bca
+    tags: [HRDM-result, Hybridianesque, search-delta, Wish-routing, durable-persistence]
+  - id: WP40
+    name: CareerHub Reset, Background Execution & Search/Library Usability
+    issue: 41
+    github_issue_state_at_cutoff: open
+    status: OPEN
+    original_workstreams:
+      A: safe_reset_and_test_residue_cleanup
+      B: library_profile_isolation_and_active_evidence
+      C: durable_background_analysis
+      D: ordinary_job_site_search_ux
+      E: central_searchable_help
+      F: deployment_configuration
+    chat_sprint_decomposition:
+      - id: WP40.1
+        name: State Integrity, Reset & Profile Isolation
+        gate: STATE_BASELINE_LOCK
+      - id: WP40.2
+        name: Durable Library, Evidence Pipeline & Background Analysis
+        gate: DURABLE_PROCESS_LOCK
+      - id: WP40.3
+        name: Search Workspace & Job Decision Flow
+        gate: SEARCH_WORKFLOW_LOCK
+      - id: WP40.4
+        name: Help, Fleet Hardening, Release Audit & WP40 Lock
+        gate: FLEET_ACCEPTANCE_LOCK
+    tags: [reset, Library, profile-isolation, background-analysis, Search-UX, help, fleet]
+
+failure_index:
+  - {id: FAIL-001, class: INTEGRATION, status: RESOLVED, tags: [org-secret, OPENAI_API_KEY, private-repo]}
+  - {id: FAIL-002, class: ARCH_DRIFT, status: RESOLVED, tags: [Napp, market-response, base-contract]}
+  - {id: FAIL-003, class: ARCH_DRIFT, status: SUPERSEDED, tags: [CAREERHUB_STACK_TOKEN, cross-repo]}
+  - {id: FAIL-004, class: EXEC_PATH, status: RESOLVED, tags: [E01, repository-not-found, private-action]}
+  - {id: FAIL-005, class: INTEGRATION, status: RESOLVED_BY_POLICY, tags: [E02, Google-Maps, user-disabled]}
+  - {id: FAIL-006, class: INTEGRATION, status: RESOLVED, tags: [E03, 429, credit_balance_exhausted]}
+  - {id: FAIL-007, class: MIGRATION, status: RESOLVED, tags: [legacy-motor, WP03, cutover]}
+  - {id: FAIL-008, class: DATA_BOUNDARY, status: RESOLVED, tags: [Grace, pre-firewall, Region-Stockholm]}
+  - {id: FAIL-009, class: INTEGRATION, status: HISTORICAL_RESOLVED, tags: [Vercel, 403, project-creation]}
+  - {id: FAIL-010, class: SEARCH, status: RESOLVED, tags: [find, no-search-action, OCT-WP2]}
+  - {id: FAIL-011, class: DEVELOPMENT_PROCESS, status: RESOLVED, tags: [PR29, pre-squash, superseded]}
+  - {id: FAIL-012, class: BUILD, status: RESOLVED, tags: [Turbopack, output, reports, careerhub-artifacts]}
+  - {id: FAIL-013, class: AUDIT_STATE, status: RESOLVED, tags: [stale-snapshot, WP10, final-audit]}
+  - {id: FAIL-014, class: SURFACE, status: RESOLVED, tags: [queued-no-report, HRDM-R, WP39]}
+  - {id: FAIL-015, class: SURFACE, status: LOGIC_RESOLVED_UX_CLEANUP_OPEN, tags: [Hybridianesque, Hy-Filter, user-gate]}
+  - {id: FAIL-016, class: SEARCH, status: CORE_RESOLVED_UX_EXTENSION_OPEN, tags: [search-delta, NEW, SEEN, CHANGED]}
+  - {id: FAIL-017, class: INTEGRATION, status: CORE_IMPLEMENTED, tags: [Wish-Bank, routing, WISH-ID]}
+  - {id: FAIL-018, class: PERSISTENCE, status: RESOLVED_INVARIANT, tags: [false-complete, read-back, materialization]}
+  - {id: FAIL-019, class: BUILD, status: RESOLVED, tags: [import-shadowing, Search-Profile, package-resolution]}
+  - {id: FAIL-020, class: SURFACE, status: OPEN_WP40, tags: [WP39-End-to-End-Test-Role, test-residue, Weronika]}
+  - {id: FAIL-021, class: DATA_BOUNDARY, status: OPEN_WP40, tags: [Grace, Library, ACTIVE, evidence-use]}
+  - {id: FAIL-022, class: DATA_BOUNDARY, status: OPEN_WP40, tags: [cross-profile, Library, Blob-namespace]}
+  - {id: FAIL-023, class: PERSISTENCE, status: OPEN_WP40, tags: [background-analysis, navigation, reload, ActiveProcess]}
+  - {id: FAIL-024, class: SEARCH, status: OPEN_WP40, tags: [job-type, date-filter, remote, dismiss]}
+  - {id: FAIL-025, class: SURFACE, status: OPEN_WP40, tags: [HRDM-R-UI, Hybridianesque-UI, internal-language]}
+  - {id: FAIL-026, class: AUDIT_STATE, status: DOCUMENTED, tags: [issue-open, audit-PASS, state-divergence]}
+  - {id: FAIL-027, class: RELEASE_STATE, status: OPEN_RECONCILIATION, tags: [release_1_0_allowed, VERSION, 0.2.9-alpha]}
+
+profile_fleet:
+  Linus:
+    repository: Motherpher/CareerHub-LinusF
+    canonical_role: thin_profile_node
+    close_loop_sync_commit: 40e38ea38b88f769cd7f52525c3d6fa7fe2fc3c3
+  Weronika:
+    repository: Motherpher/wpb
+    profile_path: CareerHub
+    canonical_role: thin_profile_node
+    cutover_commit: 842b31c477fdd083b109d4e43bc80bd3d448f421
+    close_loop_sync_commit: 74d6a606c640ac915d82f292f6d8591f5324eee1
+  Grace:
+    repository: Motherpher/Gracey
+    profile_path: CareerHub
+    canonical_role: thin_profile_node
+    cutover_commit: 1ff7dabb7aa004fd7c325026ffc33607468bb107
+    close_loop_sync_commit: 7bb9106d0218420f83824e904500c5ac46b35ac2
+
+future_entry_contract:
+  required_fields:
+    - event_id
+    - date
+    - event_type
+    - summary
+    - status_at_event
+    - current_reconciled_status
+    - repositories
+    - work_packages
+    - failure_ids
+    - source_class
+    - source_refs
+    - superseded_by
+    - regression_guard
+  failure_required_fields:
+    - failure_id
+    - date_detected
+    - status
+    - class
+    - symptoms
+    - search_terms
+    - subsystems
+    - affected_profiles
+    - trigger
+    - root_cause
+    - resolution
+    - work_packages
+    - issues
+    - prs
+    - commits
+    - workflow_runs
+    - regression_guard
+    - superseded_by
