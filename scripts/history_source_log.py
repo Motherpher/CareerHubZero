@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Capture and validate sourced CareerHubZero development-history events.
 
-The history event is bound to the *substantive diff* rather than only the branch
-HEAD SHA. This lets the same event survive squash merges while still proving
-which files the change set actually touched.
+Events are bound to the substantive *content delta*, not merely changed paths or
+commit SHAs. Delta fingerprints deliberately ignore Git hunk coordinates and
+blob-index lines so they survive squash merges and unrelated base movement while
+still changing when the actual added/deleted content changes.
 """
 
 from __future__ import annotations
@@ -22,7 +23,7 @@ import yaml
 
 EVENT_DIR = Path("stack/history/events")
 EVENT_PREFIX = "stack/history/events/"
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 SUBSYSTEM_RULES: tuple[tuple[str, str], ...] = (
     ("site/", "web_surface"),
@@ -71,6 +72,39 @@ def is_history_event(path: str) -> bool:
     return path.startswith(EVENT_PREFIX) and path.endswith((".yml", ".yaml"))
 
 
+def normalize_patch(patch: str) -> str:
+    """Normalize volatile Git metadata while preserving the actual delta."""
+    lines: list[str] = []
+    for line in patch.splitlines():
+        if line.startswith("index "):
+            continue
+        if line.startswith("@@"):
+            lines.append("@@")
+            continue
+        lines.append(line)
+    return "\n".join(lines).rstrip() + ("\n" if lines else "")
+
+
+def delta_sha256(base: str, head: str, item: dict[str, str], cwd: Path | None = None) -> str:
+    paths = [item["path"]]
+    if item.get("old_path") and item["old_path"] != item["path"]:
+        paths.insert(0, item["old_path"])
+    patch = run_git(
+        "diff",
+        "--no-ext-diff",
+        "--no-color",
+        "--unified=0",
+        "--find-renames",
+        base,
+        head,
+        "--",
+        *paths,
+        cwd=cwd,
+    )
+    normalized = normalize_patch(patch)
+    return "sha256:" + hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
 def collect_changes(base: str, head: str, cwd: Path | None = None) -> list[dict[str, str]]:
     output = run_git("diff", "--name-status", "--find-renames", base, head, cwd=cwd)
     changes: list[dict[str, str]] = []
@@ -80,11 +114,13 @@ def collect_changes(base: str, head: str, cwd: Path | None = None) -> list[dict[
         parts = line.split("\t")
         status = parts[0]
         if status.startswith("R") and len(parts) == 3:
-            changes.append({"status": status, "old_path": parts[1], "path": parts[2]})
+            item = {"status": status, "old_path": parts[1], "path": parts[2]}
         elif len(parts) >= 2:
-            changes.append({"status": status, "path": parts[-1]})
+            item = {"status": status, "path": parts[-1]}
         else:
             raise ValueError(f"Unable to parse git change line: {line!r}")
+        item["delta_sha256"] = delta_sha256(base, head, item, cwd=cwd)
+        changes.append(item)
     return changes
 
 
@@ -97,7 +133,12 @@ def change_fingerprint(changes: Iterable[dict[str, str]]) -> str:
     for item in changes:
         canonical.append(
             "\t".join(
-                [item.get("status", ""), item.get("old_path", ""), item.get("path", "")]
+                [
+                    item.get("status", ""),
+                    item.get("old_path", ""),
+                    item.get("path", ""),
+                    item.get("delta_sha256", ""),
+                ]
             )
         )
     canonical.sort()
@@ -113,9 +154,7 @@ def collect_commits(base: str, head: str, cwd: Path | None = None) -> list[dict[
         return commits
     for line in output.splitlines():
         sha, authored_at, author, subject = line.split("\x1f", 3)
-        commits.append(
-            {"sha": sha, "authored_at": authored_at, "author": author, "subject": subject}
-        )
+        commits.append({"sha": sha, "authored_at": authored_at, "author": author, "subject": subject})
     return commits
 
 
@@ -187,18 +226,13 @@ def source_context(event: dict[str, Any], base_sha: str, head_sha: str) -> dict[
             "url": pr.get("html_url") or f"{server}/{repository}/pull/{pr_number}",
         }
     if run_id:
-        source["workflow_run"] = {
-            "id": int(run_id),
-            "url": f"{server}/{repository}/actions/runs/{run_id}",
-        }
+        source["workflow_run"] = {"id": int(run_id), "url": f"{server}/{repository}/actions/runs/{run_id}"}
     return source
 
 
 def default_event_id(source: dict[str, Any], head_sha: str) -> str:
     pr = source.get("pull_request") or {}
-    if pr.get("number"):
-        return f"PR-{pr['number']}"
-    return f"CHG-{head_sha[:12]}"
+    return f"PR-{pr['number']}" if pr.get("number") else f"CHG-{head_sha[:12]}"
 
 
 def default_output_path(event_id: str, root: Path) -> Path:
@@ -226,8 +260,7 @@ def build_event(
     event_json = event_json or {}
     source = source_context(event_json, base_sha, head_sha)
     pr = event_json.get("pull_request") or {}
-    branch = source.get("branch", "")
-    inference_texts = [branch, pr.get("title", ""), pr.get("body", "")]
+    inference_texts = [source.get("branch", ""), pr.get("title", ""), pr.get("body", "")]
     inference_texts.extend(commit["subject"] for commit in commits)
     inferred_wps = infer_wp_refs(*inference_texts)
     explicit_wps = [normalize_wp_ref(value) for value in work_packages if value.strip()]
@@ -258,7 +291,7 @@ def build_event(
         "provenance_contract": {
             "source_derived": True,
             "historical_snapshot": False,
-            "coverage_basis": "git_diff_fingerprint",
+            "coverage_basis": "normalized_content_delta",
         },
     }
 
@@ -272,8 +305,7 @@ def load_event(path: Path) -> dict[str, Any]:
 
 def validate_event_shape(event: dict[str, Any], path: Path) -> list[str]:
     errors: list[str] = []
-    required = ["event_id", "summary", "work_packages", "subsystems", "source", "changes", "commits"]
-    for key in required:
+    for key in ("event_id", "summary", "work_packages", "subsystems", "source", "changes", "commits"):
         if key not in event:
             errors.append(f"{path}: missing {key}")
     if not event.get("work_packages"):
@@ -285,15 +317,19 @@ def validate_event_shape(event: dict[str, Any], path: Path) -> list[str]:
     changes = event.get("changes") or {}
     if not changes.get("fingerprint"):
         errors.append(f"{path}: changes.fingerprint is required")
-    if not isinstance(changes.get("files"), list):
+    files = changes.get("files")
+    if not isinstance(files, list):
         errors.append(f"{path}: changes.files must be a list")
+    else:
+        for item in files:
+            if not item.get("delta_sha256"):
+                errors.append(f"{path}: every changed file requires delta_sha256")
     return errors
 
 
 def candidate_event_paths(base: str, head: str, root: Path) -> list[Path]:
-    changed = collect_changes(base, head, cwd=root)
     paths: list[Path] = []
-    for item in changed:
+    for item in collect_changes(base, head, cwd=root):
         path = item["path"]
         if is_history_event(path) and not item["status"].startswith("D"):
             full = root / path
@@ -319,7 +355,7 @@ def validate_history(base: str, head: str, root: Path) -> tuple[bool, list[str]]
     for path in event_paths:
         try:
             event = load_event(path)
-        except Exception as exc:  # pragma: no cover - defensive message path
+        except Exception as exc:  # pragma: no cover
             errors.append(f"{path}: {exc}")
             continue
         shape_errors = validate_event_shape(event, path)
@@ -330,7 +366,7 @@ def validate_history(base: str, head: str, root: Path) -> tuple[bool, list[str]]
             continue
         recorded_files = substantive_changes((event.get("changes") or {}).get("files") or [])
         if change_fingerprint(recorded_files) != expected:
-            errors.append(f"{path}: recorded file list does not reproduce its fingerprint")
+            errors.append(f"{path}: recorded file deltas do not reproduce the event fingerprint")
             continue
         return True, [f"Sourced history coverage OK: {path.relative_to(root)} ({expected})"]
     errors.append(f"No changed history event matches substantive diff fingerprint {expected}")
@@ -394,8 +430,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
-    parser = build_parser()
-    args = parser.parse_args()
+    args = build_parser().parse_args()
     return int(args.func(args))
 
 
