@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 import os
 from pathlib import Path
@@ -7,6 +8,89 @@ from pathlib import Path
 from .hrdm_trace import create_reverse_trace, finalize_reverse_trace
 from .hybridianesque import empty_hyfilter, finalize_hyfilter, normalize_decision
 from .models import Job
+
+
+_FIELD_LOGIC_OUTPUT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": [
+        "dominant_logics",
+        "tensions",
+        "coordination_requirements",
+        "decision_environment",
+        "implications_for_role",
+        "summary",
+    ],
+    "properties": {
+        "dominant_logics": {"type": "array", "items": {"type": "string"}},
+        "tensions": {"type": "array", "items": {"type": "string"}},
+        "coordination_requirements": {"type": "array", "items": {"type": "string"}},
+        "decision_environment": {"type": "array", "items": {"type": "string"}},
+        "implications_for_role": {"type": "array", "items": {"type": "string"}},
+        "summary": {"type": "string"},
+    },
+}
+
+
+def _strictify_openai_schema(schema: dict) -> dict:
+    """Return an OpenAI Structured Outputs compatible view of the canonical schema.
+
+    The canonical stored schema intentionally permits a few runtime-owned/free-form
+    objects. Structured Outputs does not permit open-ended object keys in strict mode,
+    so those objects are narrowed only for model generation. Runtime-owned values are
+    restored after generation and the canonical schema remains the persistence contract.
+    """
+    strict = deepcopy(schema)
+    properties = strict.get("properties", {})
+
+    # The runtime already owns and restores the exact job packet. Asking the model to
+    # recreate an open-ended provider metadata object is unnecessary and incompatible
+    # with strict Structured Outputs.
+    if "job" in properties:
+        properties["job"] = {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": False,
+        }
+
+    # Field logic is analytically meaningful, so replace the formerly free-form object
+    # with a stable model-facing contract instead of collapsing it to an empty object.
+    if "field_logic" in properties:
+        properties["field_logic"] = deepcopy(_FIELD_LOGIC_OUTPUT_SCHEMA)
+
+    def walk(node):
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+        if not isinstance(node, dict):
+            return
+
+        if node.get("type") == "object":
+            object_properties = node.get("properties")
+            if isinstance(object_properties, dict):
+                node["additionalProperties"] = False
+                # OpenAI strict JSON Schema requires every declared property to be
+                # required. Optionality must instead be represented in the value type.
+                node["required"] = list(object_properties.keys())
+            else:
+                # Canonical schemas may allow arbitrary string-key maps (for example
+                # trace step IDs). The model does not own those maps; runtime restores
+                # them after generation, so the strict model view is an empty object.
+                node["properties"] = {}
+                node["required"] = []
+                node["additionalProperties"] = False
+
+        for key, value in list(node.items()):
+            if key == "additionalProperties" and isinstance(value, dict):
+                # Replaced above for strict object maps; do not preserve an arbitrary
+                # keyed-value schema in the model-facing contract.
+                continue
+            walk(value)
+
+    walk(strict)
+    return strict
 
 
 def public_candidate_evidence(profile: dict) -> dict:
@@ -108,6 +192,10 @@ Candidate evidence rule:
 HCC-Lite:
 Review structural honesty, burden clarity, dignity/fairness, vulnerability sensitivity, non-deceptive framing and trace/accountability.
 
+Field Logic Reconstruction:
+- Use the stable field_logic contract to identify dominant logics, tensions, coordination requirements, the decision environment, implications for the role and a concise synthesis.
+- Do not use field_logic as a generic free-form dumping ground.
+
 Hybridianesque (Hy-Filter):
 - Evaluate it on every run, but it is not globally active.
 - Recommend/activate only when at least three of these four criteria are genuinely evidenced, with explicit evidence for each met criterion:
@@ -126,6 +214,7 @@ Trace discipline:
 - Preserve the supplied run_id, run sequence and trace identity.
 - Do not invent a new Process-ID.
 - The CareerHub runtime, not the model, finalizes the Process-ID state token after successful semantic execution.
+- The runtime is authoritative for the exact job object and trace map; model placeholders for those runtime-owned objects will be replaced after generation.
 
 Return only JSON conforming to the supplied schema.
 
@@ -142,7 +231,8 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
     except Exception:
         return None
 
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    canonical_schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema = _strictify_openai_schema(canonical_schema)
     model = os.getenv("CAREERHUB_MODEL") or "gpt-5.6-sol"
     client = OpenAI()
     response = client.responses.create(
@@ -153,6 +243,9 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
         text={"format": {"type": "json_schema", "name": "careerhub_hrdm", "strict": True, "schema": schema}},
     )
     result = json.loads(response.output_text)
+    # Runtime-owned source-of-truth fields are restored exactly rather than trusting
+    # a model-generated copy of profile/job metadata or process trace state.
+    result["job"] = packet["job"]
     hy = finalize_hyfilter(result.get("hybridianesque"), packet.get("hy_filter_decision"))
     result["hybridianesque"] = hy
     trace = finalize_reverse_trace(packet["trace"], success=True, warnings=[])
