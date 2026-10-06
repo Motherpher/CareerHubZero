@@ -2,10 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CareerHub Profile Manifest",
   "type": "object",
-  "required": ["schema_version", "profile_id", "profile", "search", "state", "artifacts", "ui"],
+  "required": ["schema_version", "profile_id", "binding", "profile", "search", "state", "artifacts", "ui"],
   "properties": {
     "schema_version": {"const": "1.0"},
-    "profile_id": {"type": "string", "minLength": 1},
+    "profile_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"},
+    "binding": {
+      "type": "object",
+      "required": ["repository"],
+      "properties": {
+        "repository": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "deployment": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "profile": {
       "type": "object",
       "required": ["path"],
