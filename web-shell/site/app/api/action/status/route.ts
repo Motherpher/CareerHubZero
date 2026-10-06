@@ -1,12 +1,32 @@
 import { Buffer } from 'node:buffer';
+import { getToken } from '@vercel/connect';
 import { NextResponse } from 'next/server';
 
-function githubConfig() {
+const DEFAULT_GITHUB_CONNECTOR = 'github/amber-bell';
+
+async function githubConfig() {
+  const explicit = (process.env.CAREERHUB_GITHUB_TOKEN || '').trim();
+  let token = explicit;
+  let authSource = explicit ? 'environment' : 'none';
+
+  if (!token) {
+    const connector = (process.env.CAREERHUB_GITHUB_CONNECTOR || DEFAULT_GITHUB_CONNECTOR).trim();
+    if (connector) {
+      try {
+        token = await getToken(connector, { subject: { type: 'app' } });
+        authSource = token ? 'vercel-connect' : 'none';
+      } catch (error) {
+        console.error('CareerHub action-status GitHub token exchange failed.', error);
+      }
+    }
+  }
+
   return {
     repository: process.env.CAREERHUB_GITHUB_REPOSITORY || '',
-    token: process.env.CAREERHUB_GITHUB_TOKEN || '',
+    token,
     workflow: process.env.CAREERHUB_GITHUB_WORKFLOW || 'careerhub-operations.yml',
     ref: process.env.CAREERHUB_GITHUB_REF || 'main',
+    authSource,
   };
 }
 
@@ -40,11 +60,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'A valid action_id is required.' }, { status: 400 });
   }
 
-  const cfg = githubConfig();
+  const cfg = await githubConfig();
   if (!cfg.repository || !cfg.token) {
     return NextResponse.json({
       action_id: actionId,
       state: 'WAITING_FOR_EXECUTION',
+      authSource: cfg.authSource,
       message: 'CareerHub is waiting for its Motor connection before this action can execute.',
     }, { status: 503 });
   }
@@ -57,6 +78,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'FAILED',
+      authSource: cfg.authSource,
       message: 'CareerHub could not read the Motor execution state.',
       detail: `GitHub returned ${response.status}.`,
     }, { status: 502 });
@@ -70,6 +92,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'WAITING_FOR_EXECUTION',
+      authSource: cfg.authSource,
       message: 'The action was accepted and is waiting for the Motor runner.',
     });
   }
@@ -78,6 +101,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'WAITING_FOR_EXECUTION',
+      authSource: cfg.authSource,
       message: 'The Motor has the action and is waiting to start it.',
       run_url: run.html_url,
     });
@@ -87,6 +111,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'RUNNING',
+      authSource: cfg.authSource,
       message: 'CareerHub Motor is running the analysis.',
       run_url: run.html_url,
     });
@@ -96,6 +121,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'FAILED',
+      authSource: cfg.authSource,
       message: 'The Motor started but the operation did not complete successfully.',
       conclusion: run.conclusion,
       run_url: run.html_url,
@@ -108,6 +134,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       action_id: actionId,
       state: 'RUNNING',
+      authSource: cfg.authSource,
       message: 'Execution finished; CareerHub is waiting for the generated report to become available.',
       run_url: run.html_url,
     });
@@ -116,6 +143,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     action_id: actionId,
     state: 'COMPLETED',
+    authSource: cfg.authSource,
     message: 'HRDM-R completed. The report is ready.',
     process_id: hrdm.process_id ?? hrdm.trace?.process_id ?? null,
     hrdm,
