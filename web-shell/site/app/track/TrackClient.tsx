@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import ProcessIndicator from '@/app/_components/ProcessIndicator';
+import MotorRunIndicator from '@/app/_components/MotorRunIndicator';
 
 type Case = {
   issue_number?: number;
@@ -14,7 +15,7 @@ type Case = {
   next_action_date?: string;
 };
 
-type ActionFeedback = { message?: string; next_step?: string; action_id?: string; error?: string };
+type ActionFeedback = { message?: string; next_step?: string; action_id?: string; user_state?: string; error?: string };
 
 const STATUSES = ['saved','preparing','ready','applied','contacted','portfolio','interview_1','interview_2','interview_3','interview_4','interview_5','meeting_1','meeting_2','meeting_3','meeting_4','meeting_5','offer','denied','withdrawn','archived'];
 
@@ -28,14 +29,15 @@ async function dispatch(operation: string, payload: Record<string, unknown>) {
 export default function TrackClient({ cases }: { cases: Case[] }) {
   const [busy, setBusy] = useState<string>('');
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
+  const [motorActionId, setMotorActionId] = useState('');
 
   async function updateStatus(event: FormEvent<HTMLFormElement>, item: Case) {
     event.preventDefault();
     if (!item.issue_number) return;
     const form = new FormData(event.currentTarget);
-    setBusy(String(item.issue_number)); setFeedback(null);
+    setBusy(String(item.issue_number)); setFeedback(null); setMotorActionId('');
     try {
-      const data = await dispatch('track_status', {
+      let data = await dispatch('track_status', {
         issue_number: item.issue_number,
         status: String(form.get('status') ?? ''),
         date: String(form.get('date') ?? ''),
@@ -43,8 +45,9 @@ export default function TrackClient({ cases }: { cases: Case[] }) {
         next_action_date: String(form.get('next_action_date') ?? ''),
       });
       const priority = Number(form.get('priority') ?? item.priority ?? 3);
-      if (priority !== Number(item.priority ?? 3)) await dispatch('track_priority', { issue_number: item.issue_number, priority });
+      if (priority !== Number(item.priority ?? 3)) data = await dispatch('track_priority', { issue_number: item.issue_number, priority });
       setFeedback(data);
+      if (data.user_state === 'running_in_background' && data.action_id) setMotorActionId(String(data.action_id));
     } catch (error) { setFeedback({ message: error instanceof Error ? error.message : 'Update failed.' }); }
     setBusy('');
   }
@@ -53,6 +56,7 @@ export default function TrackClient({ cases }: { cases: Case[] }) {
 
   return <div className="section-stack">
     <ProcessIndicator active={Boolean(busy)} label="Updating application…" detail="CareerHub is sending the new status, priority or next action to the governed motor." />
+    <MotorRunIndicator actionId={motorActionId} />
     <div className="explainer"><strong>Keep Track current.</strong><p>Status tells CareerHub where the application is. Priority tells it how much attention the case needs. “Next action” records the concrete thing you plan to do next.</p></div>
     {cases.map((item, index) => {
       const key = String(item.issue_number ?? index);
