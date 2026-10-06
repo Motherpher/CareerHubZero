@@ -5,6 +5,10 @@ import YAML from 'yaml';
 export type CareerHubManifest = {
   schema_version: string;
   profile_id: string;
+  binding?: {
+    repository?: string;
+    deployment?: string;
+  };
   profile?: { path?: string };
   search?: { path?: string };
   state?: {

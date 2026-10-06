@@ -28,13 +28,18 @@ def main() -> None:
     registry = yaml.safe_load((ROOT / "stack/registry.yaml").read_text(encoding="utf-8")) or {}
     if registry.get("architecture") != "unified_body":
         errors.append("Registry must declare architecture=unified_body")
+    if registry.get("profile_binding_required") is not True:
+        errors.append("Registry must require explicit profile repository binding")
 
     profiles = registry.get("profiles", [])
     ids = [p.get("profile_id") for p in profiles]
+    repositories = [str(p.get("repository") or "").lower() for p in profiles]
     if not profiles:
         errors.append("Registry has no active profiles")
     if len(ids) != len(set(ids)):
         errors.append("Duplicate profile_id in registry")
+    if len(repositories) != len(set(repositories)):
+        errors.append("Duplicate profile repository binding in registry")
 
     for p in profiles:
         if p.get("status") == "active":
@@ -42,6 +47,9 @@ def main() -> None:
                 errors.append(f"{p.get('profile_id')}: missing repository")
             if not p.get("manifest_path"):
                 errors.append(f"{p.get('profile_id')}: missing manifest_path")
+            migration = p.get("migration") or {}
+            if migration.get("legacy_motor_present") is not False:
+                errors.append(f"{p.get('profile_id')}: active fleet registry still declares a legacy Motor")
 
     schema = ROOT / "schemas/careerhub_manifest.schema.json"
     try:
@@ -62,6 +70,7 @@ def main() -> None:
 
     print("CareerHub unified body check OK:", current)
     print("Profiles:", ", ".join(str(x) for x in ids))
+    print("Profile repository bindings:", ", ".join(repositories))
 
 
 if __name__ == "__main__":
