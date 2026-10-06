@@ -85,7 +85,13 @@ export function cssVars(theme: ThemeTokens): Record<string, string> {
     '--ch-muted': p.muted ?? '#6B6B68',
     '--ch-accent': p.accent ?? '#2357D8',
     '--ch-accent-fg': p.accent_foreground ?? '#FFFFFF',
+    '--ch-surface': p.surface ?? p.background ?? '#F6F5F2',
+    '--ch-surface-alt': p.surface_alt ?? '#ECEAE4',
+    '--ch-border': p.border ?? '#C9C5BC',
+    '--ch-accent-soft': p.accent_soft ?? '#E6ECFA',
     '--ch-display-font': theme.typography?.display ?? 'ui-sans-serif, system-ui, sans-serif',
-    '--ch-body-font': theme.typography?.body ?? 'ui-sans-serif, system-ui, sans-serif'
+    '--ch-body-font': theme.typography?.body ?? 'ui-sans-serif, system-ui, sans-serif',
+    '--ch-radius': theme.shape?.radius ?? '8px',
+    '--ch-shadow': theme.surface?.shadow ?? 'none'
   };
 }
