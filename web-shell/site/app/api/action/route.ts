@@ -23,12 +23,49 @@ function githubConfig() {
   };
 }
 
-export async function GET() {
+function githubHeaders(token: string) {
+  return {
+    accept: 'application/vnd.github+json',
+    authorization: `Bearer ${token}`,
+    'x-github-api-version': '2022-11-28',
+    'user-agent': 'CareerHub-action-gateway',
+  };
+}
+
+export async function GET(request: Request) {
   const cfg = githubConfig();
+  const actionId = new URL(request.url).searchParams.get('action_id')?.trim() || '';
+
+  if (!actionId) {
+    return NextResponse.json({
+      operations: Array.from(OPERATIONS),
+      dispatchConfigured: Boolean(cfg.repository && cfg.token),
+      repository: cfg.repository || null,
+    });
+  }
+
+  if (!cfg.repository || !cfg.token) {
+    return NextResponse.json({ action_id: actionId, status: 'unconfigured', conclusion: null });
+  }
+
+  const runsUrl = new URL(`https://api.github.com/repos/${cfg.repository}/actions/workflows/${encodeURIComponent(cfg.workflow)}/runs`);
+  runsUrl.searchParams.set('event', 'workflow_dispatch');
+  runsUrl.searchParams.set('branch', cfg.ref);
+  runsUrl.searchParams.set('per_page', '30');
+  const response = await fetch(runsUrl, { headers: githubHeaders(cfg.token), cache: 'no-store' });
+  if (!response.ok) {
+    return NextResponse.json({ error: 'CareerHub could not read motor status.', action_id: actionId }, { status: 502 });
+  }
+  const data = await response.json().catch(() => ({}));
+  const runs = Array.isArray(data?.workflow_runs) ? data.workflow_runs : [];
+  const run = runs.find((item: any) => String(item?.display_title ?? '').includes(actionId));
+  if (!run) return NextResponse.json({ action_id: actionId, status: 'not_found', conclusion: null });
+
   return NextResponse.json({
-    operations: Array.from(OPERATIONS),
-    dispatchConfigured: Boolean(cfg.repository && cfg.token),
-    repository: cfg.repository || null,
+    action_id: actionId,
+    status: run.status ?? 'unknown',
+    conclusion: run.conclusion ?? null,
+    run_url: run.html_url ?? null,
   });
 }
 
@@ -80,11 +117,8 @@ export async function POST(request: Request) {
   const response = await fetch(`https://api.github.com/repos/${cfg.repository}/actions/workflows/${encodeURIComponent(cfg.workflow)}/dispatches`, {
     method: 'POST',
     headers: {
-      accept: 'application/vnd.github+json',
-      authorization: `Bearer ${cfg.token}`,
+      ...githubHeaders(cfg.token),
       'content-type': 'application/json',
-      'x-github-api-version': '2022-11-28',
-      'user-agent': 'CareerHub-action-gateway',
     },
     body: JSON.stringify({
       ref: cfg.ref,
