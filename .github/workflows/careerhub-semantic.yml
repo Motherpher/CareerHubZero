@@ -156,6 +156,16 @@ jobs:
           changed.update(names(['ls-files', '--others', '--exclude-standard', '-z']))
           deleted = set(names(['diff', '--name-only', '--diff-filter=D', '-z', 'HEAD']))
 
+          # output/ is deliberately ignored by profile repositories. The governed web
+          # bridge nevertheless requires the canonical action output to persist, so add
+          # this one action directory explicitly instead of broadening repository ignore
+          # policy or serialising unrelated historical output.
+          canonical_output = root / 'output' / action_id
+          if canonical_output.exists():
+              for absolute in canonical_output.rglob('*'):
+                  if absolute.is_file():
+                      changed.add(absolute.resolve().relative_to(repo))
+
           files = []
           deleted_paths = []
           for relative_repo in sorted(changed, key=lambda p: p.as_posix()):
