@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import ProcessIndicator from '@/app/_components/ProcessIndicator';
 
 type Lane = { lane_id: string; name: string; bucket: string; priority: number };
 type SearchResult = {
@@ -66,6 +67,7 @@ export default function SearchRunner({ lanes }: { lanes: Lane[] }) {
 
   return (
     <div className="search-runner">
+      <ProcessIndicator active={loading} label="Searching for opportunities…" detail="CareerHub is checking the selected lane and search terms. Keep this window open until the results appear." />
       <form className="search-controls" onSubmit={runSearch}>
         <label>
           <span className="meta-label">Search lane</span>
