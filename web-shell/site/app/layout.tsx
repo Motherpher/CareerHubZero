@@ -23,10 +23,28 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const improveLabel = profileShell
     ? (swedish ? 'Förbättra min profil' : 'Improve my profile')
     : (swedish ? 'Förbättra min CareerHub' : 'Improve my CareerHub');
+  const bodyClass = [
+    'experience',
+    `experience--${hub.experience.mode}`,
+    `density--${hub.experience.density}`,
+    `motion--${hub.experience.motion ?? 'subtle'}`,
+    `surface--${theme.surface.treatment}`,
+    `imagery--${theme.imagery?.mode ?? 'none'}`
+  ].join(' ');
 
   return (
     <html lang={hub.identity.language ?? 'en'}>
-      <body style={style}>
+      <body style={style} className={bodyClass}>
+        <div className="visual-field" aria-hidden="true">
+          <span className="visual-field__map" />
+          <span className="visual-field__thread" />
+          <span className="visual-field__leaf visual-field__leaf--one" />
+          <span className="visual-field__leaf visual-field__leaf--two" />
+          <span className="visual-field__sun" />
+          <span className="visual-field__petal visual-field__petal--one" />
+          <span className="visual-field__petal visual-field__petal--two" />
+          <span className="visual-field__petal visual-field__petal--three" />
+        </div>
         {children}
         <a className="wish-launcher" href="/wish" aria-label={improveLabel}>{improveLabel}</a>
       </body>
