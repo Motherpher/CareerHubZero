@@ -1,7 +1,9 @@
 import { loadHubProfile } from '@/lib/profile';
 
 const fallbackLabels: Record<string, string> = {
-  home: 'Overview',
+  home: 'Home',
+  writer: 'Writer Room',
+  career: 'CareerHub',
   profile: 'Profile',
   find: 'Search',
   analyse: 'Analyse',
