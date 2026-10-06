@@ -30,4 +30,4 @@ profiles:
     migration:
       legacy_instance_path: CareerHub/instance.yaml
       legacy_lock_path: CareerHub/stack.lock.yaml
-      legacy_motor_present: true
+      legacy_motor_present: false
