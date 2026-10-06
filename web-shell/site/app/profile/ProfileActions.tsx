@@ -2,20 +2,23 @@
 
 import { useState } from 'react';
 import ProcessIndicator from '@/app/_components/ProcessIndicator';
+import MotorRunIndicator from '@/app/_components/MotorRunIndicator';
 
 type QueueItem = { id?: string; question?: string; status?: string };
-type ActionFeedback = { message?: string; next_step?: string; action_id?: string; error?: string };
+type ActionFeedback = { message?: string; next_step?: string; action_id?: string; user_state?: string; error?: string };
 
 export default function ProfileActions({ queue }: { queue: QueueItem[] }) {
   const [busy, setBusy] = useState('');
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
+  const [motorActionId, setMotorActionId] = useState('');
 
   async function act(operation: 'profile_review' | 'profile_rebuild', payload: Record<string, unknown>, key: string) {
-    setBusy(key); setFeedback(null);
+    setBusy(key); setFeedback(null); setMotorActionId('');
     try {
       const response = await fetch('/api/action', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ operation, payload }) });
       const data = await response.json().catch(() => ({}));
       setFeedback(response.ok ? data : { ...data, message: data.error ?? data.message ?? 'Profile action could not be registered.' });
+      if (response.ok && data.user_state === 'running_in_background' && data.action_id) setMotorActionId(String(data.action_id));
     } catch {
       setFeedback({ message: 'CareerHub could not send the profile request. Try again.' });
     } finally {
@@ -25,6 +28,7 @@ export default function ProfileActions({ queue }: { queue: QueueItem[] }) {
 
   return <div className="section-stack">
     <ProcessIndicator active={Boolean(busy)} label="Sending profile request…" detail="CareerHub is registering the evidence review or rebuild with the governed motor." />
+    <MotorRunIndicator actionId={motorActionId} />
     <div className="inline-actions">
       <a className="button button--primary" href="/library">Add or update evidence</a>
       <button className="button" type="button" disabled={Boolean(busy)} onClick={() => void act('profile_rebuild', { reason: 'user_requested' }, 'rebuild')}>{busy === 'rebuild' ? 'Requesting…' : 'Rebuild profile from active sources'}</button>
