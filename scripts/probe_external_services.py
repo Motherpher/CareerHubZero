@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 from typing import Any
 
 import requests
@@ -40,6 +39,16 @@ def google_place(key: str, query: str) -> dict:
 
 
 def probe_google_maps() -> dict:
+    enabled = os.getenv("CAREERHUB_ENABLE_GOOGLE_MAPS", "").strip().lower() in {"1", "true", "yes", "on"}
+    if not enabled:
+        return emit(
+            "E02",
+            "SKIPPED_USER_DISABLED",
+            provider="google_maps",
+            optional=True,
+            message="Paid Google Maps provider disabled by user choice; CareerHub geography runtime does not require it.",
+        )
+
     key = os.getenv("GOOGLE_MAPS_API_KEY", "").strip()
     if not key:
         return emit("E02", "BLOCKED_MISSING_SECRET", secret="GOOGLE_MAPS_API_KEY")
@@ -123,7 +132,7 @@ def probe_openai() -> dict:
         r = requests.post(OPENAI_RESPONSES_URL, headers=headers, json=body, timeout=45)
         if r.status_code != 200:
             try:
-                err = (r.json().get("error") or {})
+                err = r.json().get("error") or {}
             except Exception:
                 err = {"message": r.text[:500]}
             return emit(
@@ -147,7 +156,8 @@ def probe_openai() -> dict:
 def main() -> int:
     results = [probe_google_maps(), probe_openai()]
     print("CAREERHUB_EXTERNAL_GATES=" + json.dumps(results, ensure_ascii=False, separators=(",", ":")))
-    return 0 if all(x["status"] == "PASS" for x in results) else 2
+    acceptable = {"PASS", "SKIPPED_USER_DISABLED"}
+    return 0 if all(x["status"] in acceptable for x in results) else 2
 
 
 if __name__ == "__main__":
