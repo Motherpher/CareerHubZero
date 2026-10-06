@@ -92,6 +92,13 @@ jobs:
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --out "$OUT_REL"
               python .careerhub-zero/scripts/bind_web_action.py --manifest "$CAREERHUB_MANIFEST" --out "$OUT_REL" --case-id "${GITHUB_RUN_ID}" --case-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3
               ;;
+            materialize_analysis)
+              BUNDLE_URL="$(getv bundle_url)"
+              [ -n "$BUNDLE_URL" ] || { echo "Missing semantic bundle URL." >&2; exit 1; }
+              echo "::add-mask::$BUNDLE_URL"
+              curl --fail --silent --show-error "$BUNDLE_URL" -o /tmp/careerhub-semantic-bundle.json
+              python .careerhub-zero/scripts/materialize_semantic_bundle.py --bundle /tmp/careerhub-semantic-bundle.json --root "$CAREERHUB_ROOT" --action-id "$ACTION_ID"
+              ;;
             track_status)
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action status --issue-number "$(getv issue_number)" --status "$(getv status)" --date "$(getv date)" --next-action "$(getv next_action)" --next-action-date "$(getv next_action_date)"
               ;;
