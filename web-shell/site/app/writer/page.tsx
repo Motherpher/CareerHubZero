@@ -2,7 +2,7 @@ import { loadHubProfile } from '@/lib/profile';
 
 const fallbackLabels: Record<string, string> = {
   home: 'Home',
-  writer: 'Writer Room',
+  writer: 'Portfolio',
   career: 'CareerHub',
   profile: 'Profile',
   find: 'Search',
@@ -18,47 +18,53 @@ export default function WriterRoomPage() {
   const labels = { ...fallbackLabels, ...(hub.navigation.labels ?? {}) };
 
   return (
-    <main className="workspace">
-      <header className="workspace-header">
-        <div className="breadcrumb"><a href="/">{hub.identity.display_name}</a> / {room?.label ?? 'Writer Room'}</div>
-        <div className="workspace-title">
-          <div>
-            <p className="eyebrow">Professional workroom</p>
-            <h1>{room?.label ?? 'Writer & Journalism Room'}</h1>
-            <p className="lead">{room?.description ?? 'Writing, reporting, research, editorial development, archive and portfolio.'}</p>
-          </div>
-          <nav aria-label="Primary" className="nav">
-            {hub.navigation.primary.map((item) => (
-              <a href={`/${item === 'home' ? '' : item}`} aria-current={item === 'writer' ? 'page' : undefined} key={item}>{labels[item] ?? item}</a>
-            ))}
-          </nav>
+    <main className="workspace portfolio-room">
+      <header className="portfolio-masthead">
+        <div className="breadcrumb"><a href="/">{hub.identity.display_name}</a> / {room?.label ?? 'Portfolio'}</div>
+        <nav aria-label="Primary" className="nav nav--profile">
+          {hub.navigation.primary.map((item) => (
+            <a href={`/${item === 'home' ? '' : item}`} aria-current={item === 'writer' ? 'page' : undefined} key={item}>{labels[item] ?? item}</a>
+          ))}
+        </nav>
+        <div className="portfolio-title-block">
+          <p className="eyebrow">Writing · reporting · editorial work</p>
+          <h1>{room?.label ?? 'Portfolio'}</h1>
+          <p className="lead">{room?.description ?? 'Writing, reporting, research, editorial development, archive and portfolio.'}</p>
         </div>
       </header>
 
-      <section className="panel-grid">
-        <article className="panel panel--full">
-          <p className="meta-label">Room scope</p>
-          <h2>The work itself</h2>
-          <p className="muted">This room is separate from CareerHub. It is the home for writing and journalism work, not vacancy or application state.</p>
-          {room?.features?.length ? <div className="tag-row">{room.features.map((feature) => <span className="tag" key={feature}>{feature}</span>)}</div> : null}
-        </article>
+      <section className="portfolio-intro">
+        <div>
+          <p className="meta-label">Practice</p>
+          <h2>Work in motion and work already published.</h2>
+        </div>
+        <p className="portfolio-intro__copy">This space holds the professional body of work itself: active stories, pitches, research, editorial development, publication records and the curated public portfolio. CareerHub remains a separate room for employment search and applications.</p>
+      </section>
 
-        <article className="panel panel--third"><p className="meta-label">Work desk</p><h2>Ideas → pitches → reporting → drafts</h2><p className="muted">Active work and commissions belong here.</p></article>
-        <article className="panel panel--third"><p className="meta-label">Archive</p><h2>Published work and evidence</h2><p className="muted">The reconstructed bibliography and publication evidence remain the archive layer.</p></article>
-        <article className="panel panel--third"><p className="meta-label">Portfolio</p><h2>Selective public presentation</h2><p className="muted">Portfolio choices are editorial, not automatic archive exposure.</p></article>
+      <section className="portfolio-departments" aria-label="Portfolio areas">
+        <article className="portfolio-department portfolio-department--lead"><span>01</span><p className="meta-label">Work desk</p><h2>Ideas, pitches, reporting and drafts</h2><p>Active writing, commissions and editorial development live here.</p></article>
+        <article className="portfolio-department"><span>02</span><p className="meta-label">Reporting</p><h2>Research, interviews and source work</h2><p>Story questions, evidence and reporting material stay attached to the work they support.</p></article>
+        <article className="portfolio-department"><span>03</span><p className="meta-label">Publication archive</p><h2>Published work and provenance</h2><p>The reconstructed bibliography remains the evidence base behind the portfolio.</p></article>
+        <article className="portfolio-department"><span>04</span><p className="meta-label">Selected work</p><h2>Curated public portfolio</h2><p>Not everything in the archive needs to represent Weronika publicly.</p></article>
+      </section>
 
-        <article className="panel panel--full">
-          <h2>Writer Room tools</h2>
-          <div className="inline-actions">
-            {(room?.links ?? []).map((link) => <a className="button" href={link.href} key={link.href}>{link.label}</a>)}
-          </div>
-        </article>
+      <section className="portfolio-links">
+        <div>
+          <p className="meta-label">Working surfaces</p>
+          <h2>Open the material behind the portfolio</h2>
+        </div>
+        <div className="portfolio-link-list">
+          {(room?.links ?? []).map((link, index) => (
+            <a href={link.href} key={link.href}><span>0{index + 1}</span><strong>{link.label}</strong><span aria-hidden="true">↗</span></a>
+          ))}
+        </div>
+      </section>
 
-        <article className="panel panel--full">
-          <p className="meta-label">Boundary</p>
-          <h2>WriterRoom ↔ CareerHub</h2>
-          <p className="muted">Only explicitly approved, verified evidence crosses into CareerHub. Drafts, private reporting notes, confidential sources and unresolved archive leads do not transfer automatically.</p>
-        </article>
+      <section className="portfolio-boundary">
+        <p className="meta-label">Career bridge</p>
+        <h2>Portfolio evidence can support CareerHub. The rooms do not merge.</h2>
+        <p>Only explicitly approved, verified material crosses into CareerHub. Drafts, private reporting notes, confidential sources and unresolved archive leads remain outside the employment-search workflow.</p>
+        <a className="text-link" href="/career">Open CareerHub ↗</a>
       </section>
     </main>
   );
