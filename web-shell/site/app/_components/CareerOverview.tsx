@@ -106,7 +106,8 @@ export default function CareerOverview() {
 
   const cards: Record<string, React.ReactNode> = {
     identity: (
-      <article className="card card--wide" key="identity">
+      <article className="card card--wide card--identity" key="identity">
+        <span className="card-ornament card-ornament--contour" aria-hidden="true" />
         <p className="card-kicker">{copy.currentDirection}</p>
         <h2>{hub.identity.strapline}</h2>
         {lanes.length ? <div className="tag-row">{lanes.slice(0, 6).map((lane: any) => <span className="tag" key={lane.lane_id}>{lane.name}</span>)}</div> : null}
@@ -114,6 +115,7 @@ export default function CareerOverview() {
     ),
     next_action: (
       <article className="card card--wide card--next_action" key="next_action">
+        <span className="card-ornament card-ornament--leaf" aria-hidden="true" />
         <p className="card-kicker">{copy.nextAction}</p>
         <h2>{copy.nextActionTitle}</h2>
         <p>{copy.nextActionText}</p>
@@ -121,27 +123,31 @@ export default function CareerOverview() {
     ),
     opportunities: (
       <article className="card card--opportunities" key="opportunities">
+        <span className="card-ornament card-ornament--flower" aria-hidden="true" />
         <p className="card-kicker">{copy.opportunities}</p>
         <p className="stat">{jobs.length}</p>
         <p>{copy.opportunitiesText}</p>
       </article>
     ),
     pipeline: (
-      <article className="card" key="pipeline">
+      <article className="card card--pipeline" key="pipeline">
+        <span className="card-ornament card-ornament--thread" aria-hidden="true" />
         <p className="card-kicker">{copy.applications}</p>
         <p className="stat">{applications.length}</p>
         <p>{copy.applicationsText}</p>
       </article>
     ),
     artifacts: (
-      <article className="card card--wide" key="artifacts">
+      <article className="card card--wide card--artifacts" key="artifacts">
+        <span className="card-ornament card-ornament--paper" aria-hidden="true" />
         <p className="card-kicker">{copy.preparedMaterial}</p>
         <h2>{copy.preparedMaterialTitle}</h2>
         <p>{copy.preparedMaterialText}</p>
       </article>
     ),
     profile_health: (
-      <article className="card" key="profile_health">
+      <article className="card card--profile_health" key="profile_health">
+        <span className="card-ornament card-ornament--seed" aria-hidden="true" />
         <p className="card-kicker">{copy.profileState}</p>
         <p className="stat">{evidence}</p>
         <p>{copy.profileStateText(evidence, sources)}</p>
@@ -168,10 +174,21 @@ export default function CareerOverview() {
   return (
     <main className={`hub hub--${hub.experience.mode} hub--${hub.experience.density}`}>
       <header className="hero">
-        <div>
+        <div className="hero-copy">
           <p className="eyebrow">{hub.identity.display_name}</p>
           <h1>{hub.home.headline ?? 'Career workspace'}</h1>
           <p className="lead">{hub.home.intro ?? hub.identity.strapline}</p>
+          <div className="hero-signature" aria-hidden="true"><span /> <em>01</em></div>
+        </div>
+        <div className="hero-collage" aria-hidden="true">
+          <span className="hero-collage__sun" />
+          <span className="hero-collage__leaf hero-collage__leaf--a" />
+          <span className="hero-collage__leaf hero-collage__leaf--b" />
+          <span className="hero-collage__petal hero-collage__petal--a" />
+          <span className="hero-collage__petal hero-collage__petal--b" />
+          <span className="hero-collage__petal hero-collage__petal--c" />
+          <span className="hero-collage__thread" />
+          <span className="hero-collage__map" />
         </div>
         <nav aria-label={copy.nav} className="nav">
           {hub.navigation.primary.map((item) => (
