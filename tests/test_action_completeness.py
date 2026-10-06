@@ -24,7 +24,13 @@ class ActionCompletenessTests(unittest.TestCase):
             "Save Search Profile defaults",
             "search_profile_update",
         )
-        self.assert_file_contains("web-shell/site/app/api/search/route.ts", "Platsbanken")
+        self.assert_file_contains(
+            "web-shell/site/app/api/search/route.ts",
+            "Platsbanken",
+            "search-sessions",
+            "NEW",
+            "CHANGED",
+        )
 
     def test_analyse_has_complete_drill_controls(self):
         self.assert_file_contains(
@@ -32,8 +38,15 @@ class ActionCompletenessTests(unittest.TestCase):
             "Job URL",
             "Paste job text",
             "Search / application lane",
-            "Hybridianesque filter",
+            "Hybridianesque is evaluated automatically",
             "Run HRDM-R and prepare application",
+            "/api/action/status",
+        )
+        self.assert_file_contains(
+            "web-shell/site/app/analyse/HrdmReport.tsx",
+            "Hybridianesque relevance statement",
+            "Activated automatically",
+            "HCC reverse commentary",
         )
 
     def test_apply_and_track_are_actionable(self):
@@ -81,6 +94,14 @@ class ActionCompletenessTests(unittest.TestCase):
             "track_status",
             "profile_review",
             "library_review",
+            "executionPreflight",
+        )
+        self.assert_file_contains(
+            "web-shell/site/app/api/action/status/route.ts",
+            "WAITING_FOR_EXECUTION",
+            "RUNNING",
+            "COMPLETED",
+            "FAILED",
         )
         self.assert_file_contains(
             "templates/profile-workflows/careerhub-operations.yml",
@@ -89,6 +110,7 @@ class ActionCompletenessTests(unittest.TestCase):
             "track_status",
             "profile_review",
             "library_review",
+            "Verify HRDM semantic dependency",
         )
         self.assert_file_contains(
             "scripts/sync_web_shell.py",
