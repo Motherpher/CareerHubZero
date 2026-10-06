@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { getToken } from '@vercel/connect';
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { loadCareerHubManifest } from '@/lib/manifest';
@@ -14,25 +15,75 @@ const OPERATIONS = new Set([
   'search_profile_update',
 ]);
 
-function githubConfig() {
+const DEFAULT_GITHUB_CONNECTOR = 'github/amber-bell';
+
+type AuthSource = 'environment' | 'vercel-connect' | 'none';
+
+async function resolveGitHubToken(): Promise<{
+  token: string;
+  authSource: AuthSource;
+  connector: string | null;
+}> {
+  const explicit = (process.env.CAREERHUB_GITHUB_TOKEN || '').trim();
+  if (explicit) {
+    return { token: explicit, authSource: 'environment', connector: null };
+  }
+
+  const connector = (process.env.CAREERHUB_GITHUB_CONNECTOR || DEFAULT_GITHUB_CONNECTOR).trim();
+  if (!connector) return { token: '', authSource: 'none', connector: null };
+
+  try {
+    const token = await getToken(connector, { subject: { type: 'app' } });
+    return {
+      token: typeof token === 'string' ? token : '',
+      authSource: token ? 'vercel-connect' : 'none',
+      connector,
+    };
+  } catch (error) {
+    console.error('CareerHub Vercel Connect GitHub token exchange failed.', error);
+    return { token: '', authSource: 'none', connector };
+  }
+}
+
+function githubConfig(token: string) {
   return {
     repository: process.env.CAREERHUB_GITHUB_REPOSITORY || '',
-    token: process.env.CAREERHUB_GITHUB_TOKEN || '',
+    token,
     workflow: process.env.CAREERHUB_GITHUB_WORKFLOW || 'careerhub-operations.yml',
     ref: process.env.CAREERHUB_GITHUB_REF || 'main',
   };
 }
 
 async function executionPreflight() {
-  const cfg = githubConfig();
-  if (!cfg.repository || !cfg.token) {
+  const auth = await resolveGitHubToken();
+  const cfg = githubConfig(auth.token);
+
+  if (!cfg.repository) {
     return {
       ready: false,
       dispatcherConfigured: false,
       workflowReachable: false,
+      authSource: auth.authSource,
+      connector: auth.connector,
       state: 'WAITING_FOR_EXECUTION',
       message: 'CareerHub cannot execute Motor actions from this deployment yet.',
-      detail: 'The profile deployment is missing its GitHub dispatcher connection.',
+      detail: 'The profile deployment is missing its GitHub repository binding.',
+      cfg,
+    };
+  }
+
+  if (!cfg.token) {
+    return {
+      ready: false,
+      dispatcherConfigured: false,
+      workflowReachable: false,
+      authSource: auth.authSource,
+      connector: auth.connector,
+      state: 'WAITING_FOR_EXECUTION',
+      message: 'CareerHub cannot execute Motor actions from this deployment yet.',
+      detail: auth.connector
+        ? 'The profile is connected to GitHub, but Vercel Connect could not issue a GitHub App token.'
+        : 'The profile deployment has no GitHub dispatcher credential.',
       cfg,
     };
   }
@@ -52,6 +103,8 @@ async function executionPreflight() {
       ready: false,
       dispatcherConfigured: true,
       workflowReachable: false,
+      authSource: auth.authSource,
+      connector: auth.connector,
       state: 'WAITING_FOR_EXECUTION',
       message: 'CareerHub is connected, but the Motor workflow cannot be reached.',
       detail: `GitHub workflow probe returned ${workflow.status}.`,
@@ -63,6 +116,8 @@ async function executionPreflight() {
     ready: true,
     dispatcherConfigured: true,
     workflowReachable: true,
+    authSource: auth.authSource,
+    connector: auth.connector,
     state: 'READY',
     message: 'CareerHub Motor execution is available.',
     detail: 'Semantic HRDM dependency is verified again inside the GitHub workflow before analysis begins.',
@@ -77,6 +132,7 @@ export async function GET() {
     ready: probe.ready,
     dispatcherConfigured: probe.dispatcherConfigured,
     workflowReachable: probe.workflowReachable,
+    authSource: probe.authSource,
     state: probe.state,
     message: probe.message,
     detail: probe.detail,
@@ -95,6 +151,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       state: preflight.state,
       dispatched: false,
+      authSource: preflight.authSource,
       message: preflight.message,
       detail: preflight.detail,
     }, { status: 503 });
@@ -110,6 +167,7 @@ export async function POST(request: Request) {
     payload,
     requested_at: new Date().toISOString(),
     state: 'PREPARING',
+    dispatcher_auth: preflight.authSource,
   };
 
   let stored = false;
@@ -145,6 +203,7 @@ export async function POST(request: Request) {
       state: 'FAILED',
       dispatched: false,
       stored,
+      authSource: preflight.authSource,
       detail: detail.slice(0, 500),
     }, { status: 502 });
   }
@@ -154,6 +213,7 @@ export async function POST(request: Request) {
     state: 'WAITING_FOR_EXECUTION',
     dispatched: true,
     stored,
+    authSource: preflight.authSource,
     message: 'The action was accepted and is waiting for the Motor to begin execution.',
     technical_reference: actionId,
     status_url: `/api/action/status?action_id=${encodeURIComponent(actionId)}`,
