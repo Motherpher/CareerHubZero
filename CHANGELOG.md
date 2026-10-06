@@ -24,6 +24,11 @@ Every release section and every individual change entry has a permanent identifi
 - **`CHZ-CHG-029A-007`** Harden the action-complete managed web shell and artifact delivery path; scope artifact tracing to `.careerhub-artifacts`.
 - **`CHZ-CHG-029A-008`** Canonicalise the user journey as Profile → Search → Analyse → Apply → Track, with Library and Improve my CareerHub as supporting workspaces.
 - **`CHZ-CHG-029A-009`** Keep WP06, WP09 and WP10 blocked pending geography/routing and dependent end-gate proof.
+- **`CHZ-CHG-029A-010`** Install WP40.0 sourced-development history enforcement: every substantive change set must carry a diff-bound provenance event before merge.
+- **`CHZ-CHG-029A-011`** Establish WP40.1 server-resolved profile context with explicit repository binding and fail-closed deployment/profile mismatch handling.
+- **`CHZ-CHG-029A-012`** Centralise profile-scoped Library namespace guards for list/open/upload/activate/deactivate/erase/reload operations.
+- **`CHZ-CHG-029A-013`** Add the conservative WP40.1 reset classifier and dry-run/apply tooling with `PRESERVE`, `SYNTHETIC_DELETE`, `TRANSIENT_CLEAR`, `ORPHAN_REVIEW` and `UNKNOWN_BLOCK` classes.
+- **`CHZ-CHG-029A-014`** Reconcile fleet binding metadata and legacy-Motor state, bind Linus/Weronika/Grace manifests to their repositories, and remove the known Weronika WP39 synthetic E2E ledger/report residue as a bounded reset unit.
 
 ## 0.2.7-alpha — 2026-09-24
 **Release ID:** `CHZ-REL-027A`  
