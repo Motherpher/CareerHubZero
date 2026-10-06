@@ -18,7 +18,13 @@
     "foreground": "#181818",
     "muted": "#6B6B68",
     "accent": "#2357D8",
-    "accent_foreground": "#FFFFFF"
+    "accent_foreground": "#FFFFFF",
+    "secondary": "#7D8B86",
+    "secondary_foreground": "#181818",
+    "highlight": "#E9C44A",
+    "highlight_foreground": "#181818",
+    "signal": "#2357D8",
+    "signal_foreground": "#FFFFFF"
   },
   "imagery": {
     "mode": "mixed",
