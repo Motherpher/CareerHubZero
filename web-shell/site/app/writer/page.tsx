@@ -1,5 +1,15 @@
 import { notFound } from 'next/navigation';
-import { loadHubProfile, loadPortfolioProfile, loadProfileShell } from '@/lib/profile';
+import {
+  loadHubProfile,
+  loadPortfolioProfile,
+  loadProfileShell,
+  type PortfolioSection,
+} from '@/lib/profile';
+import {
+  loadPortfolioArchive,
+  portfolioSectionSlug,
+  worksForPortfolioSection,
+} from '@/lib/portfolio';
 
 export default function WriterPortfolioPage() {
   const hub = loadHubProfile();
@@ -9,10 +19,11 @@ export default function WriterPortfolioPage() {
 
   if (!shell?.enabled || !room) notFound();
 
-  const sections = portfolio?.sections?.length
+  const sections: PortfolioSection[] = portfolio?.sections?.length
     ? portfolio.sections
     : (room.features ?? []).map((feature) => ({ label: feature, description: undefined }));
   const featured = portfolio?.featured ?? [];
+  const archive = loadPortfolioArchive(portfolio);
 
   return (
     <main className={`workspace portfolio-room hub--${hub.experience.mode} hub--${hub.experience.density}`}>
@@ -42,14 +53,39 @@ export default function WriterPortfolioPage() {
 
       {sections.length ? (
         <section className="portfolio-departments" aria-label="Portfolio areas">
-          {sections.map((section, index) => (
-            <article className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`} key={section.label}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <p className="meta-label">Area</p>
-              <h2>{section.label}</h2>
-              {section.description ? <p>{section.description}</p> : null}
-            </article>
-          ))}
+          {sections.map((section, index) => {
+            const slug = portfolioSectionSlug(section, index);
+            const count = archive.length ? worksForPortfolioSection(archive, section).length : null;
+            const content = (
+              <>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p className="meta-label">Area</p>
+                <h2>{section.label}</h2>
+                {portfolio ? (
+                  <p className="portfolio-department__action">
+                    {count === null ? 'Open area →' : `View ${count} ${count === 1 ? 'work' : 'works'} →`}
+                  </p>
+                ) : null}
+                {section.description ? <p>{section.description}</p> : null}
+              </>
+            );
+
+            return portfolio ? (
+              <a
+                className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`}
+                href={`/writer/${slug}`}
+                key={section.label}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+                aria-label={`Open ${section.label}`}
+              >
+                {content}
+              </a>
+            ) : (
+              <article className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`} key={section.label}>
+                {content}
+              </article>
+            );
+          })}
         </section>
       ) : null}
 
@@ -90,13 +126,19 @@ export default function WriterPortfolioPage() {
       <section className="portfolio-boundary" aria-label="Portfolio archive">
         <p className="meta-label">Archive</p>
         <h2>
-          {portfolio?.archive?.count
-            ? `${portfolio.archive.count} ${portfolio.archive.label ?? 'works in the reconstructed archive'}`
-            : portfolio?.boundary?.title ?? 'Public portfolio'}
+          {archive.length
+            ? `${archive.length} ${portfolio?.archive?.label ?? 'works in the reconstructed archive'}`
+            : portfolio?.archive?.count
+              ? `${portfolio.archive.count} ${portfolio.archive.label ?? 'works in the reconstructed archive'}`
+              : portfolio?.boundary?.title ?? 'Public portfolio'}
         </h2>
         <p>{portfolio?.archive?.note ?? portfolio?.boundary?.text ?? 'This is the site-facing portfolio view.'}</p>
         {portfolio?.boundary?.text && portfolio?.archive?.note ? <p>{portfolio.boundary.text}</p> : null}
-        <a className="text-link" href="/">Back to profile home</a>
+        {archive.length ? (
+          <a className="text-link" href="/writer/all">Browse all {archive.length} works →</a>
+        ) : (
+          <a className="text-link" href="/">Back to profile home</a>
+        )}
       </section>
     </main>
   );

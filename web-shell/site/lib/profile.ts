@@ -27,9 +27,19 @@ export type ProfileShell = {
   rooms: ProfileRoom[];
 };
 
+export type PortfolioSectionFilter = {
+  ids?: string[];
+  phases?: string[];
+  type_contains?: string[];
+  themes?: string[];
+  text_contains?: string[];
+};
+
 export type PortfolioSection = {
   label: string;
   description?: string;
+  slug?: string;
+  filter?: PortfolioSectionFilter;
 };
 
 export type PortfolioItem = {
@@ -52,6 +62,7 @@ export type PortfolioProfile = {
     count?: number;
     label?: string;
     note?: string;
+    source?: string;
   };
   boundary?: {
     title?: string;
