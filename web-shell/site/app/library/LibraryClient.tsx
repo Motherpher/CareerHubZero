@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import ProcessIndicator from '@/app/_components/ProcessIndicator';
 
 type LibraryFile = {
   pathname: string;
@@ -30,7 +31,11 @@ const DOCUMENT_CLASSES = [
 export default function LibraryClient() {
   const [files, setFiles] = useState<LibraryFile[]>([]);
   const [message, setMessage] = useState('');
+  const [detail, setDetail] = useState('');
+  const [reference, setReference] = useState('');
   const [busy, setBusy] = useState(false);
+
+  function clearFeedback() { setMessage(''); setDetail(''); setReference(''); }
 
   const refreshFiles = useCallback(async () => {
     const response = await fetch('/api/library', { cache: 'no-store' });
@@ -43,7 +48,7 @@ export default function LibraryClient() {
 
   async function upload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBusy(true); setMessage('');
+    setBusy(true); clearFeedback();
     const form = new FormData(event.currentTarget);
     const response = await fetch('/api/library', { method: 'POST', body: form });
     const data = await response.json().catch(() => ({}));
@@ -54,7 +59,7 @@ export default function LibraryClient() {
 
   async function manage(file: LibraryFile, action: 'activate' | 'deactivate' | 'erase') {
     if (action === 'erase' && !window.confirm(`Erase ${file.display_name} from your private CareerHub library?`)) return;
-    setBusy(true); setMessage('');
+    setBusy(true); clearFeedback();
     const response = await fetch('/api/library', { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ pathname: file.pathname, action }) });
     const data = await response.json().catch(() => ({}));
     const success = action === 'erase' ? 'Source erased.' : action === 'activate' ? 'Source activated.' : 'Source deactivated.';
@@ -64,19 +69,26 @@ export default function LibraryClient() {
   }
 
   async function requestReview(file: LibraryFile) {
-    setBusy(true); setMessage('');
-    const response = await fetch('/api/action', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ operation: 'library_review', payload: { pathname: file.pathname, filename: file.display_name, document_class: file.document_class, active: file.active } }),
-    });
-    const data = await response.json().catch(() => ({}));
-    setMessage(response.ok ? `${data.message ?? 'Evidence review requested.'}${data.action_id ? ` Reference: ${data.action_id}` : ''}` : (data.error ?? data.message ?? 'Review request failed.'));
-    setBusy(false);
+    setBusy(true); clearFeedback();
+    try {
+      const response = await fetch('/api/action', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ operation: 'library_review', payload: { pathname: file.pathname, filename: file.display_name, document_class: file.document_class, active: file.active } }),
+      });
+      const data = await response.json().catch(() => ({}));
+      setMessage(response.ok ? (data.message ?? 'Evidence review requested.') : (data.error ?? data.message ?? 'Review request failed.'));
+      setDetail(data.next_step ?? '');
+      setReference(data.action_id ?? '');
+    } catch {
+      setMessage('CareerHub could not send the evidence-review request. Try again.');
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function rebuildIndex() {
-    setBusy(true); setMessage('');
+    setBusy(true); clearFeedback();
     const response = await fetch('/api/library/reload', { method: 'POST' });
     const data = await response.json().catch(() => ({}));
     setMessage(response.ok ? (data.message ?? 'CareerHub library reloaded.') : (data.error ?? 'Library reload failed.'));
@@ -85,6 +97,8 @@ export default function LibraryClient() {
 
   return (
     <div className="section-stack">
+      <ProcessIndicator active={busy} label="CareerHub is updating your Library…" detail="Keep this window open while the current upload, source change or review request is being handled." />
+      <div className="explainer"><strong>Library changes the evidence base; Profile shows the reviewed result.</strong><p>Upload or activate a source here. If it should change how CareerHub describes you, request evidence review and then check Profile.</p></div>
       <form className="action-form" onSubmit={upload}>
         <div className="action-form__grid">
           <label className="field field--full"><span>Add a career source</span><input type="file" name="file" required accept=".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.png,.jpg,.jpeg" /></label>
@@ -94,8 +108,8 @@ export default function LibraryClient() {
         <p className="wish-privacy">Server upload currently supports files up to about 4.3 MB. Uploading does not automatically rewrite the active Career Profile.</p>
         <button className="button button--primary" disabled={busy} type="submit">{busy ? 'Working…' : 'Upload document'}</button>
       </form>
-      <div className="inline-actions"><button className="button button--primary" type="button" disabled={busy} onClick={() => void rebuildIndex()}>Reload CareerHub Library</button><a className="button" href="/profile">Review active profile</a></div>
-      {message ? <p role="status" className="wish-status">{message}</p> : null}
+      <div className="inline-actions"><button className="button button--primary" type="button" disabled={busy} onClick={() => void rebuildIndex()}>Reload CareerHub Library</button><a className="button" href="/profile">Review active profile</a><a className="button" href="/help">Explain Library &amp; evidence</a></div>
+      {message ? <div role="status" className="action-state"><strong>{message}</strong>{detail ? <small>{detail}</small> : null}{reference ? <small>Reference for troubleshooting: {reference}</small> : null}</div> : null}
       <div className="section-stack">{files.length ? files.map((file) => <div className="row row--stack-mobile" key={file.pathname}><div><strong>{file.display_name}</strong><div className="muted">{file.status} · {file.document_class.replaceAll('_',' ')} · {Math.max(1, Math.round(file.size / 1024))} KB</div></div><div className="inline-actions"><a className="button" href={`/api/library/file?pathname=${encodeURIComponent(file.pathname)}`} target="_blank" rel="noreferrer">Open</a><button className="button" type="button" disabled={busy} onClick={() => void manage(file, file.active ? 'deactivate' : 'activate')}>{file.active ? 'Deactivate' : 'Activate'}</button><button className="button" type="button" disabled={busy} onClick={() => void requestReview(file)}>Request evidence review</button><button className="button" type="button" disabled={busy} onClick={() => void manage(file, 'erase')}>Erase</button></div></div>) : <div className="empty-state">No uploaded library sources yet.</div>}</div>
     </div>
   );
