@@ -46,21 +46,23 @@ def build_packet(
     run_counter_path: Path,
     hy_filter_decision: str | None = None,
 ) -> dict:
-    decision = normalize_decision(hy_filter_decision)
+    mode = normalize_decision(hy_filter_decision)
     trace = create_reverse_trace(
         counter_path=run_counter_path,
-        hy_filter_usage=decision == "Yes",
+        hy_filter_usage=False,
         environment="Standalone",
         piusite_usage=False,
         hcc_authority="HCC-Lite",
     )
+    trace["hy_filter_evaluated"] = True
+    trace["hy_filter_activated"] = False
     return {
         "process_id": trace["process_id"],
         "mode": "HRDM-R-v6.3",
         "lane": lane,
         "job": job.full_dict(),
         "candidate_evidence": public_candidate_evidence(profile),
-        "hy_filter_decision": decision,
+        "hy_filter_decision": mode,
         "trace": trace,
         "constraints": [
             "Run the full HRDM-R sequence in canonical order.",
@@ -70,20 +72,20 @@ def build_packet(
             "Separate job-ad facts from inference.",
             "Unknown candidate facts remain unknown.",
             "HCC-Lite must address structural honesty, overload, dignity, fairness, vulnerability sensitivity, non-deceptive framing and trace/accountability.",
-            "Hybridianesque is an optional enclosed depth filter. Recommendation is semi-automatic; full use requires the exact user decision Yes.",
+            "Hybridianesque relevance is evaluated automatically. Activate only when the evidence-based validity threshold is met.",
         ],
     }
 
 
 def packet_prompt(packet: dict) -> str:
-    decision = packet.get("hy_filter_decision")
-    hy_instruction = (
-        "The user explicitly answered Yes. If the four-criterion validity test supports it, run the full Hybridianesque filter."
-        if decision == "Yes"
-        else "The user explicitly answered No. You may record whether the filter would have been recommended, but do not run the deep filter."
-        if decision == "No"
-        else "No Hybridianesque decision has been supplied. Evaluate whether the filter is recommended. If recommended, set status awaiting_user_decision and do not perform the deep interpretation."
-    )
+    mode = packet.get("hy_filter_decision") or "Auto"
+    if mode == "No":
+        hy_instruction = "Internal diagnostic override is No. Evaluate relevance, but suppress deep activation."
+    elif mode == "Yes":
+        hy_instruction = "Internal diagnostic override is Yes. Still require the evidence threshold; never force activation without it."
+    else:
+        hy_instruction = "Normal mode is Auto. You own the relevance judgement; do not ask the user whether to activate the filter."
+
     return f"""You are performing a full CareerHub HRDM-R v6.3 analysis.
 
 Canonical Reverse sequence:
@@ -107,18 +109,17 @@ HCC-Lite:
 Review structural honesty, burden clarity, dignity/fairness, vulnerability sensitivity, non-deceptive framing and trace/accountability.
 
 Hybridianesque (Hy-Filter):
-- Status: optional depth filter; never globally active.
-- Recommend only when the context plausibly contains the four criteria together:
+- Evaluate it on every run, but it is not globally active.
+- Recommend/activate only when at least three of these four criteria are genuinely evidenced, with explicit evidence for each met criterion:
   1) more than one logic genuinely in play,
   2) structural asymmetry is relevant,
   3) translation/mediation does constitutive work,
   4) process materializes into usable outputs.
-- If active, identify participating logics, asymmetries, who/what translates between whom/what, process-to-output movement, overload/misframing, and remaining risk.
-- Scan only these canonical failure modes:
-  decorative_complexity_language, prestige_coded_overload, many_hats_drift,
-  undefined_outputs, undefined_counterparties, false_depth_through_blur.
+- Do not activate merely because a role is senior, broad, multidisciplinary or rhetorically complex.
+- If relevant, perform the full enclosed interpretation: participating logics, asymmetries, translation relations, process-to-output movement, overload/misframing, failure modes and remaining risk.
+- Scan only these canonical failure modes: decorative_complexity_language, prestige_coded_overload, many_hats_drift, undefined_outputs, undefined_counterparties, false_depth_through_blur.
 - Never glamorize overload, invent complexity, aestheticize incoherence or reward vagueness.
-- Keep Hybridianesque logic enclosed in the hybridianesque output object.
+- In the schema-compatible `user_decision` field return null in Auto mode. Use status `active` when you recommend activation and `not_recommended` when you do not.
 - {hy_instruction}
 
 Trace discipline:
@@ -149,22 +150,18 @@ def run_ai_hrdm(packet: dict, schema_path: Path) -> dict | None:
         store=False,
         tools=[{"type": "web_search", "search_context_size": "medium"}],
         input=packet_prompt(packet),
-        text={
-            "format": {
-                "type": "json_schema",
-                "name": "careerhub_hrdm",
-                "strict": True,
-                "schema": schema,
-            }
-        },
+        text={"format": {"type": "json_schema", "name": "careerhub_hrdm", "strict": True, "schema": schema}},
     )
     result = json.loads(response.output_text)
-    result["hybridianesque"] = finalize_hyfilter(
-        result.get("hybridianesque"),
-        packet.get("hy_filter_decision"),
-    )
+    hy = finalize_hyfilter(result.get("hybridianesque"), packet.get("hy_filter_decision"))
+    result["hybridianesque"] = hy
     trace = finalize_reverse_trace(packet["trace"], success=True, warnings=[])
-    trace["hy_filter_usage"] = result["hybridianesque"]["status"] == "active"
+    trace["hy_filter_usage"] = hy["status"] == "active"
+    trace["hy_filter_evaluated"] = True
+    trace["hy_filter_activated"] = hy["status"] == "active"
+    trace["hy_filter_confidence"] = hy.get("confidence")
+    trace["hy_filter_activation_rationale"] = hy.get("activation_rationale")
+    trace["hy_filter_criteria"] = hy.get("criteria")
     result["trace"] = trace
     result["process_id"] = trace["process_id"]
     return result
@@ -175,6 +172,11 @@ def fallback_hrdm(packet: dict) -> dict:
     hy = empty_hyfilter(packet.get("hy_filter_decision"))
     warnings = ["Automated HRDM analysis not run."]
     trace = finalize_reverse_trace(packet["trace"], success=False, warnings=warnings)
+    trace["hy_filter_evaluated"] = True
+    trace["hy_filter_activated"] = False
+    trace["hy_filter_confidence"] = "low"
+    trace["hy_filter_activation_rationale"] = hy.get("activation_rationale")
+    trace["hy_filter_criteria"] = hy.get("criteria")
     return {
         "process_id": trace["process_id"],
         "job": job,
@@ -185,31 +187,11 @@ def fallback_hrdm(packet: dict) -> dict:
         "hidden_need": {"statement": "", "confidence": "low", "rationale": []},
         "field_logic": {},
         "function_core": {"chain": "", "summary": ""},
-        "dod": {
-            "alpha": job.get("title", ""),
-            "zenith": "",
-            "dimensions": {"burden": 0, "scope_environment": 0, "function": 0, "signal_identity": 0},
-            "average": 0,
-            "classification": "Low",
-        },
+        "dod": {"alpha": job.get("title", ""), "zenith": "", "dimensions": {"burden": 0, "scope_environment": 0, "function": 0, "signal_identity": 0}, "average": 0, "classification": "Low"},
         "assessment_zones": [],
-        "candidate_positioning": {
-            "strong_matches": [],
-            "transferable_matches": [],
-            "gaps_unknowns": warnings,
-            "prohibited_claims": [],
-            "proof_points": [],
-            "cv_emphasis": [],
-        },
+        "candidate_positioning": {"strong_matches": [], "transferable_matches": [], "gaps_unknowns": warnings, "prohibited_claims": [], "proof_points": [], "cv_emphasis": []},
         "hybridianesque": hy,
         "hcc": {"risks": warnings, "commentary": "Not analysed."},
-        "application_strategy": {
-            "positioning": "",
-            "opening": "",
-            "evidence_to_use": [],
-            "evidence_to_avoid": [],
-            "tone": "",
-            "interview_themes": [],
-        },
+        "application_strategy": {"positioning": "", "opening": "", "evidence_to_use": [], "evidence_to_avoid": [], "tone": "", "interview_themes": []},
         "trace": trace,
     }

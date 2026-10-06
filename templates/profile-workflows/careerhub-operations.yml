@@ -1,4 +1,5 @@
 name: CareerHub · Operations
+run-name: CareerHub ${{ inputs.operation }} · ${{ inputs.action_id }}
 
 on:
   workflow_dispatch:
@@ -53,6 +54,14 @@ jobs:
           fi
       - name: Install central motor
         run: python -m pip install -r .careerhub-zero/requirements.txt
+      - name: Verify HRDM semantic dependency
+        if: inputs.operation == 'analyse_role'
+        shell: bash
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured for this profile repository." >&2
+            exit 1
+          fi
       - name: Decode action payload
         shell: bash
         run: |
@@ -75,13 +84,12 @@ jobs:
           getv() { [ -f "/tmp/careerhub-action/$1.txt" ] && cat "/tmp/careerhub-action/$1.txt" || true; }
           case "$OPERATION" in
             analyse_role)
-              URL="$(getv job_url)"; TITLE="$(getv title)"; COMPANY="$(getv company)"; DEADLINE="$(getv deadline)"; LANE="$(getv lane)"; HY="$(getv hy_filter)"
+              URL="$(getv job_url)"; TITLE="$(getv title)"; COMPANY="$(getv company)"; DEADLINE="$(getv deadline)"; LANE="$(getv lane)"
               [ -n "$URL" ] || URL="https://careerhub.local/manual-role"
               [ -n "$LANE" ] || LANE="core"
-              [ -n "$HY" ] || HY="No"
               cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
               OUT_REL="output/$ACTION_ID"
-              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --hy-filter "$HY" --out "$OUT_REL"
+              python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --out "$OUT_REL"
               python .careerhub-zero/scripts/bind_web_action.py --manifest "$CAREERHUB_MANIFEST" --out "$OUT_REL" --case-id "${GITHUB_RUN_ID}" --case-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3
               ;;
             track_status)

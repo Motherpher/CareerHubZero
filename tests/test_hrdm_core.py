@@ -18,7 +18,7 @@ class HRDMCoreTests(unittest.TestCase):
             self.assertTrue(final["process_id"].endswith("-FINAL"))
             self.assertTrue(final["bank_eligible_outputs"])
 
-    def test_hybridianesque_enclosure(self):
+    def test_hybridianesque_auto_activation(self):
         value = {
             "recommended": True,
             "why": "Four criteria met",
@@ -30,11 +30,28 @@ class HRDMCoreTests(unittest.TestCase):
             },
             "participating_logics":["A","B"],
         }
-        waiting = finalize_hyfilter(value, None)
-        self.assertEqual(waiting["status"], "awaiting_user_decision")
-        self.assertEqual(waiting["participating_logics"], [])
-        active = finalize_hyfilter(value, "Yes")
-        self.assertEqual(active["status"], "active")
+        automatic = finalize_hyfilter(value, None)
+        self.assertEqual(automatic["status"], "active")
+        self.assertTrue(automatic["activated"])
+        self.assertEqual(automatic["activation_mode"], "automatic")
+        self.assertEqual(automatic["confidence"], "high")
+        self.assertEqual(automatic["participating_logics"], ["A", "B"])
+
+    def test_hybridianesque_does_not_activate_without_evidence_threshold(self):
+        value = {
+            "recommended": True,
+            "criteria": {
+                "plural_logics":{"met":True,"evidence":["a"]},
+                "structural_asymmetry":{"met":True,"evidence":[]},
+                "constitutive_translation":{"met":True,"evidence":[]},
+                "materialized_output":{"met":False,"evidence":[]},
+            },
+            "participating_logics":["A","B"],
+        }
+        automatic = finalize_hyfilter(value, "Auto")
+        self.assertEqual(automatic["status"], "not_recommended")
+        self.assertFalse(automatic["activated"])
+        self.assertEqual(automatic["participating_logics"], [])
 
 
 if __name__ == "__main__":
