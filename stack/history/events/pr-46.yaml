@@ -1,0 +1,61 @@
+schema_version: '1.0'
+event_id: PR-46
+recorded_at: '2026-10-06T23:11:55Z'
+summary: WP40.0 — enforce sourced development history before WP40
+decision_context: >-
+  Before WP40 implementation, the user required a mechanism that always sources
+  and logs development changes. This installs the capture/validation script and
+  makes sourced history a CI-enforced development contract.
+work_packages:
+  - WP40.0
+failure_ids: []
+subsystems:
+  - ci_operations
+  - developer_tooling
+  - development_history
+  - documentation
+  - test_regression
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 185ac4dfee288f135e79e54ec1e801ab52d2b0af
+  head_sha: 752bb08752fbd1c8893bdb63291f21b45ace145f
+  branch: wp40-0/history-source-gate
+  actor: Hybrismannen
+  pull_request:
+    number: 46
+    title: WP40.0 — enforce sourced development history before WP40
+    url: https://github.com/Motherpher/CareerHubZero/pull/46
+changes:
+  fingerprint: sha256:a069614e6643025e58210ae187b62343894e06861aff051deb7bec6723c54c89
+  file_count: 4
+  files:
+    - status: M
+      path: .github/workflows/validate.yml
+    - status: M
+      path: docs/history/README.md
+    - status: A
+      path: scripts/history_source_log.py
+    - status: A
+      path: tests/test_history_source_log.py
+commits:
+  - sha: 922a7ca2f8052fb2c5e80c8f98285bc3c249e55b
+    authored_at: '2026-10-06T23:10:41Z'
+    author: Hybrismannen
+    subject: 'WP40.0: add sourced development history logger'
+  - sha: a4aec8d4e0b7dc53f45a8cb7ebe876c69cd4fa88
+    authored_at: '2026-10-06T23:11:02Z'
+    author: Hybrismannen
+    subject: 'WP40.0: test sourced history logger'
+  - sha: 05bf857f9235dff241c899ec5867e414a7d3d1f2
+    authored_at: '2026-10-06T23:11:29Z'
+    author: Hybrismannen
+    subject: 'WP40.0: enforce sourced history in CI'
+  - sha: 752bb08752fbd1c8893bdb63291f21b45ace145f
+    authored_at: '2026-10-06T23:11:55Z'
+    author: Hybrismannen
+    subject: 'WP40.0: document mandatory sourced change logging'
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: git_diff_fingerprint
