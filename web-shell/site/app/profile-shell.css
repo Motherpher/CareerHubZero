@@ -16,8 +16,10 @@
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--ch-accent) 8%, transparent), transparent 34rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--ch-surface) 88%, transparent), transparent 32rem);
+    radial-gradient(circle at 9% 7%, color-mix(in srgb, var(--ch-accent) 15%, transparent), transparent 28rem),
+    radial-gradient(circle at 84% 13%, color-mix(in srgb, var(--ch-highlight) 14%, transparent), transparent 30rem),
+    radial-gradient(circle at 73% 76%, color-mix(in srgb, var(--ch-signal) 8%, transparent), transparent 32rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--ch-surface) 86%, transparent), transparent 34rem);
 }
 
 .hub--profile::after,
@@ -73,7 +75,7 @@
 
 .nav--profile a:hover,
 .nav--profile a[aria-current='page'] {
-  color: var(--ch-accent);
+  color: var(--ch-signal);
   border-bottom-color: currentColor;
 }
 
@@ -102,18 +104,31 @@
 
 .room-card--writer {
   background:
-    linear-gradient(145deg, var(--ch-accent-soft), var(--ch-surface) 64%);
+    linear-gradient(145deg, var(--ch-secondary-soft) 0 38%, color-mix(in srgb, var(--ch-highlight) 18%, var(--ch-surface)) 38% 52%, var(--ch-surface) 52% 100%);
+  border-top: 10px solid var(--ch-accent);
+}
+
+.room-card--writer .room-index {
+  color: var(--ch-accent);
+  opacity: .78;
 }
 
 .room-card--career {
-  background: var(--ch-fg);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--ch-signal) 24%, var(--ch-fg)) 0 28%, var(--ch-fg) 28% 100%);
   color: var(--ch-bg);
+  border-top: 10px solid var(--ch-highlight);
+}
+
+.room-card--career .room-index {
+  color: var(--ch-highlight);
+  opacity: .9;
 }
 
 .room-card--career .card-kicker,
 .room-card--career .room-description,
 .room-card--career .room-features {
-  color: color-mix(in srgb, var(--ch-bg) 72%, transparent);
+  color: color-mix(in srgb, var(--ch-bg) 76%, transparent);
 }
 
 .room-card--career .room-cta {
@@ -231,6 +246,9 @@
   justify-content: flex-end;
   padding: clamp(50px, 8vw, 110px) 0 clamp(36px, 6vw, 76px);
   border-bottom: 1px solid var(--ch-border);
+  background:
+    linear-gradient(90deg, transparent 0 66%, color-mix(in srgb, var(--ch-highlight) 22%, transparent) 66% 84%, transparent 84%),
+    linear-gradient(180deg, transparent 0 72%, color-mix(in srgb, var(--ch-secondary) 16%, transparent) 72% 100%);
 }
 
 .portfolio-title-block h1 {
@@ -285,10 +303,27 @@
   background: var(--ch-surface);
 }
 
+.portfolio-department:nth-child(2) {
+  background: var(--ch-secondary-soft);
+}
+
+.portfolio-department:nth-child(3) {
+  background: var(--ch-highlight-soft);
+}
+
+.portfolio-department:nth-child(4) {
+  background: var(--ch-signal-soft);
+}
+
 .portfolio-department--lead {
   grid-column: span 8;
   background: var(--ch-accent);
   color: var(--ch-accent-fg);
+}
+
+.portfolio-department--lead:nth-child(1) {
+  background:
+    linear-gradient(135deg, var(--ch-accent) 0 72%, color-mix(in srgb, var(--ch-highlight) 68%, var(--ch-accent)) 72% 100%);
 }
 
 .portfolio-department > span:first-child {
@@ -297,7 +332,7 @@
   right: 24px;
   font-family: var(--ch-display-font);
   font-size: 2.8rem;
-  opacity: .2;
+  opacity: .34;
 }
 
 .portfolio-department h2 {
@@ -345,12 +380,13 @@
   align-items: center;
   padding: 20px 0;
   border-bottom: 1px solid var(--ch-border);
-  transition: color 160ms ease, padding 160ms ease;
+  transition: color 160ms ease, padding 160ms ease, background 160ms ease;
 }
 
 .portfolio-link-list a:hover {
-  color: var(--ch-accent);
+  color: var(--ch-signal);
   padding-left: 8px;
+  background: var(--ch-signal-soft);
 }
 
 .portfolio-link-list a > span:first-child {
@@ -363,8 +399,10 @@
   max-width: 1000px;
   margin-left: auto;
   padding: clamp(38px, 6vw, 74px);
-  background: var(--ch-fg);
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--ch-signal) 26%, var(--ch-fg)) 0 26%, var(--ch-fg) 26% 100%);
   color: var(--ch-bg);
+  border-top: 10px solid var(--ch-highlight);
 }
 
 .portfolio-boundary .meta-label,
