@@ -10,6 +10,9 @@
 .process-indicator__dot { flex: 0 0 auto; width: 11px; height: 11px; margin-top: 4px; border-radius: 50%; background: #d91818; box-shadow: 0 0 0 0 rgba(217, 24, 24, .5); animation: careerhub-pulse 1s ease-in-out infinite; }
 .process-indicator strong { display: block; line-height: 1.25; }
 .process-indicator__detail { display: block; margin-top: 3px; color: var(--ch-muted); font-size: .82rem; line-height: 1.35; }
+.process-result { position: fixed; top: 18px; right: 18px; z-index: 80; display: grid; gap: 4px; max-width: min(420px, calc(100vw - 36px)); padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--ch-fg) 18%, transparent); background: var(--ch-bg); box-shadow: 0 8px 28px color-mix(in srgb, var(--ch-fg) 14%, transparent); }
+.process-result span { color: var(--ch-muted); font-size: .82rem; line-height: 1.35; }
+.process-result--error { border-color: #9A1C1C; }
 @keyframes careerhub-pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(217, 24, 24, .42); } 50% { opacity: .38; box-shadow: 0 0 0 7px rgba(217, 24, 24, 0); } }
 
 .explainer { display: grid; gap: 10px; padding: 16px 18px; border-left: 3px solid var(--ch-accent); background: color-mix(in srgb, var(--ch-bg) 97%, var(--ch-fg) 3%); }
@@ -43,7 +46,7 @@
 }
 
 @media (max-width: 620px) {
-  .process-indicator { top: 10px; right: 10px; left: 10px; max-width: none; }
+  .process-indicator, .process-result { top: 10px; right: 10px; left: 10px; max-width: none; }
   .lane-editor__head { align-items: flex-start; flex-direction: column; }
 }
 
