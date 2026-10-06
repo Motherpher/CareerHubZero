@@ -1,60 +1,102 @@
-import { loadHubProfile, loadProfileShell } from '@/lib/profile';
+import { notFound } from 'next/navigation';
+import { loadHubProfile, loadPortfolioProfile, loadProfileShell } from '@/lib/profile';
 
-export default function WriterRoomPage() {
+export default function WriterPortfolioPage() {
   const hub = loadHubProfile();
   const shell = loadProfileShell();
-  const rooms = shell?.rooms ?? [];
-  const room = rooms.find((item) => item.id === 'writer');
+  const portfolio = loadPortfolioProfile();
+  const room = shell?.rooms?.find((candidate) => candidate.kind === 'portfolio');
+
+  if (!shell?.enabled || !room) notFound();
+
+  const sections = portfolio?.sections?.length
+    ? portfolio.sections
+    : (room.features ?? []).map((feature) => ({ label: feature }));
+  const featured = portfolio?.featured ?? [];
 
   return (
-    <main className="workspace portfolio-room">
+    <main className={`workspace portfolio-room hub--${hub.experience.mode} hub--${hub.experience.density}`}>
       <header className="portfolio-masthead">
-        <div className="breadcrumb"><a href="/">{hub.identity.display_name}</a> / {room?.label ?? 'Portfolio'}</div>
-        <nav aria-label="Primary" className="nav nav--profile">
-          <a href="/">Home</a>
-          {rooms.map((item) => (
-            <a href={item.href} aria-current={item.id === 'writer' ? 'page' : undefined} key={item.id}>{item.label}</a>
-          ))}
+        <a className="breadcrumb" href="/">← {shell.headline ?? hub.identity.display_name}</a>
+        <nav aria-label="Portfolio" className="nav nav--profile">
+          <a href="/writer" aria-current="page">Portfolio</a>
+          {shell.rooms
+            .filter((candidate) => candidate.kind === 'career')
+            .map((candidate) => <a href={candidate.href} key={candidate.id}>{candidate.label}</a>)}
         </nav>
+
         <div className="portfolio-title-block">
-          <p className="eyebrow">Writing · reporting · editorial work</p>
-          <h1>{room?.label ?? 'Portfolio'}</h1>
-          <p className="lead">{room?.description ?? 'Writing, reporting, research, editorial development, archive and portfolio.'}</p>
+          <p className="eyebrow">{portfolio?.eyebrow ?? room.eyebrow ?? 'Portfolio'}</p>
+          <h1>{room.label}</h1>
+          <p className="lead">{portfolio?.intro ?? room.description}</p>
         </div>
       </header>
 
-      <section className="portfolio-intro">
+      <section className="portfolio-intro" aria-labelledby="portfolio-intro-title">
         <div>
-          <p className="meta-label">Practice</p>
-          <h2>Work in motion and work already published.</h2>
+          <p className="meta-label">Selected practice</p>
+          <h2 id="portfolio-intro-title">{portfolio?.headline ?? 'Writing, reporting and editorial work.'}</h2>
         </div>
-        <p className="portfolio-intro__copy">This space holds the professional body of work itself: active stories, pitches, research, editorial development, publication records and the curated public portfolio. CareerHub remains a separate room for employment search and applications.</p>
+        <p className="portfolio-intro__copy">{portfolio?.intro ?? room.description}</p>
       </section>
 
-      <section className="portfolio-departments" aria-label="Portfolio areas">
-        <article className="portfolio-department portfolio-department--lead"><span>01</span><p className="meta-label">Work desk</p><h2>Ideas, pitches, reporting and drafts</h2><p>Active writing, commissions and editorial development live here.</p></article>
-        <article className="portfolio-department"><span>02</span><p className="meta-label">Reporting</p><h2>Research, interviews and source work</h2><p>Story questions, evidence and reporting material stay attached to the work they support.</p></article>
-        <article className="portfolio-department"><span>03</span><p className="meta-label">Publication archive</p><h2>Published work and provenance</h2><p>The reconstructed bibliography remains the evidence base behind the portfolio.</p></article>
-        <article className="portfolio-department"><span>04</span><p className="meta-label">Selected work</p><h2>Curated public portfolio</h2><p>Not everything in the archive needs to represent Weronika publicly.</p></article>
-      </section>
-
-      <section className="portfolio-links">
-        <div>
-          <p className="meta-label">Working surfaces</p>
-          <h2>Open the material behind the portfolio</h2>
-        </div>
-        <div className="portfolio-link-list">
-          {(room?.links ?? []).map((link, index) => (
-            <a href={link.href} key={link.href}><span>0{index + 1}</span><strong>{link.label}</strong><span aria-hidden="true">↗</span></a>
+      {sections.length ? (
+        <section className="portfolio-departments" aria-label="Portfolio areas">
+          {sections.map((section, index) => (
+            <article className={`portfolio-department${index === 0 ? ' portfolio-department--lead' : ''}`} key={section.label}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <p className="meta-label">Area</p>
+              <h2>{section.label}</h2>
+              {section.description ? <p>{section.description}</p> : null}
+            </article>
           ))}
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <section className="portfolio-boundary">
-        <p className="meta-label">Career bridge</p>
-        <h2>Portfolio evidence can support CareerHub. The rooms do not merge.</h2>
-        <p>Only explicitly approved, verified material crosses into CareerHub. Drafts, private reporting notes, confidential sources and unresolved archive leads remain outside the employment-search workflow.</p>
-        <a className="text-link" href="/career">Open CareerHub ↗</a>
+      {featured.length ? (
+        <section className="portfolio-links" aria-labelledby="featured-work-title">
+          <div>
+            <p className="meta-label">Selected work</p>
+            <h2 id="featured-work-title">Featured reporting & writing</h2>
+          </div>
+          <div className="portfolio-link-list">
+            {featured.map((item, index) => (
+              item.href ? (
+                <a href={item.href} key={`${item.title}-${index}`} target="_blank" rel="noreferrer">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>
+                    <strong>{item.title}</strong><br />
+                    <small>{[item.outlet, item.year, item.type].filter(Boolean).join(' · ')}</small><br />
+                    <small>{item.description}</small>
+                  </span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                <div className="portfolio-work-row" key={`${item.title}-${index}`}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>
+                    <strong>{item.title}</strong><br />
+                    <small>{[item.outlet, item.year, item.type].filter(Boolean).join(' · ')}</small><br />
+                    <small>{item.description}</small>
+                  </span>
+                  <span />
+                </div>
+              )
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="portfolio-boundary" aria-label="Portfolio archive">
+        <p className="meta-label">Archive</p>
+        <h2>
+          {portfolio?.archive?.count
+            ? `${portfolio.archive.count} ${portfolio.archive.label ?? 'works in the reconstructed archive'}`
+            : portfolio?.boundary?.title ?? 'Public portfolio'}
+        </h2>
+        <p>{portfolio?.archive?.note ?? portfolio?.boundary?.text ?? 'This is the site-facing portfolio view.'}</p>
+        {portfolio?.boundary?.text && portfolio?.archive?.note ? <p>{portfolio.boundary.text}</p> : null}
+        <a className="text-link" href="/">Back to profile home</a>
       </section>
     </main>
   );
