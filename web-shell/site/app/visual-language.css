@@ -1,0 +1,365 @@
+/* CareerHub custom visual language.
+   Profile-scoped: inactive unless hub.profile experience.mode = custom.
+   The grammar is original and derived from editorial collage, botanical, paper and cartographic references. */
+
+.visual-field { display: none; }
+.hero-collage, .hero-signature, .card-ornament { display: none; }
+
+.experience--custom {
+  background:
+    radial-gradient(circle at 8% 8%, color-mix(in srgb, var(--ch-highlight) 18%, transparent) 0 7rem, transparent 7.1rem),
+    radial-gradient(circle at 92% 14%, color-mix(in srgb, var(--ch-secondary) 16%, transparent) 0 12rem, transparent 12.1rem),
+    linear-gradient(115deg, transparent 0 47%, color-mix(in srgb, var(--ch-signal) 6%, transparent) 47% 47.4%, transparent 47.4% 100%),
+    var(--ch-bg);
+  min-height: 100vh;
+}
+
+.experience--custom::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .38;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 5px, color-mix(in srgb, var(--ch-fg) 4%, transparent) 5px 6px),
+    repeating-linear-gradient(90deg, transparent 0 19px, color-mix(in srgb, var(--ch-fg) 2.5%, transparent) 19px 20px);
+  mix-blend-mode: multiply;
+}
+
+.experience--custom > *:not(.visual-field) { position: relative; z-index: 2; }
+
+.experience--custom .visual-field {
+  display: block;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.experience--custom .visual-field__map {
+  position: absolute;
+  width: 42rem;
+  height: 42rem;
+  right: -17rem;
+  top: 28vh;
+  border-radius: 50%;
+  opacity: .22;
+  background:
+    radial-gradient(ellipse at center, transparent 0 21%, var(--ch-muted) 21.3% 21.6%, transparent 21.9% 30%, var(--ch-muted) 30.3% 30.6%, transparent 30.9% 40%, var(--ch-muted) 40.3% 40.7%, transparent 41% 52%, var(--ch-muted) 52.3% 52.6%, transparent 52.9% 66%, var(--ch-muted) 66.3% 66.6%, transparent 66.9%),
+    repeating-radial-gradient(ellipse at 35% 58%, transparent 0 23px, color-mix(in srgb, var(--ch-fg) 22%, transparent) 24px 25px, transparent 26px 39px);
+  transform: rotate(-17deg) scaleY(.72);
+}
+
+.experience--custom .visual-field__thread {
+  position: absolute;
+  left: -8vw;
+  top: 62vh;
+  width: 66vw;
+  height: 140px;
+  border-top: 3px solid var(--ch-signal);
+  border-radius: 55% 48% 0 0;
+  transform: rotate(-8deg);
+  opacity: .72;
+}
+
+.experience--custom .visual-field__thread::before,
+.experience--custom .visual-field__thread::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--ch-signal);
+  border-radius: 50%;
+}
+.experience--custom .visual-field__thread::before { width: 28px; height: 28px; right: 18%; top: -17px; }
+.experience--custom .visual-field__thread::after { width: 9px; height: 9px; right: 15.5%; top: -8px; background: var(--ch-signal); }
+
+.experience--custom .visual-field__leaf {
+  position: absolute;
+  width: 82px;
+  height: 210px;
+  border-radius: 85% 8% 85% 8%;
+  background: color-mix(in srgb, var(--ch-secondary) 82%, var(--ch-fg) 18%);
+  box-shadow: inset -16px -12px 0 color-mix(in srgb, var(--ch-fg) 11%, transparent);
+  opacity: .78;
+}
+.experience--custom .visual-field__leaf::after {
+  content: '';
+  position: absolute;
+  left: 48%;
+  top: 7%;
+  width: 1px;
+  height: 86%;
+  background: color-mix(in srgb, var(--ch-fg) 35%, transparent);
+  transform: rotate(8deg);
+}
+.experience--custom .visual-field__leaf--one { left: -24px; bottom: 4vh; transform: rotate(36deg) scale(.9); }
+.experience--custom .visual-field__leaf--two { right: 5vw; top: -72px; transform: rotate(-28deg) scale(.72); background: color-mix(in srgb, var(--ch-accent) 86%, var(--ch-fg) 14%); }
+
+.experience--custom .visual-field__sun {
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  left: 56vw;
+  top: 9vh;
+  background: color-mix(in srgb, var(--ch-highlight) 86%, #F6C746 14%);
+  opacity: .22;
+}
+
+.experience--custom .visual-field__petal {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 68% 32% 72% 28%;
+  opacity: .5;
+}
+.experience--custom .visual-field__petal--one { left: 10vw; top: 36vh; background: var(--ch-signal); transform: rotate(22deg); }
+.experience--custom .visual-field__petal--two { left: 14vw; top: 39vh; background: var(--ch-highlight); transform: rotate(66deg) scale(.7); }
+.experience--custom .visual-field__petal--three { right: 16vw; bottom: 8vh; background: var(--ch-accent); transform: rotate(-18deg) scale(.82); }
+
+/* Home editorial composition */
+.experience--custom .hub--custom { position: relative; }
+.experience--custom .hub--custom .hero {
+  position: relative;
+  min-height: min(720px, 78vh);
+  grid-template-columns: minmax(0, 1.15fr) minmax(330px, .85fr);
+  align-items: center;
+  overflow: visible;
+  border-bottom: 0;
+  padding-top: clamp(48px, 7vw, 98px);
+  padding-bottom: clamp(80px, 9vw, 130px);
+  isolation: isolate;
+}
+
+.experience--custom .hub--custom .hero::before {
+  content: '';
+  position: absolute;
+  inset: 3% 0 0 34%;
+  z-index: -2;
+  border: 1px solid color-mix(in srgb, var(--ch-fg) 13%, transparent);
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--ch-secondary) 92%, white 8%) 0 10%, transparent 10.3%),
+    radial-gradient(circle at 69% 24%, color-mix(in srgb, var(--ch-highlight) 92%, white 8%) 0 11%, transparent 11.3%),
+    radial-gradient(circle at 58% 70%, color-mix(in srgb, var(--ch-accent) 96%, black 4%) 0 16%, transparent 16.3%),
+    linear-gradient(135deg, color-mix(in srgb, var(--ch-bg) 92%, white 8%), color-mix(in srgb, var(--ch-bg) 74%, var(--ch-highlight) 26%));
+  clip-path: polygon(12% 0, 100% 0, 100% 92%, 73% 100%, 8% 88%, 0 24%);
+}
+
+.experience--custom .hub--custom .hero::after {
+  content: '';
+  position: absolute;
+  width: 43%;
+  height: 72%;
+  right: 5%;
+  top: 13%;
+  z-index: -1;
+  opacity: .24;
+  background:
+    repeating-radial-gradient(ellipse at 50% 52%, transparent 0 24px, var(--ch-fg) 25px 26px, transparent 27px 42px),
+    linear-gradient(90deg, transparent 49.7%, color-mix(in srgb, var(--ch-fg) 18%, transparent) 50%, transparent 50.3%);
+  transform: rotate(-11deg) scaleY(.8);
+  border-radius: 48%;
+}
+
+.experience--custom .hero-copy { position: relative; z-index: 3; max-width: 780px; }
+.experience--custom .hero-copy .eyebrow { color: var(--ch-signal); }
+.experience--custom .hero-copy h1 { max-width: 11ch; text-wrap: balance; }
+.experience--custom .hero-copy .lead { max-width: 54ch; color: color-mix(in srgb, var(--ch-fg) 74%, var(--ch-muted)); }
+
+.experience--custom .hero-signature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+  color: var(--ch-signal);
+}
+.experience--custom .hero-signature span { width: 58px; height: 2px; background: currentColor; transform: rotate(-5deg); }
+.experience--custom .hero-signature em { font-style: normal; font-size: .72rem; letter-spacing: .18em; font-weight: 800; }
+
+.experience--custom .hero-collage {
+  display: block;
+  position: absolute;
+  right: 4%;
+  top: 10%;
+  width: min(480px, 38vw);
+  height: 74%;
+  z-index: 0;
+  pointer-events: none;
+}
+.experience--custom .hero-collage > span { position: absolute; display: block; }
+.experience--custom .hero-collage__sun { width: 58%; aspect-ratio: 1; border-radius: 50%; background: var(--ch-highlight); right: 8%; top: 5%; opacity: .92; }
+.experience--custom .hero-collage__leaf {
+  width: 23%; height: 54%; border-radius: 90% 5% 90% 5%;
+  background: color-mix(in srgb, var(--ch-accent) 88%, var(--ch-fg) 12%);
+  box-shadow: inset -12px -14px 0 color-mix(in srgb, var(--ch-fg) 13%, transparent);
+}
+.experience--custom .hero-collage__leaf::before {
+  content: ''; position: absolute; left: 50%; top: 4%; width: 1px; height: 92%; background: color-mix(in srgb, var(--ch-bg) 58%, transparent);
+}
+.experience--custom .hero-collage__leaf--a { left: 8%; top: 12%; transform: rotate(-42deg); }
+.experience--custom .hero-collage__leaf--b { left: 24%; top: 2%; transform: rotate(-18deg) scale(.78); background: color-mix(in srgb, var(--ch-secondary) 88%, var(--ch-fg) 12%); }
+.experience--custom .hero-collage__petal { width: 16%; aspect-ratio: 1; border-radius: 65% 35% 72% 28%; z-index: 3; }
+.experience--custom .hero-collage__petal--a { background: var(--ch-signal); right: 15%; top: 41%; transform: rotate(24deg); }
+.experience--custom .hero-collage__petal--b { background: color-mix(in srgb, var(--ch-highlight) 66%, white 34%); right: 3%; top: 52%; transform: rotate(68deg) scale(.68); }
+.experience--custom .hero-collage__petal--c { background: var(--ch-secondary); right: 28%; bottom: 7%; transform: rotate(-21deg) scale(.82); }
+.experience--custom .hero-collage__thread { width: 92%; height: 52%; right: 0; top: 33%; border: 3px solid var(--ch-signal); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: rotate(12deg); opacity: .9; }
+.experience--custom .hero-collage__map { width: 66%; height: 62%; right: 15%; top: 21%; border-radius: 48%; opacity: .28; background: repeating-radial-gradient(ellipse at 48% 52%, transparent 0 17px, var(--ch-fg) 18px 19px, transparent 20px 30px); transform: rotate(-13deg) scaleY(.78); }
+
+.experience--custom .hub--custom .nav {
+  position: absolute;
+  right: 0;
+  bottom: 30px;
+  max-width: 72%;
+  padding: 13px 18px 11px;
+  background: color-mix(in srgb, var(--ch-bg) 92%, white 8%);
+  border: 1px solid color-mix(in srgb, var(--ch-fg) 15%, transparent);
+  box-shadow: 10px 12px 0 color-mix(in srgb, var(--ch-highlight) 52%, transparent);
+  transform: rotate(-.5deg);
+}
+
+.experience--custom .hub--custom .action-band {
+  position: relative;
+  margin-top: -42px;
+  z-index: 5;
+  grid-template-columns: 1.35fr .9fr .9fr;
+}
+.experience--custom .hub--custom .action { min-height: 92px; position: relative; overflow: hidden; box-shadow: var(--ch-shadow); }
+.experience--custom .hub--custom .action::after { content: '↗'; position: absolute; right: 16px; bottom: 11px; font-size: 1.35rem; opacity: .55; }
+.experience--custom .hub--custom .action--primary { transform: rotate(-.7deg); }
+.experience--custom .hub--custom .action:nth-child(2) { transform: translateY(9px) rotate(.45deg); }
+.experience--custom .hub--custom .action:nth-child(3) { transform: translateY(-6px) rotate(-.35deg); }
+
+.experience--custom .hub--custom .grid { gap: 24px 18px; margin-top: 36px; align-items: start; }
+.experience--custom .hub--custom .card {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  border: 1px solid color-mix(in srgb, var(--ch-fg) 18%, transparent);
+  background: color-mix(in srgb, var(--ch-bg) 92%, white 8%);
+  box-shadow: 8px 10px 0 color-mix(in srgb, var(--ch-fg) 5%, transparent);
+}
+.experience--custom .hub--custom .card > *:not(.card-ornament) { position: relative; z-index: 2; }
+.experience--custom .hub--custom .card--identity { grid-column: span 7; min-height: 270px; padding-right: 30%; transform: rotate(-.3deg); }
+.experience--custom .hub--custom .card--next_action { grid-column: span 5; min-height: 330px; margin-top: 38px; transform: rotate(.35deg); }
+.experience--custom .hub--custom .card--opportunities { grid-column: span 5; min-height: 290px; transform: translateY(-14px) rotate(-.45deg); }
+.experience--custom .hub--custom .card--pipeline { grid-column: span 3; min-height: 235px; margin-top: 28px; background: color-mix(in srgb, var(--ch-bg) 76%, var(--ch-highlight) 24%); }
+.experience--custom .hub--custom .card--artifacts { grid-column: span 7; min-height: 260px; background: color-mix(in srgb, var(--ch-bg) 86%, var(--ch-accent) 14%); }
+.experience--custom .hub--custom .card--profile_health { grid-column: span 5; min-height: 230px; transform: translateY(18px) rotate(.28deg); }
+
+.experience--custom .card-ornament { display: block; position: absolute; z-index: 1; pointer-events: none; }
+.experience--custom .card-ornament--contour { width: 42%; height: 150%; right: -8%; top: -28%; opacity: .18; border-radius: 50%; background: repeating-radial-gradient(ellipse at center, transparent 0 17px, var(--ch-fg) 18px 19px, transparent 20px 29px); transform: rotate(18deg) scaleY(.72); }
+.experience--custom .card-ornament--leaf { width: 90px; height: 220px; right: -10px; bottom: -70px; border-radius: 92% 5% 92% 5%; background: var(--ch-secondary); transform: rotate(28deg); opacity: .48; }
+.experience--custom .card-ornament--flower { width: 160px; height: 160px; right: -32px; top: -34px; border-radius: 50%; background: radial-gradient(circle, var(--ch-highlight) 0 15%, transparent 16%), conic-gradient(from 0deg, var(--ch-signal) 0 10%, transparent 10% 20%, var(--ch-signal) 20% 30%, transparent 30% 40%, var(--ch-signal) 40% 50%, transparent 50% 60%, var(--ch-signal) 60% 70%, transparent 70% 80%, var(--ch-signal) 80% 90%, transparent 90%); opacity: .34; }
+.experience--custom .card-ornament--thread { width: 150%; height: 100px; left: -20%; bottom: -48px; border-top: 2px solid var(--ch-signal); border-radius: 50%; transform: rotate(-10deg); opacity: .7; }
+.experience--custom .card-ornament--paper { width: 34%; height: 92%; right: 4%; top: 4%; border: 1px solid color-mix(in srgb, var(--ch-fg) 20%, transparent); background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--ch-bg) 92%, white 8%) 0 21px, color-mix(in srgb, var(--ch-muted) 18%, transparent) 21px 22px); transform: rotate(3deg); opacity: .65; }
+.experience--custom .card-ornament--seed { width: 92px; height: 92px; right: 22px; top: 20px; border-radius: 58% 42% 65% 35%; border: 2px solid var(--ch-accent); transform: rotate(32deg); opacity: .26; box-shadow: inset 0 0 0 18px color-mix(in srgb, var(--ch-secondary) 28%, transparent); }
+
+/* Custom treatment across Search / Analyse / Apply / Track / Profile / Library */
+.experience--custom .workspace { position: relative; }
+.experience--custom .workspace::before {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: 4vw;
+  top: 18px;
+  border-radius: 50%;
+  background: var(--ch-highlight);
+  opacity: .12;
+  pointer-events: none;
+}
+.experience--custom .workspace-header { position: relative; min-height: 260px; padding-top: clamp(34px, 5vw, 72px); padding-right: min(28vw, 350px); border-bottom: 0; }
+.experience--custom .workspace-header::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: min(32vw, 360px);
+  height: 230px;
+  background:
+    radial-gradient(circle at 72% 25%, var(--ch-signal) 0 11%, transparent 11.5%),
+    radial-gradient(circle at 46% 64%, var(--ch-secondary) 0 15%, transparent 15.5%),
+    repeating-radial-gradient(ellipse at 52% 48%, transparent 0 18px, color-mix(in srgb, var(--ch-fg) 24%, transparent) 19px 20px, transparent 21px 31px);
+  opacity: .34;
+  transform: rotate(-9deg);
+}
+.experience--custom .workspace-title h1 { max-width: 9ch; }
+.experience--custom .panel-grid { gap: 22px 18px; }
+.experience--custom .panel {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ch-bg) 92%, white 8%);
+  box-shadow: 7px 9px 0 color-mix(in srgb, var(--ch-fg) 4.5%, transparent);
+}
+.experience--custom .panel:nth-child(3n+1) { border-top: 5px solid var(--ch-accent); }
+.experience--custom .panel:nth-child(3n+2) { border-top: 5px solid var(--ch-highlight); transform: translateY(10px); }
+.experience--custom .panel:nth-child(3n+3) { border-top: 5px solid var(--ch-signal); }
+.experience--custom .panel::after {
+  content: '';
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  right: -30px;
+  bottom: -30px;
+  border: 1px solid color-mix(in srgb, var(--ch-fg) 22%, transparent);
+  border-radius: 64% 36% 67% 33%;
+  transform: rotate(28deg);
+  opacity: .25;
+}
+.experience--custom .button,
+.experience--custom .wish-form button { position: relative; overflow: hidden; }
+.experience--custom .button::after,
+.experience--custom .wish-form button::after { content: '↗'; margin-left: 10px; opacity: .55; }
+.experience--custom .tag { background: color-mix(in srgb, var(--ch-bg) 72%, var(--ch-secondary) 28%); border-color: color-mix(in srgb, var(--ch-secondary) 62%, var(--ch-fg) 12%); }
+.experience--custom .wish-launcher { border-radius: 0 999px 999px 999px; box-shadow: 6px 8px 0 color-mix(in srgb, var(--ch-signal) 32%, transparent); }
+
+/* Motion stays decorative and never required for comprehension. */
+.motion--expressive.experience--custom .hero-collage__leaf--a { animation: chLeafFloat 8s ease-in-out infinite alternate; }
+.motion--expressive.experience--custom .hero-collage__petal--a { animation: chPetalFloat 6s ease-in-out infinite alternate; }
+@keyframes chLeafFloat { from { transform: rotate(-42deg) translateY(0); } to { transform: rotate(-38deg) translateY(-12px); } }
+@keyframes chPetalFloat { from { transform: rotate(24deg) translate(0, 0); } to { transform: rotate(31deg) translate(-6px, 8px); } }
+
+@media (max-width: 980px) {
+  .experience--custom .hub--custom .hero { min-height: 620px; grid-template-columns: 1fr; padding-bottom: 120px; }
+  .experience--custom .hero-collage { width: 42vw; height: 55%; right: 0; top: 18%; opacity: .72; }
+  .experience--custom .hub--custom .hero::before { inset: 13% 0 3% 42%; }
+  .experience--custom .hub--custom .nav { max-width: 92%; }
+  .experience--custom .hub--custom .card--identity,
+  .experience--custom .hub--custom .card--next_action,
+  .experience--custom .hub--custom .card--opportunities,
+  .experience--custom .hub--custom .card--pipeline,
+  .experience--custom .hub--custom .card--artifacts,
+  .experience--custom .hub--custom .card--profile_health { grid-column: span 6; margin-top: 0; transform: none; }
+}
+
+@media (max-width: 620px) {
+  .experience--custom .visual-field__map { width: 24rem; height: 24rem; right: -15rem; top: 48vh; }
+  .experience--custom .visual-field__leaf--one { opacity: .38; transform: rotate(36deg) scale(.58); }
+  .experience--custom .visual-field__thread { width: 96vw; top: 72vh; opacity: .45; }
+  .experience--custom .hub--custom .hero { min-height: 660px; padding-top: 34px; padding-bottom: 126px; }
+  .experience--custom .hub--custom .hero::before { inset: 29% -8% 8% 34%; opacity: .82; }
+  .experience--custom .hub--custom .hero::after { width: 58%; height: 44%; right: -10%; top: 34%; }
+  .experience--custom .hero-collage { width: 68vw; height: 39%; right: -14%; top: 39%; opacity: .72; }
+  .experience--custom .hero-copy h1 { max-width: 9ch; font-size: clamp(3.2rem, 16vw, 5rem); }
+  .experience--custom .hero-copy .lead { max-width: 31ch; }
+  .experience--custom .hub--custom .nav { left: 0; right: auto; bottom: 24px; max-width: 100%; gap: 5px 13px; padding: 12px 14px; }
+  .experience--custom .hub--custom .action-band { margin-top: -14px; }
+  .experience--custom .hub--custom .action,
+  .experience--custom .hub--custom .action:nth-child(2),
+  .experience--custom .hub--custom .action:nth-child(3) { transform: none; min-height: 74px; }
+  .experience--custom .hub--custom .card--identity,
+  .experience--custom .hub--custom .card--next_action,
+  .experience--custom .hub--custom .card--opportunities,
+  .experience--custom .hub--custom .card--pipeline,
+  .experience--custom .hub--custom .card--artifacts,
+  .experience--custom .hub--custom .card--profile_health { grid-column: 1; min-height: 220px; }
+  .experience--custom .hub--custom .card--identity { padding-right: 24px; }
+  .experience--custom .workspace-header { min-height: 230px; padding-right: 0; padding-bottom: 100px; }
+  .experience--custom .workspace-header::after { width: 180px; height: 150px; top: auto; bottom: 0; right: -28px; }
+  .experience--custom .panel:nth-child(3n+2) { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience--custom *, .experience--custom *::before, .experience--custom *::after { animation: none !important; }
+}
