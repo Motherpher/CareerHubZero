@@ -1,0 +1,595 @@
+schema_version: "1.0"
+index_id: CHZERO-FAIL-INDEX-001
+cutoff_date: "2026-10-07"
+search_contract: >-
+  Search by observed symptom, error text, subsystem, WP, issue/PR, commit,
+  profile, provider or state contradiction. Resolved failures remain searchable.
+
+classes:
+  ARCH_DRIFT: canonical architecture drift or duplicate authority
+  EXEC_PATH: dispatch/execution path failure
+  PERSISTENCE: durable state/result materialisation failure
+  SURFACE: absent, opaque or misleading user-facing behaviour
+  INTEGRATION: external provider/repository/deployment integration failure
+  DATA_BOUNDARY: profile/evidence/privacy/isolation boundary failure or risk
+  BUILD: build/package/runtime-resolution failure
+  SEARCH: sourcing/query/delta/filter/result-quality failure
+  AUDIT_STATE: stale/conflicting audit or governance state
+  MIGRATION: legacy Motor/metadata/cutover failure
+  DEVELOPMENT_PROCESS: branch/PR/process failure
+  RELEASE_STATE: audit/release/version divergence
+
+failures:
+  - id: FAIL-001
+    date_detected: "2026-09-23"
+    status: RESOLVED
+    class: INTEGRATION
+    symptoms: [organisation secret unavailable to private CareerHubZero]
+    search_terms: [org secret, OPENAI_API_KEY, selected repository, private repo, GitHub Free]
+    subsystems: [GitHub secrets, OpenAI]
+    affected_profiles: [central]
+    trigger: CHZero live API setup
+    root_cause: organisation-level secret path did not expose the desired secret to the private repository under the available setup
+    resolution: use repository-level OPENAI_API_KEY for CareerHubZero
+    work_packages: []
+    issues: []
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: keep secret scope explicit per deployment/repository
+    superseded_by: repository_scoped_secret_and_later_GitHub_App_deployment_auth
+    provenance: chat_reconstruction
+
+  - id: FAIL-002
+    date_detected: "2026-09-23"
+    status: RESOLVED
+    class: ARCH_DRIFT
+    symptoms: [Napp or market-response behaving as base CareerHub subsystem]
+    search_terms: [Napp, market-response, architecture drift, base contract, Find Analyse Apply]
+    subsystems: [product architecture]
+    affected_profiles: [central, Linus]
+    trigger: profiled-instance expansion
+    root_cause: experimental positioning layer was promoted beyond a bounded extension
+    resolution: restore canonical Find → Analyse? → Apply base contract and remove Napp from base CareerHub
+    work_packages: []
+    issues: []
+    prs: [8]
+    commits: []
+    workflow_runs: []
+    regression_guard: one central Motor/base contract; profile extensions must not silently become base architecture
+    superseded_by: 0.2.1-alpha_base_contract_drift_correction
+    provenance: repo_and_chat
+
+  - id: FAIL-003
+    date_detected: "2026-09-23"
+    status: SUPERSEDED
+    class: ARCH_DRIFT
+    symptoms: [cross-repository stack token became required for harmonisation]
+    search_terms: [CAREERHUB_STACK_TOKEN, stack token, cross repo token, profile sync, push distribution]
+    subsystems: [distribution, GitHub auth]
+    affected_profiles: [Linus, Weronika, Grace]
+    trigger: 0.2.2-alpha stack governance
+    root_cause: central-push distribution model required broad cross-profile credentials
+    resolution: unified-body architecture removed token from stable design; checkout-based central execution later solved distribution
+    work_packages: [M3, SIL-WP02]
+    issues: [10, 3]
+    prs: [33]
+    commits: []
+    workflow_runs: [37341325941, 37345897747, 37345918372]
+    regression_guard: profile repositories invoke central body and write only to themselves
+    superseded_by: checkout_based_central_execution
+    provenance: repo_and_audit
+
+  - id: FAIL-004
+    date_detected: "2026-09-25"
+    status: RESOLVED
+    class: EXEC_PATH
+    symptoms: [Unable to resolve private central action, repository not found]
+    search_terms: [E01, repository not found, Unable to resolve action, private action, CareerHubZero action]
+    subsystems: [GitHub Actions, distribution]
+    affected_profiles: [Weronika, Grace]
+    trigger: Silicon WP02 execution proof
+    root_cause: private cross-repository reusable-Action resolution path failed
+    resolution: checkout CareerHubZero and execute it inside each profile repository
+    work_packages: [SIL-WP02, SIL-WP03]
+    issues: [3, 4]
+    prs: [33]
+    commits: []
+    workflow_runs: [37341325941, 37345897747, 37345918372]
+    regression_guard: E01 gate and profile-side checkout execution
+    superseded_by: null
+    provenance: audit_and_repo
+
+  - id: FAIL-005
+    date_detected: "2026-09-25"
+    status: RESOLVED_BY_POLICY
+    class: INTEGRATION
+    symptoms: [geography gate blocked by absent Google Maps API key]
+    search_terms: [E02, Google Maps, Maps key, GOOGLE_MAPS_API_KEY, paid maps]
+    subsystems: [geography, provider integration]
+    affected_profiles: [all]
+    trigger: Silicon WP06 external gate
+    root_cause: audit/design treated a paid provider as mandatory even though other geography paths were valid
+    resolution: make Google Maps optional and disabled by explicit user choice while retaining supported local/admin/labour-market geography
+    work_packages: [SIL-WP06]
+    issues: [15]
+    prs: [34]
+    commits: []
+    workflow_runs: [37436076911]
+    regression_guard: optional provider gate must not block canonical geography runtime
+    superseded_by: null
+    provenance: repo_and_audit
+
+  - id: FAIL-006
+    date_detected: "2026-09-25"
+    status: RESOLVED
+    class: INTEGRATION
+    symptoms: [HTTP 429 credit_balance_exhausted]
+    search_terms: [E03, 429, credit_balance_exhausted, OpenAI quota, Responses API]
+    subsystems: [OpenAI, HRDM, application generation]
+    affected_profiles: [all]
+    trigger: live AI gate
+    root_cause: API billing/credit exhaustion rather than authentication/integration failure
+    resolution: billing restored; Responses API live gate passed
+    work_packages: [SIL-WP07, SIL-WP10]
+    issues: [18, 14]
+    prs: [35]
+    commits: []
+    workflow_runs: [37436076911]
+    regression_guard: separate auth/integration health from billing/credit health
+    superseded_by: null
+    provenance: chat_repo_audit
+
+  - id: FAIL-007
+    date_detected: "2026-09-24"
+    status: RESOLVED
+    class: MIGRATION
+    symptoms: [Weronika and Grace still contained authoritative local Motor and HRDM code]
+    search_terms: [legacy motor, local motor, src/careerhub, local HRDM, WP03, profile cutover]
+    subsystems: [runtime, HRDM, profile architecture]
+    affected_profiles: [Weronika, Grace]
+    trigger: one-body migration
+    root_cause: parity/cutover had not yet completed
+    resolution: central-Motor cutover followed by deletion of duplicate local runtime and migration metadata
+    work_packages: [M2, M4, SIL-WP01, SIL-WP03]
+    issues: [1, 4, 11, 12]
+    prs: [33]
+    commits: [842b31c477fdd083b109d4e43bc80bd3d448f421, 92f861dc4a29b1f52e92914297bb1b9135faf7fe, 1ff7dabb7aa004fd7c325026ffc33607468bb107, 066be5b3e4da5697c745ccfb487318ed17352bd0]
+    workflow_runs: []
+    regression_guard: profile nodes contain context/state/artifacts, not authoritative runtime
+    superseded_by: null
+    provenance: repo
+
+  - id: FAIL-008
+    date_detected: "2026-09-24"
+    status: RESOLVED
+    class: DATA_BOUNDARY
+    symptoms: [Grace pre-firewall application artifact could not be trusted under verified-evidence policy]
+    search_terms: [Grace, Region Stockholm, pre-firewall, application artifact, quarantine]
+    subsystems: [evidence firewall, application artifacts]
+    affected_profiles: [Grace]
+    trigger: verified-career evidence firewall
+    root_cause: artifact predated canonical evidence provenance rules
+    resolution: quarantine/review requirement; retire Region Stockholm artifact during Grace migration closure
+    work_packages: [M0, SIL-WP03]
+    issues: [12, 4]
+    prs: []
+    commits: [066be5b3e4da5697c745ccfb487318ed17352bd0]
+    workflow_runs: []
+    regression_guard: external-use artifacts must be provenance-valid under current evidence contract
+    superseded_by: null
+    provenance: repo_and_chat
+
+  - id: FAIL-009
+    date_detected: "2026-10-05"
+    status: HISTORICAL_RESOLVED
+    class: INTEGRATION
+    symptoms: [Vercel project creation returned permission 403]
+    search_terms: [Vercel 403, project creation, permission, deployment blocked]
+    subsystems: [Vercel deployment]
+    affected_profiles: [Linus]
+    trigger: personalised hub deployment
+    root_cause: programmatic project-creation permission limitation
+    resolution: later profile deployments were established and managed-site syncs proceeded
+    work_packages: [OCT-WP1]
+    issues: []
+    prs: [27]
+    commits: []
+    workflow_runs: []
+    regression_guard: deployment preflight must separate repo/build readiness from provider-account permission
+    superseded_by: established_profile_Vercel_deployments
+    provenance: chat
+
+  - id: FAIL-010
+    date_detected: "2026-10-05"
+    status: RESOLVED
+    class: SEARCH
+    symptoms: [Search page displayed configuration but could not launch a search]
+    search_terms: [find no search, Run Search missing, search settings only, Platsbanken, WP2]
+    subsystems: [Search UI, sourcing]
+    affected_profiles: [managed profiles]
+    trigger: live personalised-site test
+    root_cause: managed Search surface exposed settings without a complete execution adapter
+    resolution: add Run Search, server-side Platsbanken execution, session overrides, dedupe/triage and provenance
+    work_packages: [OCT-WP2]
+    issues: []
+    prs: [28]
+    commits: []
+    workflow_runs: []
+    regression_guard: every user-facing capability must expose control + execution + result
+    superseded_by: null
+    provenance: repo
+
+  - id: FAIL-011
+    date_detected: "2026-10-05"
+    status: RESOLVED
+    class: DEVELOPMENT_PROCESS
+    symptoms: [first OCT-WP3 PR contained pre-squash history conflict]
+    search_terms: [PR29, WP3 conflict, pre-squash, superseded branch]
+    subsystems: [Git history, PR process]
+    affected_profiles: [central]
+    trigger: OCT-WP3 implementation after squash-merged OCT-WP2
+    root_cause: branch history was based on pre-squash tree
+    resolution: close PR 29 without dropping work and rebuild on merged main as PR 30
+    work_packages: [OCT-WP3]
+    issues: []
+    prs: [29, 30]
+    commits: []
+    workflow_runs: []
+    regression_guard: rebuild dependent feature branches from canonical merged base after squash merge
+    superseded_by: PR30
+    provenance: repo
+
+  - id: FAIL-012
+    date_detected: "2026-10-05"
+    status: RESOLVED
+    class: BUILD
+    symptoms: [Turbopack tracing outside Next.js site root for ../output and ../reports]
+    search_terms: [Turbopack, ../output, ../reports, artifact tracing, .careerhub-artifacts, build failure]
+    subsystems: [Next.js build, artifact delivery]
+    affected_profiles: [managed profiles]
+    trigger: OCT-WP3 fixture production-build gate
+    root_cause: artifact delivery relied on paths outside deployable site root
+    resolution: mirror generated artifacts into site/.careerhub-artifacts and narrow tracing to that managed mirror
+    work_packages: [OCT-WP3]
+    issues: []
+    prs: [31, 32]
+    commits: []
+    workflow_runs: []
+    regression_guard: central fixture production build + site-local artifact mirror
+    superseded_by: null
+    provenance: repo
+
+  - id: FAIL-013
+    date_detected: "2026-10-06"
+    status: RESOLVED
+    class: AUDIT_STATE
+    symptoms: [WP01-WP09 passed but WP10 remained blocked by stale September snapshot]
+    search_terms: [WP10 blocked stale snapshot, final-audit-status, 37436795188, WP01 WP09 PASS]
+    subsystems: [audit, governance]
+    affected_profiles: [all]
+    trigger: external gates cleared and Household rerun
+    root_cause: final-audit snapshot had not been reconciled to newer evidence
+    resolution: update final-audit snapshot only after current evidence passed; rerun audit/regression path
+    work_packages: [SIL-WP10]
+    issues: [14]
+    prs: [36]
+    commits: []
+    workflow_runs: [37436795188, 37436795258]
+    regression_guard: distinguish immutable historical audits from current final-audit state
+    superseded_by: null
+    provenance: repo_and_audit
+
+  - id: FAIL-014
+    date_detected: "2026-10-06"
+    status: RESOLVED
+    class: SURFACE
+    symptoms: [analysis action queued but no completed report returned to browser]
+    search_terms: [analysis queued no report, HRDM-R result missing, ACT reference only, 202 QUEUED, WP39]
+    subsystems: [Analyse UI, action dispatch, HRDM result retrieval]
+    affected_profiles: [managed profiles]
+    trigger: live Motor test
+    root_cause: dispatch existed without browser status/result return channel
+    resolution: add action preflight, explicit lifecycle, action-to-result binding and stable result retrieval
+    work_packages: [WP39]
+    issues: [39]
+    prs: [40]
+    commits: []
+    workflow_runs: []
+    regression_guard: completed analysis must resolve through stable result route and reopening path
+    superseded_by: FAIL-018_persistence_hardening
+    provenance: repo_and_chat
+
+  - id: FAIL-015
+    date_detected: "2026-10-06"
+    status: LOGIC_RESOLVED_UX_CLEANUP_OPEN
+    class: SURFACE
+    symptoms: [normal user asked to choose Hybridianesque Yes or No]
+    search_terms: [Hybridianesque Yes No, Hy-Filter, user gate, auto relevance]
+    subsystems: [HRDM, Analyse UI]
+    affected_profiles: [all]
+    trigger: live Motor test
+    root_cause: expert codex gate was surfaced directly as end-user product choice
+    resolution: Motor automatically evaluates four-criterion Hybridianesque relevance with evidence/confidence trace
+    work_packages: [WP39, WP40]
+    issues: [39, 41]
+    prs: [40]
+    commits: []
+    workflow_runs: []
+    regression_guard: expert analytical subroutines remain internal; normal UI uses product language
+    superseded_by: WP40_user_language_cleanup
+    provenance: repo_and_chat
+
+  - id: FAIL-016
+    date_detected: "2026-10-06"
+    status: CORE_RESOLVED_UX_EXTENSION_OPEN
+    class: SEARCH
+    symptoms: [repeated search cannot distinguish zero new roles from stale or failed execution]
+    search_terms: [no new jobs, search delta, NEW SEEN CHANGED, source health, same results]
+    subsystems: [Search sessions, sourcing]
+    affected_profiles: [all]
+    trigger: live repeated-search test
+    root_cause: no persisted comparable run history or result fingerprints
+    resolution: persist search sessions and classify NEW/SEEN/CHANGED with source failure separated
+    work_packages: [WP39, WP40]
+    issues: [39, 41]
+    prs: [40]
+    commits: []
+    workflow_runs: []
+    regression_guard: zero-new message only after successful comparable search
+    superseded_by: WP40_search_ux_extension
+    provenance: repo_and_chat
+
+  - id: FAIL-017
+    date_detected: "2026-10-06"
+    status: CORE_IMPLEMENTED
+    class: INTEGRATION
+    symptoms: [Wish routing fragmented across profile deployments and standalone service]
+    search_terms: [Wish Bank, wish routing, CAREERHUB_WISH_ENDPOINT, WISH-ID, site project]
+    subsystems: [Wish Bank, Vercel, profile sites]
+    affected_profiles: [all]
+    trigger: live Motor test
+    root_cause: authoritative Wish endpoint and verification path were not sufficiently closed-loop
+    resolution: protected Wish Bank ledger/health readiness and authoritative endpoint requirements
+    work_packages: [WP39]
+    issues: [39]
+    prs: [40]
+    commits: []
+    workflow_runs: []
+    regression_guard: accepted wish must return verifiable WISH-ID independent of optional GitHub projection
+    superseded_by: null
+    provenance: repo_and_chat
+
+  - id: FAIL-018
+    date_detected: "2026-10-06"
+    status: RESOLVED_INVARIANT
+    class: PERSISTENCE
+    symptoms: [analysis could appear complete before durable profile-repository materialisation and read-back]
+    search_terms: [false completed, persistence before completion, GitHub read-back, HRDM materialization, b55547e, c08e639]
+    subsystems: [HRDM, result persistence, profile repository]
+    affected_profiles: [all]
+    trigger: WP38-WP39 production E2E
+    root_cause: completion semantics were tied to generation/execution rather than durable owned state
+    resolution: require successful persistence and read-back before COMPLETED
+    work_packages: [WP39, WP40]
+    issues: [39, 41]
+    prs: [40]
+    commits: [b55547e47ded3573aa7ae3c67ba671d4f68d3d8f, c08e639512d567f40ae871a0358c746f7b6f0bca]
+    workflow_runs: []
+    e2e_action_id: ACT-20261006155733-2c2a00a7
+    e2e_process_id: HRDM-R-20261006-0001-S09-A-R01-FINAL
+    regression_guard: generation_success_not_equal_completed; read-back-gated completion
+    superseded_by: null
+    provenance: repo_chat_production
+
+  - id: FAIL-019
+    date_detected: "2026-10-06"
+    status: RESOLVED
+    class: BUILD
+    symptoms: [direct Search Profile scripts resolved imports/packages incorrectly]
+    search_terms: [script import shadowing, Search Profile package resolution, direct script, import error]
+    subsystems: [Python package resolution, Search Profile tooling]
+    affected_profiles: [all]
+    trigger: production Search Profile action
+    root_cause: direct-script execution shadowed or failed package resolution
+    resolution: harden web action binder/script imports and add regression coverage
+    work_packages: [WP39]
+    issues: [39]
+    prs: []
+    commits: [7d6a36a66fc2f303c7294c542cc00d85d2de0769, 2476ce6b30344b4d99efcec6da4141a740e3b841, 515335e04e697a37aabe97255a0cdbc0d16af1be, d9be7c41e939fa5f5e5f878ccb9d5bfc6aab45dc]
+    workflow_runs: []
+    regression_guard: direct-script package-resolution regression tests
+    superseded_by: null
+    provenance: repo
+
+  - id: FAIL-020
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: SURFACE
+    symptoms: [synthetic WP39 End-to-End Test Role remains in Weronika Recent analyses]
+    search_terms: [WP39 End-to-End Test Role, test residue, Weronika recent analyses, synthetic]
+    subsystems: [Recent analyses, test cleanup]
+    affected_profiles: [Weronika]
+    trigger: post-WP39 fleet usability review
+    root_cause: production E2E residue not removed from user-facing state
+    resolution: pending safe bounded reset that preserves genuine career/evidence data
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: reset classifier distinguishes genuine vs synthetic/transient objects
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-021
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: DATA_BOUNDARY
+    symptoms: [Grace upload visibility/storage does not prove ACTIVE source was ingested and used in analysis]
+    search_terms: [Grace upload, Library, ACTIVE source, indexed, storage-only, analysis evidence]
+    subsystems: [Library, evidence ingestion, Analyse]
+    affected_profiles: [Grace]
+    trigger: live Library test
+    root_cause: storage state and analysis-evidence state are not sufficiently explicit/linked
+    resolution: pending upload→ingest→indexed→ACTIVE lifecycle plus evidence-use manifest
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: only profile-owned successfully ingested ACTIVE sources can be claimed as analysis evidence
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-022
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: DATA_BOUNDARY
+    symptoms: [cross-profile Library access must be proven impossible]
+    search_terms: [cross-profile, Library isolation, other profile source, Blob namespace, list open delete]
+    subsystems: [Library API, Blob storage, profile identity]
+    affected_profiles: [Linus, Weronika, Grace]
+    trigger: WP40 security/integrity review
+    root_cause: profile namespace/isolation contract requires explicit regression proof
+    resolution: pending profile-scoped namespace and fail-closed list/open/delete tests
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: cross-profile API access tests
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-023
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: PERSISTENCE
+    symptoms: [long-running analysis must survive page navigation and reload]
+    search_terms: [analysis stops navigation, reload, background execution, active process, global process]
+    subsystems: [Analyse, ActiveProcess, Motor execution]
+    affected_profiles: [all]
+    trigger: post-WP39 usability test
+    root_cause: user-facing process visibility/state still too coupled to page lifecycle
+    resolution: pending durable ActiveProcess creation, navigation-independent central execution and global process indicator
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: navigate/reload/reopen scenario in fleet acceptance
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-024
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: SEARCH
+    symptoms: [Search lacks ordinary job-site filters and persistent dismissal]
+    search_terms: [job type, remote hybrid onsite, published date, deadline, last month, dismiss, x]
+    subsystems: [Search UI, search-session state]
+    affected_profiles: [all]
+    trigger: live Search usability test
+    root_cause: execution path matured before expected filter/dismiss interaction model
+    resolution: pending multi-select type/mode controls, published/deadline windows, presets/custom dates, persistent dismissed job IDs
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: profile-scoped filter and dismissal persistence tests
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-025
+    date_detected: "2026-10-06"
+    status: OPEN_WP40
+    class: SURFACE
+    symptoms: [normal UI leaks HRDM-R Hybridianesque Motor implementation terminology]
+    search_terms: [HRDM-R UI, Hybridianesque UI, Motor terminology, implementation language, Job analysis]
+    subsystems: [UX copy, Help, Analyse]
+    affected_profiles: [all]
+    trigger: post-WP39 usability review
+    root_cause: internal module vocabulary remained directly visible in product surfaces
+    resolution: pending product language Analyse job opening / Job analysis and internal-only technical terminology
+    work_packages: [WP40]
+    issues: [41]
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: user-language traversal audit
+    superseded_by: null
+    provenance: issue_and_chat
+
+  - id: FAIL-026
+    date_detected: "2026-10-07"
+    status: DOCUMENTED
+    class: AUDIT_STATE
+    symptoms: [GitHub issues remain open while final audit records WP01-WP10 PASS]
+    search_terms: [issue open but pass, WP01 open, WP10 open, audit PASS, status conflict]
+    subsystems: [governance, issue hygiene, audit]
+    affected_profiles: [central]
+    trigger: unified historical ledger reconstruction
+    root_cause: GitHub issue workflow metadata was not reconciled when later machine/audit gates cleared
+    resolution: separate github_state from audit_status/current_reconciled_status in ledger
+    work_packages: [SIL-WP01, SIL-WP04, SIL-WP05, SIL-WP06, SIL-WP07, SIL-WP08, SIL-WP09, SIL-WP10]
+    issues: [1, 16, 17, 15, 18, 19, 20, 14]
+    prs: []
+    commits: []
+    workflow_runs: [37436795188, 37436795258]
+    regression_guard: multi-channel status model
+    superseded_by: null
+    provenance: repo_and_audit
+
+  - id: FAIL-027
+    date_detected: "2026-10-07"
+    status: OPEN_RECONCILIATION
+    class: RELEASE_STATE
+    symptoms: [final audit allows 1.0 release while VERSION remains 0.2.9-alpha]
+    search_terms: [release_1_0_allowed, VERSION 0.2.9-alpha, 1.0 released, WP10]
+    subsystems: [release governance]
+    affected_profiles: [central]
+    trigger: unified historical ledger reconstruction
+    root_cause: release authorization and actual release/version/tag are separate states
+    resolution: do not label 1.0.0 released without actual VERSION/tag/release evidence
+    work_packages: [SIL-WP10]
+    issues: [14]
+    prs: []
+    commits: []
+    workflow_runs: [37436795188]
+    regression_guard: release_state must come from VERSION/tag/release evidence
+    superseded_by: null
+    provenance: repo_and_audit
+
+  - id: FAIL-028
+    date_detected: "2026-09-24"
+    status: HISTORICAL_GOVERNANCE_FINDING
+    class: AUDIT_STATE
+    symptoms: [issue metadata/state did not reliably represent development truth]
+    search_terms: [CHZ-FND-ISSUE-METADATA-DRIFT, issue metadata drift, stale issue state, governance drift]
+    subsystems: [GitHub issues, development governance]
+    affected_profiles: [central]
+    trigger: foundation/stack review
+    root_cause: issue metadata and evolving architecture/status were not kept in one canonical reconciled state model
+    resolution: registered as CHZ-FND-ISSUE-METADATA-DRIFT; later unified history explicitly separates issue state, audit state, temporal state and release state
+    work_packages: []
+    issues: []
+    prs: []
+    commits: []
+    workflow_runs: []
+    regression_guard: canonical WP registry + status precedence + provenance map
+    superseded_by: CHZERO-DEV-LEDGER-001
+    provenance: chat_reconstruction
+
+subsystem_lookup:
+  architecture: [FAIL-002, FAIL-003, FAIL-007, FAIL-015]
+  distribution_github: [FAIL-003, FAIL-004, FAIL-018, FAIL-019]
+  openai_hrdm: [FAIL-001, FAIL-006, FAIL-014, FAIL-015, FAIL-018, FAIL-025]
+  search: [FAIL-010, FAIL-016, FAIL-019, FAIL-024]
+  geography: [FAIL-005]
+  build_nextjs: [FAIL-011, FAIL-012, FAIL-019]
+  profile_evidence_library: [FAIL-007, FAIL-008, FAIL-020, FAIL-021, FAIL-022]
+  audit_release: [FAIL-013, FAIL-026, FAIL-027, FAIL-028]
+  vercel_deployment: [FAIL-009, FAIL-017]
+  ui_usability: [FAIL-010, FAIL-014, FAIL-015, FAIL-016, FAIL-020, FAIL-023, FAIL-024, FAIL-025]
