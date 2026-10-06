@@ -79,7 +79,8 @@ class ActionCompletenessTests(unittest.TestCase):
         self.assert_file_contains(
             "web-shell/site/app/_components/WorkspaceHeader.tsx",
             "How this works",
-            "Open searchable Q&A",
+            "Open searchable",
+            'href="/help"',
         )
         self.assert_file_contains(
             "web-shell/site/app/help/HelpSearch.tsx",
