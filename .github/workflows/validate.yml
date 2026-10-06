@@ -2,7 +2,7 @@ name: Validate CareerHubZero
 
 on:
   push:
-    branches: [main]
+    branches: [main, ux/process-guidance-qa]
   pull_request:
 
 permissions:
