@@ -225,12 +225,16 @@ operational_product_line:
       WP40.1:
         name: State Integrity, Reset & Profile Isolation
         issue: 47
-        status: IN_PROGRESS
+        pr: 48
+        status: COMPLETE
         gate: STATE_BASELINE_LOCK
+        merge_commit: 2272068af146ffce524f2e59795bc9e40fa2c292
       WP40.2:
         name: Durable Library, Evidence Pipeline & Background Analysis
-        status: PENDING
+        issue: 49
+        status: IN_PROGRESS
         gate: DURABLE_PROCESS_LOCK
+        change_ids: [CHZ-CHG-029A-015, CHZ-CHG-029A-016, CHZ-CHG-029A-017, CHZ-CHG-029A-018]
       WP40.3:
         name: Search Workspace & Job Decision Flow
         status: PENDING
