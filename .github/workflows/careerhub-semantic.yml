@@ -99,7 +99,7 @@ jobs:
           (root / 'payload.json').write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
           PY
 
-      - name: Execute canonical HRDM-R
+      - name: Execute canonical Job Analysis
         shell: bash
         env:
           PYTHONPATH: src
@@ -110,23 +110,34 @@ jobs:
           [ -n "$LANE" ] || LANE="core"
           cp /tmp/careerhub-action/job_text.txt /tmp/careerhub-job.txt 2>/dev/null || : > /tmp/careerhub-job.txt
           OUT_REL="output/$ACTION_ID"
-          python scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" drill --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --out "$OUT_REL"
+          python scripts/web_analysis.py --manifest "$CAREERHUB_MANIFEST" --url "$URL" --text-file /tmp/careerhub-job.txt --title "$TITLE" --company "$COMPANY" --deadline "$DEADLINE" --lane "$LANE" --out "$OUT_REL" --library-evidence-file /tmp/careerhub-action/library_evidence.txt
           python scripts/bind_web_action.py --manifest "$CAREERHUB_MANIFEST" --out "$OUT_REL" --case-id "${GITHUB_RUN_ID}" --case-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --priority 3
 
-      - name: Verify semantic completion
+      - name: Verify semantic completion and evidence trace
         shell: bash
         run: |
           python - <<'PY'
           import json, os, pathlib
-          path = pathlib.Path(os.environ['CAREERHUB_ROOT_FS']) / 'output' / os.environ['ACTION_ID'] / 'HRDM_result.json'
-          if not path.exists():
+          root = pathlib.Path(os.environ['CAREERHUB_ROOT_FS']) / 'output' / os.environ['ACTION_ID']
+          result_path = root / 'HRDM_result.json'
+          evidence_path = root / 'evidence_use_manifest.json'
+          if not result_path.exists():
               raise SystemExit('HRDM_result.json was not generated.')
-          result = json.loads(path.read_text(encoding='utf-8'))
+          if not evidence_path.exists():
+              raise SystemExit('evidence_use_manifest.json was not generated.')
+          result = json.loads(result_path.read_text(encoding='utf-8'))
+          evidence = json.loads(evidence_path.read_text(encoding='utf-8'))
+          payload = json.loads(os.environ['PAYLOAD'] or '{}')
+          requested = payload.get('library_evidence') or {}
           if result.get('ai_status') == 'not_run':
               raise SystemExit('Semantic HRDM did not execute; fallback output is forbidden for web completion.')
           if not (result.get('process_id') or (result.get('trace') or {}).get('process_id')):
               raise SystemExit('Semantic HRDM result is missing Process-ID trace identity.')
-          print('Semantic HRDM execution verified.')
+          expected_ids = list(requested.get('source_ids') or [])
+          actual_ids = [source.get('source_id') for source in evidence.get('sources') or []]
+          if actual_ids != expected_ids:
+              raise SystemExit(f'Evidence-use manifest mismatch: expected {expected_ids}, got {actual_ids}')
+          print(f'Semantic Job Analysis verified with {len(actual_ids)} ACTIVE Library evidence sources.')
           PY
 
       - name: Mirror generated artifacts into deployable profile shell
@@ -143,68 +154,47 @@ jobs:
         run: |
           python - <<'PY'
           import base64, json, os, pathlib, subprocess
-
           repo = pathlib.Path('.profile').resolve()
           root = pathlib.Path(os.environ['CAREERHUB_ROOT_FS']).resolve()
           action_id = os.environ['ACTION_ID']
-
           def names(args):
               raw = subprocess.check_output(['git', '-C', str(repo), *args])
               return [pathlib.Path(x.decode('utf-8')) for x in raw.split(b'\0') if x]
-
           changed = set(names(['diff', '--name-only', '--diff-filter=ACMRTUXB', '-z', 'HEAD']))
           changed.update(names(['ls-files', '--others', '--exclude-standard', '-z']))
           deleted = set(names(['diff', '--name-only', '--diff-filter=D', '-z', 'HEAD']))
-
-          # output/ is deliberately ignored by profile repositories. The governed web
-          # bridge nevertheless requires the canonical action output to persist, so add
-          # this one action directory explicitly instead of broadening repository ignore
-          # policy or serialising unrelated historical output.
           canonical_output = root / 'output' / action_id
           if canonical_output.exists():
               for absolute in canonical_output.rglob('*'):
-                  if absolute.is_file():
-                      changed.add(absolute.resolve().relative_to(repo))
-
+                  if absolute.is_file(): changed.add(absolute.resolve().relative_to(repo))
           files = []
           deleted_paths = []
           for relative_repo in sorted(changed, key=lambda p: p.as_posix()):
               absolute = (repo / relative_repo).resolve()
-              try:
-                  relative_profile = absolute.relative_to(root)
-              except ValueError:
-                  continue
-              if not absolute.is_file():
-                  continue
-              files.append({
-                  'path': relative_profile.as_posix(),
-                  'encoding': 'base64',
-                  'content': base64.b64encode(absolute.read_bytes()).decode('ascii'),
-              })
-
+              try: relative_profile = absolute.relative_to(root)
+              except ValueError: continue
+              if not absolute.is_file(): continue
+              files.append({'path': relative_profile.as_posix(), 'encoding': 'base64', 'content': base64.b64encode(absolute.read_bytes()).decode('ascii')})
           for relative_repo in sorted(deleted, key=lambda p: p.as_posix()):
               absolute = (repo / relative_repo).resolve()
-              try:
-                  relative_profile = absolute.relative_to(root)
-              except ValueError:
-                  continue
+              try: relative_profile = absolute.relative_to(root)
+              except ValueError: continue
               deleted_paths.append(relative_profile.as_posix())
-
-          hrdm_path = root / 'output' / action_id / 'HRDM_result.json'
-          application_path = root / 'output' / action_id / 'application_package.json'
+          output = root / 'output' / action_id
+          hrdm_path = output / 'HRDM_result.json'
+          application_path = output / 'application_package.json'
+          evidence_path = output / 'evidence_use_manifest.json'
           bundle = {
-              'schema_version': '1.0',
-              'action_id': action_id,
-              'profile_repository': os.environ['PROFILE_REPOSITORY'],
+              'schema_version': '1.1', 'action_id': action_id, 'profile_repository': os.environ['PROFILE_REPOSITORY'],
               'generated_at': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),
-              'files': files,
-              'deleted_paths': deleted_paths,
+              'files': files, 'deleted_paths': deleted_paths,
               'hrdm': json.loads(hrdm_path.read_text(encoding='utf-8')),
               'application': json.loads(application_path.read_text(encoding='utf-8')) if application_path.exists() else None,
+              'evidence_use_manifest': json.loads(evidence_path.read_text(encoding='utf-8')),
           }
           out = pathlib.Path('/tmp/careerhub-semantic-result.json')
           out.write_text(json.dumps(bundle, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
-          print(json.dumps({'files': len(files), 'deleted_paths': len(deleted_paths), 'bundle_bytes': out.stat().st_size}, indent=2))
+          print(json.dumps({'files': len(files), 'deleted_paths': len(deleted_paths), 'evidence_sources': bundle['evidence_use_manifest'].get('source_count', 0), 'bundle_bytes': out.stat().st_size}, indent=2))
           PY
 
       - name: Upload result bundle to profile private storage
