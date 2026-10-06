@@ -8,7 +8,7 @@ The canonical journey is:
 
 `Profile → Search → Analyse → Apply → Track`
 
-with `Library` and `Improve my CareerHub` as supporting surfaces.
+with `Library`, `Q&A` and `Improve my CareerHub` as supporting surfaces.
 
 ## Action rule
 
@@ -21,6 +21,16 @@ For every user-visible capability, CHZero must define all four layers:
 
 A surface that only explains a future capability fails this contract.
 
+## Comprehension rule
+
+Action completeness also requires the user to understand what CareerHub is doing.
+
+- Every primary workspace must explain its normal workflow directly below the page heading.
+- Active search or motor work must expose a visible working state rather than relying only on disabled buttons.
+- Motor dispatch feedback must distinguish **not started**, **waiting**, **running**, **completed** and **failed** states in plain language.
+- Internal references such as `ACT-*` are troubleshooting references, not the primary user-facing explanation.
+- The personalised shell must provide a searchable Q&A covering the canonical workflow, evidence boundary, Search Profile, role lanes, Library state, motor activity and application tracking.
+
 ## Canonical action matrix
 
 | Surface | User action | Required controls | Execution path | Result |
@@ -31,6 +41,7 @@ A surface that only explains a future capability fails this contract.
 | Profile | Rebuild from active sources | Request rebuild | `/api/action` → `profile_rebuild` | governed rebuild request |
 | Search | Run search | lane dropdown, session-only need, Run search | `/api/search` | ranked opportunities |
 | Search | Update saved defaults | geographic anchors, remote toggle, engagement types, saved search-only need, Save | `/api/action` → `search_profile_update` | updated Search Profile |
+| Search | Update saved role lanes | lane name and search terms; bucket/priority remain governed | `/api/action` → `search_profile_update` | updated lane sourcing defaults |
 | Search | Inspect role | Open role | external vacancy URL | source vacancy |
 | Search | Continue into analysis | Analyse in CareerHub | query handoff to `/analyse` | prefilled drill form |
 | Analyse | Choose role | saved-role dropdown or manual role fields | client form | drill input |
@@ -53,6 +64,7 @@ A surface that only explains a future capability fails this contract.
 | Library | Request evidence review | Request evidence review | `/api/action` → `library_review` | governed review request |
 | Library | Reload active index | Reload CareerHub Library | `/api/library/reload` | rebuilt active-source index |
 | Library | Delete source | Erase + confirmation | `/api/library` PATCH | source removed |
+| Q&A | Understand a concept or next step | searchable plain-language questions | `/help` client filter | explanation + route back into workflow |
 | Improve | Submit product wish | text, category, context | `/api/wish` | Wish Bank record |
 
 ## Execution modes
@@ -70,7 +82,7 @@ Used when the personalised Vercel site can complete the action directly:
 
 Used when the canonical Python motor must execute the operation:
 
-- saved Search Profile updates
+- saved Search Profile updates, including governed role-lane name/search-term changes
 - HRDM-R role analysis
 - application package generation
 - application status / priority / event updates
@@ -78,10 +90,12 @@ Used when the canonical Python motor must execute the operation:
 
 The personalised site calls `/api/action`. The gateway records the action where Blob storage is available and dispatches `.github/workflows/careerhub-operations.yml` when the profile deployment has its GitHub dispatcher configured.
 
+Motor workflow runs include the `ACT-*` reference in their run name. While a dispatched run is queued or in progress, the personalised hub may poll `/api/action?action_id=<ACT-ID>` to provide a live working indicator. The indicator is supplemental; the action message must still explain the state in plain language.
+
 Required profile-deployment environment variables:
 
 - `CAREERHUB_GITHUB_REPOSITORY` — `owner/repo`
-- `CAREERHUB_GITHUB_TOKEN` — credential allowed to dispatch the profile workflow
+- `CAREERHUB_GITHUB_TOKEN` — credential allowed to dispatch and read the profile workflow
 - optional `CAREERHUB_GITHUB_WORKFLOW` — defaults to `careerhub-operations.yml`
 - optional `CAREERHUB_GITHUB_REF` — defaults to `main`
 
@@ -94,7 +108,7 @@ Action completeness never weakens the evidence policy.
 - Upload does not equal verification.
 - ACTIVE means available for governed use, not automatically true.
 - Review/rebuild requests do not silently mutate the Career Profile.
-- Search-only needs do not become candidate evidence.
+- Search-only needs and role-lane edits do not become candidate evidence.
 - Application generation remains bounded by verified profile evidence.
 
 ## Acceptance gate
