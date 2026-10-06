@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://careerhub.motherpher/schema/profile-shell.schema.json",
+  "title": "CareerHub Profile Shell",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "enabled", "headline", "rooms"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0"},
+    "enabled": {"type": "boolean"},
+    "headline": {"type": "string", "minLength": 1, "maxLength": 180},
+    "intro": {"type": "string", "maxLength": 1000},
+    "rooms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "description", "href"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$"},
+          "kind": {"enum": ["portfolio", "career", "workspace"]},
+          "label": {"type": "string", "minLength": 1, "maxLength": 80},
+          "eyebrow": {"type": "string", "maxLength": 80},
+          "description": {"type": "string", "minLength": 1, "maxLength": 500},
+          "href": {"type": "string", "minLength": 1, "maxLength": 300},
+          "cta": {"type": "string", "maxLength": 80},
+          "features": {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 12,
+            "items": {"type": "string", "maxLength": 80}
+          },
+          "links": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label", "href"],
+              "properties": {
+                "label": {"type": "string", "minLength": 1, "maxLength": 80},
+                "href": {"type": "string", "minLength": 1, "maxLength": 500}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"enabled": {"const": true}}},
+      "then": {"properties": {"rooms": {"minItems": 1}}}
+    }
+  ]
+}

@@ -54,6 +54,10 @@ jobs:
               Path("schemas/source_library.schema.json"),
               Path("schemas/search_session.schema.json"),
               Path("schemas/wish-bank.schema.json"),
+              Path("schemas/personalised-hub.schema.json"),
+              Path("schemas/profile-derivation.schema.json"),
+              Path("schemas/theme-tokens.schema.json"),
+              Path("schemas/profile-shell.schema.json"),
               Path("core/hrdm/hrdm_result.schema.json"),
           ]:
               json.loads(p.read_text(encoding="utf-8"))
@@ -172,7 +176,20 @@ jobs:
             primary: [profile, find, analyse, apply, track, library, home]
           EOF
           cat > "$ROOT/personalisation/theme.tokens.json" <<'EOF'
-          {"schema_version":"1.0","palette":{"background":"#ffffff","foreground":"#111111","muted":"#666666","accent":"#222222","accent_foreground":"#ffffff"}}
+          {
+            "schema_version":"1.0",
+            "typography":{"display":"ui-sans-serif, system-ui, sans-serif","body":"ui-sans-serif, system-ui, sans-serif","scale":"standard"},
+            "shape":{"radius":"soft","border":"quiet"},
+            "surface":{"treatment":"layered","shadow":"subtle"},
+            "palette":{"background":"#FFFFFF","foreground":"#111111","muted":"#666666","accent":"#222222","accent_foreground":"#FFFFFF"},
+            "imagery":{"mode":"mixed","treatment":"natural"}
+          }
+          EOF
+          cat > "$ROOT/personalisation/profile.shell.yaml" <<'EOF'
+          schema_version: "1.0"
+          enabled: false
+          headline: "Fixture Candidate"
+          rooms: []
           EOF
           cat > "$ROOT/personalisation/voice.yaml" <<'EOF'
           schema_version: "1.0"

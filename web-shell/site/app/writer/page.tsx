@@ -1,29 +1,19 @@
-import { loadHubProfile } from '@/lib/profile';
-
-const fallbackLabels: Record<string, string> = {
-  home: 'Home',
-  writer: 'Portfolio',
-  career: 'CareerHub',
-  profile: 'Profile',
-  find: 'Search',
-  analyse: 'Analyse',
-  apply: 'Apply',
-  track: 'Track',
-  library: 'Library'
-};
+import { loadHubProfile, loadProfileShell } from '@/lib/profile';
 
 export default function WriterRoomPage() {
   const hub = loadHubProfile();
-  const room = hub.profile_shell?.rooms?.find((item) => item.id === 'writer');
-  const labels = { ...fallbackLabels, ...(hub.navigation.labels ?? {}) };
+  const shell = loadProfileShell();
+  const rooms = shell?.rooms ?? [];
+  const room = rooms.find((item) => item.id === 'writer');
 
   return (
     <main className="workspace portfolio-room">
       <header className="portfolio-masthead">
         <div className="breadcrumb"><a href="/">{hub.identity.display_name}</a> / {room?.label ?? 'Portfolio'}</div>
         <nav aria-label="Primary" className="nav nav--profile">
-          {hub.navigation.primary.map((item) => (
-            <a href={`/${item === 'home' ? '' : item}`} aria-current={item === 'writer' ? 'page' : undefined} key={item}>{labels[item] ?? item}</a>
+          <a href="/">Home</a>
+          {rooms.map((item) => (
+            <a href={item.href} aria-current={item.id === 'writer' ? 'page' : undefined} key={item.id}>{item.label}</a>
           ))}
         </nav>
         <div className="portfolio-title-block">

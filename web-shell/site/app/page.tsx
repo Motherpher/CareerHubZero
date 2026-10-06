@@ -1,30 +1,13 @@
 import CareerOverview from '@/app/_components/CareerOverview';
-import MotorGuide from '@/app/_components/MotorGuide';
-import { loadSearchProfile } from '@/lib/data';
-import { loadHubProfile } from '@/lib/profile';
-
-const fallbackLabels: Record<string, string> = {
-  home: 'Home',
-  writer: 'Portfolio',
-  career: 'CareerHub',
-  profile: 'Profile',
-  find: 'Search',
-  analyse: 'Analyse',
-  apply: 'Apply',
-  track: 'Track',
-  library: 'Library'
-};
+import { loadHubProfile, loadProfileShell } from '@/lib/profile';
 
 export default function HomePage() {
   const hub = loadHubProfile();
-  const search = loadSearchProfile();
-  const shell = hub.profile_shell;
+  const shell = loadProfileShell();
 
   if (!shell?.enabled) return <CareerOverview />;
 
   const rooms = shell.rooms ?? [];
-  const labels = { ...fallbackLabels, ...(hub.navigation.labels ?? {}) };
-  const lanes = Array.isArray(search?.lanes) ? search.lanes : [];
 
   return (
     <main className={`hub hub--profile hub--${hub.experience.mode} hub--${hub.experience.density}`}>
@@ -35,11 +18,10 @@ export default function HomePage() {
           <p className="lead">{shell.intro ?? 'Choose the workspace you want to enter.'}</p>
         </div>
         <nav aria-label="Primary" className="nav nav--profile">
-          {hub.navigation.primary.map((item) => <a href={`/${item === 'home' ? '' : item}`} key={item}>{labels[item] ?? item}</a>)}
+          <a href="/" aria-current="page">Home</a>
+          {rooms.map((room) => <a href={room.href} key={room.id}>{room.label}</a>)}
         </nav>
       </header>
-
-      <MotorGuide profileName={hub.identity.display_name} lanes={lanes} />
 
       <section className="room-grid" aria-label="Profile rooms">
         {rooms.map((room, index) => (
@@ -52,9 +34,11 @@ export default function HomePage() {
         ))}
       </section>
 
-      <section className="profile-utility" aria-label="Profile-level actions">
-        <div><p className="meta-label">Shared profile layer</p><p>Verified professional evidence and source material sit beneath both rooms without merging their operational state.</p></div>
-        <div className="inline-actions"><a className="button" href="/profile">Career evidence</a><a className="button" href="/find">Search lanes</a><a className="button" href="/library">Source library</a></div>
+      <section className="profile-utility" aria-label="Profile architecture">
+        <div>
+          <p className="meta-label">One profile · separate workspaces</p>
+          <p>The profile supplies verified professional context. Each room owns its own operational state and only receives information through its permitted boundary.</p>
+        </div>
       </section>
     </main>
   );
