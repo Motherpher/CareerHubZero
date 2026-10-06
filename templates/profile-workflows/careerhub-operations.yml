@@ -94,7 +94,7 @@ jobs:
               python .careerhub-zero/scripts/careerhub.py --manifest "$CAREERHUB_MANIFEST" track --action event --issue-number "$(getv issue_number)" --event-type "$(getv event_type)" --event-source "$(getv event_source)" --note "$(getv note)" --date "$(getv date)"
               ;;
             search_profile_update)
-              python .careerhub-zero/scripts/update_search_profile.py --manifest "$CAREERHUB_MANIFEST" --anchors "$(getv anchors)" --remote-allowed "$(getv remote_allowed)" --engagement-types "$(getv engagement_types)" --saved-need "$(getv saved_need)"
+              python .careerhub-zero/scripts/update_search_profile.py --manifest "$CAREERHUB_MANIFEST" --anchors "$(getv anchors)" --remote-allowed "$(getv remote_allowed)" --engagement-types "$(getv engagement_types)" --saved-need "$(getv saved_need)" --lanes-json "$(getv lanes_json)"
               ;;
             profile_review|profile_rebuild|library_review)
               mkdir -p "$CAREERHUB_ROOT/data/review_requests"
