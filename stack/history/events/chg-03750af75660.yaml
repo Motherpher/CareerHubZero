@@ -1,0 +1,44 @@
+schema_version: '1.1'
+event_id: CHG-03750af75660
+recorded_at: '2026-10-07T03:06:13+02:00'
+summary: 'Fleet parity: first-class profile visual hook'
+decision_context: Replace profile-specific managed-runtime patching with a protected
+  profile-owned visual hook so Grace, Weronika and Linus can run the same CHZero shell
+  while keeping profile-owned visual expression outside the managed runtime.
+work_packages:
+- WP40.2
+failure_ids:
+- CI-37555414393
+subsystems:
+- developer_tooling
+- repository_core
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: push
+  base_sha: 2272068af146ffce524f2e59795bc9e40fa2c292
+  head_sha: 03750af75660da9a7445b829fba85052811f8eaf
+  branch: main
+  actor: Hybrismannen
+changes:
+  fingerprint: sha256:46c956ce4fad717fb2c406d11c3052c2da4d12b2df504a2028f33efd139648e6
+  file_count: 2
+  files:
+  - status: M
+    path: scripts/sync_web_shell.py
+    delta_sha256: sha256:ef8f6620531cdded6b4ab0de834b19ae7f85149c6a101cc89ec6a388c38dd2a6
+  - status: M
+    path: web-shell/site/app/layout.tsx
+    delta_sha256: sha256:f5565fa3a71366b9e8a0252ed7e2b2d787f5cc0a6a9e6369da08e0f42c7457d9
+commits:
+- sha: 466ba86bc6fd06abe3eecbd3d8b9bc568c82dbd6
+  authored_at: '2026-10-07T03:05:54+02:00'
+  author: Hybrismannen
+  subject: 'CHZero: add first-class profile-owned visual hook'
+- sha: 03750af75660da9a7445b829fba85052811f8eaf
+  authored_at: '2026-10-07T03:06:13+02:00'
+  author: Hybrismannen
+  subject: 'CHZero: initialise protected profile visual hook during shell sync'
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
