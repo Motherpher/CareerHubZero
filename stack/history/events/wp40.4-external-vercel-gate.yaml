@@ -1,0 +1,43 @@
+schema_version: "1.1"
+event_id: WP40.4-EXTERNAL-VERCEL-GATE
+recorded_at: "2026-10-07T12:23:00+02:00"
+summary: "Record WP40.4 external Vercel billing gate after fleet execution"
+decision_context: >-
+  Reconcile the actual post-merge WP40.4 fleet state without overstating closure.
+  Central implementation is merged and validated; Weronika is READY in production;
+  Linus is merged and build-valid but has no production deployment for the accepted
+  commit; Grace repository validation passes but its rollout merge is held. A direct
+  Vercel deployment request returned HTTP 402 resource_creation_blocked because the
+  team has an overdue balance. The fleet acceptance gate therefore remains open as
+  BLOCKED_EXTERNAL until new deployments can be created and verified READY.
+work_packages:
+  - WP40.4
+failure_ids:
+  - FAIL-025
+subsystems:
+  - fleet_acceptance
+  - deployment_gate
+  - vercel_billing
+  - release_audit
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: ccb2f8cf22fcf70bbb0d54351f148ccb40257fbb
+  head_sha: 32ece4b24807226ffc98ed451222a55fb02c909a
+  branch: wp40-4/external-gate-block
+  actor: Hybrismannen
+  pull_request:
+    number: 55
+    title: "WP40.4 — Record external Vercel deployment gate"
+    url: https://github.com/Motherpher/CareerHubZero/pull/55
+changes:
+  fingerprint: sha256:0f1a81a579744a3d7a6594ae7089e97c313390d4dea7f16434d197e5767cffa9
+  file_count: 1
+  files:
+    - status: M
+      path: docs/history/WP40.4_FLEET_ACCEPTANCE_LOCK.md
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
