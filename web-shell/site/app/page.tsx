@@ -4,6 +4,7 @@ import { loadHubProfile, loadProfileShell } from '@/lib/profile';
 export default function HomePage() {
   const hub = loadHubProfile();
   const shell = loadProfileShell();
+  const sv = (hub.identity.language ?? 'en').toLowerCase().startsWith('sv');
 
   if (!shell?.enabled) return <CareerOverview />;
 
@@ -20,6 +21,7 @@ export default function HomePage() {
         <nav aria-label="Primary" className="nav nav--profile">
           <a href="/" aria-current="page">Home</a>
           {rooms.map((room) => <a href={room.href} key={room.id}>{room.label}</a>)}
+          <a href="/help">{sv ? 'Hjälp' : 'Help'}</a>
         </nav>
       </header>
 
@@ -39,6 +41,7 @@ export default function HomePage() {
           <p className="meta-label">One profile · separate workspaces</p>
           <p>The profile supplies verified professional context. Each room owns its own operational state and only receives information through its permitted boundary.</p>
         </div>
+        <a className="text-link" href="/help">{sv ? 'Öppna hjälp och vanliga frågor' : 'Open Help and common questions'}</a>
       </section>
     </main>
   );

@@ -245,8 +245,13 @@ operational_product_line:
         change_ids: [CHZ-CHG-029A-019, CHZ-CHG-029A-020, CHZ-CHG-029A-021, CHZ-CHG-029A-022]
       WP40.4:
         name: Help, Fleet Hardening, Release Audit & WP40 Lock
-        status: PENDING
+        issue: 53
+        status: IN_PROGRESS
         gate: FLEET_ACCEPTANCE_LOCK
+        change_ids: [CHZ-CHG-029A-023, CHZ-CHG-029A-024, CHZ-CHG-029A-025, CHZ-CHG-029A-026]
+        account_free_protected_access: PASS_NON_EXPIRING_SHARE_LINKS
+        public_exposure: false
+        fleet_rollout_status: PENDING_CENTRAL_MERGE
 
 companion_non_wp_items:
   issue_7:

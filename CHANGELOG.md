@@ -37,6 +37,10 @@ Every release section and every individual change entry has a permanent identifi
 - **`CHZ-CHG-029A-020`** Add profile-scoped persistent vacancy dismiss/restore decisions so rejected search results stay hidden across reloads and repeated searches until explicitly restored.
 - **`CHZ-CHG-029A-021`** Evolve Search run sessions to schema 1.1 with filter-sensitive comparison keys, preserved `NEW / SEEN / CHANGED` semantics, separate source-failure handling and checked/matched/new/changed/dismissed completion counts.
 - **`CHZ-CHG-029A-022`** Rebuild the Search workspace around ordinary job-site controls while preserving the direct real-vacancy handoff into the existing durable Job Analysis pipeline.
+- **`CHZ-CHG-029A-023`** Add a centrally managed bilingual searchable Help/Q&A workspace covering Profile, Search, Job Analysis, Apply, Track, Library, statuses, evidence rules, errors and profile-scoped privacy in normal-user language.
+- **`CHZ-CHG-029A-024`** Add a persistent top-level Help entry and contextual Help anchors from the shared workspace header while preserving the profile-owned Home boundary for fleet rollout.
+- **`CHZ-CHG-029A-025`** Harden WP40.4 fleet acceptance around the canonical three-profile registry, production fail-closed repository binding, managed-shell distribution and explicit regression checks for Help and user-facing product language.
+- **`CHZ-CHG-029A-026`** Preserve Vercel Authentication on Linus, Weronika and Grace while rotating their expiring share tokens to non-expiring protected share links, providing durable account-free production access without making the profile sites public.
 
 ## 0.2.7-alpha — 2026-09-24
 **Release ID:** `CHZ-REL-027A`  

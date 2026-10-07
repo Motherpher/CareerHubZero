@@ -1,0 +1,63 @@
+schema_version: "1.1"
+event_id: WP40.4-HELP-FLEET
+recorded_at: "2026-10-07T10:43:00+02:00"
+summary: "WP40.4 — Help, Fleet Hardening, Release Audit & WP40 Lock"
+decision_context: >-
+  Add a centrally managed user-facing Help layer, preserve the existing profile-owned
+  Home boundary, verify the canonical three-profile fleet and fail-closed production
+  binding, provide durable account-free protected Vercel access without making profile
+  workspaces publicly accessible, and prevent the central CareerHubZero source body from
+  being deployed as if it were a fourth profiled CareerHub. The central Vercel source-body
+  project therefore uses an ignored-build policy; real web deployments belong only to the
+  three profiled repositories after profile-owned material has been materialized.
+work_packages:
+  - WP40.4
+failure_ids:
+  - FAIL-025
+subsystems:
+  - help_workspace
+  - product_language
+  - managed_shell_distribution
+  - fleet_registry
+  - deployment_binding
+  - protected_access
+  - central_source_deployment_policy
+  - release_audit
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 30d914677b32f1e8cb36fc56ece07b88c442cce5
+  head_sha: 0f72b1a84c6c84b16995a360cb097f1650b6cc24
+  branch: wp40-4/help-fleet-release-lock
+  actor: Hybrismannen
+  pull_request:
+    number: 54
+    title: "WP40.4 — Help, Fleet Hardening & Release Lock"
+    url: https://github.com/Motherpher/CareerHubZero/pull/54
+changes:
+  fingerprint: sha256:e1440da4acb0e3bdeed2ed0a17f6e901d74537391a3f9b847b54714ff6794c82
+  file_count: 9
+  files:
+    - status: M
+      path: CHANGELOG.md
+    - status: A
+      path: docs/history/WP40.4_FLEET_ACCEPTANCE_LOCK.md
+    - status: M
+      path: stack/history/wp-registry.yaml
+    - status: A
+      path: tests/test_wp40_4_contract.py
+    - status: M
+      path: web-shell/site/app/_components/WorkspaceHeader.tsx
+    - status: A
+      path: web-shell/site/app/help/HelpClient.tsx
+    - status: A
+      path: web-shell/site/app/help/help.module.css
+    - status: A
+      path: web-shell/site/app/help/page.tsx
+    - status: M
+      path: web-shell/site/app/page.tsx
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
