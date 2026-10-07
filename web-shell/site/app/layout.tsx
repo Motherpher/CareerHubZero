@@ -6,6 +6,7 @@ import './visual-language.css';
 import './actions.css';
 import './profile-shell.css';
 import './motor.css';
+import '../personal/profile.css';
 
 export function generateMetadata(): Metadata {
   const hub = loadHubProfile();
