@@ -1,22 +1,51 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://careerhub.motherpher/schema/search_session.schema.json",
-  "title": "CareerHub Search Session",
+  "title": "CareerHub Search Run Session",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "profile_id", "session_id", "base_search_profile", "overrides", "effective_search", "persistence"],
+  "required": ["schema_version", "run_id", "profile_id", "comparison_key", "created_at", "lane", "query_plan", "filters", "source", "source_health", "result_count", "results"],
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "1.1"},
+    "run_id": {"type": "string", "minLength": 1},
     "profile_id": {"type": "string", "minLength": 1},
-    "session_id": {"type": "string", "minLength": 1},
-    "base_search_profile": {"type": "object"},
-    "overrides": {"type": "object"},
-    "effective_search": {"type": "object"},
-    "persistence": {
-      "type": "string",
-      "enum": ["SESSION_ONLY", "SAVE_TO_PROFILE_PENDING", "SAVED_TO_PROFILE"]
+    "comparison_key": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "lane": {"type": "string", "minLength": 1},
+    "query_plan": {"type": "array", "items": {"type": "string"}},
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jobTypes", "workModes", "publishedFrom", "publishedTo", "deadlineFrom", "deadlineTo", "publishedPresetDays"],
+      "properties": {
+        "jobTypes": {"type": "array", "uniqueItems": true, "items": {"enum": ["permanent", "temporary", "fulltime", "parttime", "consulting"]}},
+        "workModes": {"type": "array", "uniqueItems": true, "items": {"enum": ["onsite", "hybrid", "remote"]}},
+        "publishedFrom": {"type": "string"},
+        "publishedTo": {"type": "string"},
+        "deadlineFrom": {"type": "string"},
+        "deadlineTo": {"type": "string"},
+        "publishedPresetDays": {"type": ["integer", "null"], "enum": [7, 30, 60, 90, null]}
+      }
     },
-    "created_at": {"type": ["string", "null"], "format": "date-time"},
-    "completed_at": {"type": ["string", "null"], "format": "date-time"}
+    "source": {"type": "string", "minLength": 1},
+    "source_health": {"enum": ["HEALTHY", "DEGRADED"]},
+    "result_count": {"type": "integer", "minimum": 0},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["identityKey", "contentHash", "title", "company", "location", "url", "deadline"],
+        "properties": {
+          "identityKey": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "contentHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "title": {"type": "string"},
+          "company": {"type": "string"},
+          "location": {"type": "string"},
+          "url": {"type": "string"},
+          "deadline": {"type": "string"}
+        }
+      }
+    }
   }
 }
