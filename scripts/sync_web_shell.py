@@ -2,7 +2,9 @@
 """Copy the canonical CareerHub web shell and operations bridge into a profile repository.
 
 Only centrally managed paths are touched. Person-owned personalisation paths are never
-removed or overwritten by this script.
+removed or overwritten by this script. A protected profile CSS hook is initialised once
+when missing so every profile can attach its own visual expression without patching
+managed runtime files.
 """
 
 from __future__ import annotations
@@ -61,6 +63,17 @@ def find_repo_root(profile_root: Path) -> Path:
     return profile_root
 
 
+def ensure_profile_visual_hook(personal_components: Path) -> None:
+    """Create the protected profile stylesheet once, never overwrite it afterwards."""
+    personal_components.mkdir(parents=True, exist_ok=True)
+    hook = personal_components / "profile.css"
+    if not hook.exists():
+        hook.write_text(
+            "/* Profile-owned CareerHub visual layer. Preserved across CHZero shell syncs. */\n",
+            encoding="utf-8",
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("profile_repo", help="Path to checked-out personalised CareerHub profile root")
@@ -74,6 +87,10 @@ def main() -> int:
 
     spec = json.loads(MANIFEST.read_text())
     managed_paths = spec["managed_paths"]
+
+    # Initialise the first-class protected visual hook before integrity hashes are taken.
+    # This is a one-time bootstrap only; existing profile-owned CSS is never changed.
+    ensure_profile_visual_hook(personal_components)
 
     before = {
         "personalisation": digest_tree(personalisation),
