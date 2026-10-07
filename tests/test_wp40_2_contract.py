@@ -21,11 +21,13 @@ class WP402ContractTests(unittest.TestCase):
         self.assertIn("state: 'COMPLETED'", text)
 
     def test_semantic_workflow_emits_evidence_use_manifest(self) -> None:
-        text = (ROOT / ".github/workflows/careerhub-semantic.yml").read_text(encoding="utf-8")
-        self.assertIn("evidence_use_manifest.json", text)
-        self.assertIn("library_evidence", text)
-        self.assertIn("source_id", text)
-        self.assertIn("sha256", text)
+        workflow = (ROOT / ".github/workflows/careerhub-semantic.yml").read_text(encoding="utf-8")
+        adapter = (ROOT / "scripts/web_analysis.py").read_text(encoding="utf-8")
+        self.assertIn("evidence_use_manifest.json", workflow)
+        self.assertIn("library_evidence", workflow)
+        self.assertIn("source_id", workflow)
+        self.assertIn('"hash"', adapter)
+        self.assertIn("source_hashes", adapter)
 
     def test_normal_analysis_ui_uses_product_language(self) -> None:
         paths = [
