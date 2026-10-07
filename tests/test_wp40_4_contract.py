@@ -45,7 +45,7 @@ class WP404ContractTests(unittest.TestCase):
 
     def test_fleet_registry_has_exact_three_active_profile_bindings(self) -> None:
         registry = yaml.safe_load((ROOT / "stack/registry.yaml").read_text(encoding="utf-8"))
-        profiles = registry["profiles"]
+        profiles = {item["profile_id"]: item for item in registry["profiles"]}
         self.assertEqual(set(profiles), {"linus-fast", "weronika-perez-borjas", "grace"})
         expected = {
             "linus-fast": "motherpher/careerhub-linusf",
@@ -54,22 +54,21 @@ class WP404ContractTests(unittest.TestCase):
         }
         for profile_id, repository in expected.items():
             self.assertEqual(profiles[profile_id]["repository"].lower(), repository)
-            self.assertTrue(profiles[profile_id]["active"])
-            self.assertEqual(profiles[profile_id]["engine_mode"], "central")
+            self.assertEqual(profiles[profile_id]["status"], "active")
+            self.assertFalse(profiles[profile_id]["migration"]["legacy_motor_present"])
 
     def test_managed_shell_distribution_includes_help_route(self) -> None:
-        manifest = yaml.safe_load((ROOT / "web-shell/site/.careerhub-managed.json").read_text(encoding="utf-8")) if False else None
         sync = self.text("scripts/sync_web_shell.py")
         managed = self.text("web-shell/site/.careerhub-managed.json")
         self.assertIn('"app"', managed)
-        self.assertIn("copytree(source, destination)", sync)
+        self.assertIn("shutil.copytree(src, dst)", sync)
         self.assertTrue((ROOT / "web-shell/site/app/help/page.tsx").exists())
         self.assertTrue((ROOT / "web-shell/site/app/help/HelpClient.tsx").exists())
 
     def test_production_profile_binding_remains_fail_closed(self) -> None:
         context = self.text("web-shell/site/lib/profile-context.ts")
-        self.assertIn("Production runtime repository identity is unavailable", context)
-        self.assertIn("Production deployment/profile mismatch", context)
+        self.assertIn("CareerHub production profile is missing its repository binding", context)
+        self.assertIn("CareerHub profile/repository mismatch", context)
         self.assertIn("VERCEL_GIT_REPO_OWNER", context)
         self.assertIn("VERCEL_GIT_REPO_SLUG", context)
 
