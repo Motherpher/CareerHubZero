@@ -232,7 +232,8 @@ operational_product_line:
       WP40.2:
         name: Durable Library, Evidence Pipeline & Background Analysis
         issue: 49
-        status: IN_PROGRESS
+        pr: 50
+        status: COMPLETE
         gate: DURABLE_PROCESS_LOCK
         change_ids: [CHZ-CHG-029A-015, CHZ-CHG-029A-016, CHZ-CHG-029A-017, CHZ-CHG-029A-018]
       WP40.3:
