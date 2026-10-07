@@ -23,7 +23,7 @@ source:
   repository: Motherpher/CareerHubZero
   event_name: pull_request
   base_sha: 8bc5042751f41713c1048a77c7b174e1b6138511
-  head_sha: pending
+  head_sha: 64496f2c4df527d1882b944bf95f53f30d49018e
   branch: wp40-3/search-workspace-job-decision
   actor: Hybrismannen
   pull_request:
@@ -31,9 +31,20 @@ source:
     title: "WP40.3 — Search Workspace & Job Decision Flow"
     url: https://github.com/Motherpher/CareerHubZero/pull/52
 changes:
-  fingerprint: pending
-  file_count: 0
-  files: []
+  fingerprint: sha256:790647f0f8ef2f05b55216b9a43bf45f5f6143ffe0f6e903711d93c158a05774
+  file_count: 11
+  files:
+    - CHANGELOG.md
+    - docs/history/WP40.3_SEARCH_WORKFLOW_LOCK.md
+    - schemas/search_session.schema.json
+    - stack/history/wp-registry.yaml
+    - tests/test_action_completeness.py
+    - tests/test_wp40_3_contract.py
+    - web-shell/site/app/api/search/dismiss/route.ts
+    - web-shell/site/app/api/search/route.ts
+    - web-shell/site/app/find/SearchRunner.tsx
+    - web-shell/site/app/motor.css
+    - web-shell/site/lib/search-workspace.ts
 commits: []
 provenance_contract:
   source_derived: true
