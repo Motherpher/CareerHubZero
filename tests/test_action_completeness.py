@@ -38,9 +38,10 @@ class ActionCompletenessTests(unittest.TestCase):
             "Job URL",
             "Paste job text",
             "Search / application lane",
-            "Hybridianesque is evaluated automatically",
-            "Run HRDM-R and prepare application",
+            "Analyse job opening",
+            "Job analysis",
             "/api/action/status",
+            "2–5 minutes",
         )
         self.assert_file_contains(
             "web-shell/site/app/analyse/HrdmReport.tsx",
@@ -67,15 +68,17 @@ class ActionCompletenessTests(unittest.TestCase):
         self.assert_file_contains(
             "web-shell/site/app/library/LibraryClient.tsx",
             "Document class",
-            "Initial state",
-            "Request evidence review",
-            "Reload CareerHub Library",
+            "After successful indexing",
+            "ACTIVE — allow in Job Analysis",
+            "Rebuild ACTIVE evidence index",
             "Erase",
         )
         self.assert_file_contains(
             "web-shell/site/app/api/library/route.ts",
             "document_class",
             "initial_state",
+            "INDEXED",
+            "ACTIVE",
         )
 
     def test_profile_has_review_and_rebuild_controls(self):
@@ -100,8 +103,9 @@ class ActionCompletenessTests(unittest.TestCase):
             "subject: { type: 'app' }",
             "careerhub-semantic.yml",
             "issueSignedToken",
-            "semantic-results",
+            "semanticResultPrefix",
             "central-semantic-motor",
+            "evidence_use_manifest",
         )
         self.assert_file_contains(
             "web-shell/site/package.json",
@@ -128,8 +132,9 @@ class ActionCompletenessTests(unittest.TestCase):
         self.assert_file_contains(
             ".github/workflows/careerhub-semantic.yml",
             "Verify central semantic dependency",
-            "Execute canonical HRDM-R",
-            "Semantic HRDM execution verified",
+            "Execute canonical Job Analysis",
+            "Semantic Job Analysis verified",
+            "evidence_use_manifest.json",
             "Upload result bundle to profile private storage",
             "canonical_output",
             "root / 'output' / action_id",
