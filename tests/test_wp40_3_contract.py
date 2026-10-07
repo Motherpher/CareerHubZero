@@ -34,7 +34,8 @@ class WP403ContractTests(unittest.TestCase):
     def test_dismissal_api_is_profile_scoped_and_reversible(self) -> None:
         text = self.text("web-shell/site/app/api/search/dismiss/route.ts")
         self.assertIn("resolveRuntimeProfileContext", text)
-        self.assertIn("dismissalStatePath(context.profileId)", text)
+        self.assertIn("dismissalStatePath(profileId)", text)
+        self.assertIn("readState(context.profileId)", text)
         self.assertIn("export async function POST", text)
         self.assertIn("export async function DELETE", text)
         self.assertIn("restored: true", text)
