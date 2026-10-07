@@ -33,6 +33,10 @@ Every release section and every individual change entry has a permanent identifi
 - **`CHZ-CHG-029A-016`** Add server-side document extraction/indexing and analysis evidence-use manifests so only successfully indexed ACTIVE profile-owned Library sources can enter a job analysis.
 - **`CHZ-CHG-029A-017`** Make Job Analysis navigation/reload-safe through a durable action record, stable `/analyse/<action-id>` result address and global background-process tray while preserving repository read-back before `COMPLETED`.
 - **`CHZ-CHG-029A-018`** Replace normal-user HRDM-R/Hybridianesque execution language with product language (`Analyse job opening` / `Job analysis`) and expose the normal 2–5 minute report window.
+- **`CHZ-CHG-029A-019`** Establish WP40.3 profile-scoped persistent Search workspace filters for job type, work mode, published date and application deadline, including 1-week/1-month/2-month/3-month presets and a bounded default deadline horizon.
+- **`CHZ-CHG-029A-020`** Add profile-scoped persistent vacancy dismiss/restore decisions so rejected search results stay hidden across reloads and repeated searches until explicitly restored.
+- **`CHZ-CHG-029A-021`** Evolve Search run sessions to schema 1.1 with filter-sensitive comparison keys, preserved `NEW / SEEN / CHANGED` semantics, separate source-failure handling and checked/matched/new/changed/dismissed completion counts.
+- **`CHZ-CHG-029A-022`** Rebuild the Search workspace around ordinary job-site controls while preserving the direct real-vacancy handoff into the existing durable Job Analysis pipeline.
 
 ## 0.2.7-alpha — 2026-09-24
 **Release ID:** `CHZ-REL-027A`  
