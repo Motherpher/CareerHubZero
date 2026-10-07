@@ -14,9 +14,9 @@ class ActionCompletenessTests(unittest.TestCase):
             self.assertIn(needle, text, f"{relative} is missing required action marker: {needle}")
 
     def test_search_is_executable_and_persistable(self):
-        self.assert_file_contains("web-shell/site/app/find/SearchRunner.tsx", "Run search", "Analyse in CareerHub")
+        self.assert_file_contains("web-shell/site/app/find/SearchRunner.tsx", "Search jobs", "Analyse job", "/api/search/dismiss")
         self.assert_file_contains("web-shell/site/app/find/SearchProfileEditor.tsx", "Save Search Profile defaults", "search_profile_update")
-        self.assert_file_contains("web-shell/site/app/api/search/route.ts", "Platsbanken", "search-sessions", "NEW", "CHANGED")
+        self.assert_file_contains("web-shell/site/app/api/search/route.ts", "Platsbanken", "search-sessions", "NEW", "CHANGED", "filters")
 
     def test_analyse_has_complete_drill_controls(self):
         self.assert_file_contains(

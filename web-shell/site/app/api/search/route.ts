@@ -2,7 +2,18 @@ import { createHash, randomUUID } from 'node:crypto';
 import { get, list, put } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 import { loadSearchProfile } from '@/lib/data';
-import { loadCareerHubManifest } from '@/lib/manifest';
+import { resolveRuntimeProfileContext } from '@/lib/profile-context';
+import {
+  DismissalState,
+  EMPTY_FILTERS,
+  SearchFilters,
+  SearchWorkspaceState,
+  dismissalStatePath,
+  inferWorkMode,
+  matchesFilters,
+  normalizeFilters,
+  searchStatePath,
+} from '@/lib/search-workspace';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,22 +23,25 @@ type Novelty = 'NEW' | 'SEEN' | 'CHANGED' | 'UNKNOWN';
 type Job = {
   id: string; title: string; company: string; location: string; published: string; deadline: string;
   url: string; description: string; matchedQuery: string; laneId: string; laneName: string; laneBucket: string; score: number;
-  identityKey?: string; contentHash?: string; novelty?: Novelty;
+  jobType: string; workMode: 'onsite' | 'hybrid' | 'remote'; identityKey?: string; contentHash?: string; novelty?: Novelty;
 };
-
 type StoredJob = { identityKey: string; contentHash: string; title: string; company: string; location: string; url: string; deadline: string };
 type SearchSession = {
-  schema_version: '1.0'; run_id: string; profile_id: string; comparison_key: string; created_at: string;
-  lane: string; query_plan: string[]; source: string; source_health: string; result_count: number; results: StoredJob[];
+  schema_version: '1.1'; run_id: string; profile_id: string; comparison_key: string; created_at: string;
+  lane: string; query_plan: string[]; filters: SearchFilters; source: string; source_health: string; result_count: number; results: StoredJob[];
 };
 
 function clean(value: unknown): string {
   return typeof value === 'string' ? value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
 }
+function taxonomyLabel(value: unknown): string {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return '';
+  return clean((value as Record<string, unknown>).label);
+}
 function sha(value: string): string { return createHash('sha256').update(value).digest('hex'); }
 function queryTerms(query: string): string[] { return query.toLowerCase().match(/[\p{L}\p{N}]+/gu)?.filter((word) => word.length > 2) ?? []; }
 function identityKey(job: Job): string { return sha(job.url || `${job.company}|${job.title}|${job.location}`.toLowerCase()); }
-function contentHash(job: Job): string { return sha([job.title, job.company, job.location, job.deadline, job.published, job.url].join('|')); }
+function contentHash(job: Job): string { return sha([job.title, job.company, job.location, job.deadline, job.published, job.url, job.jobType, job.workMode].join('|')); }
 
 function scoreJob(job: Omit<Job, 'score'>, lane: Lane, anchors: string[], remoteAllowed: boolean): number {
   const title = job.title.toLowerCase();
@@ -36,7 +50,7 @@ function scoreJob(job: Omit<Job, 'score'>, lane: Lane, anchors: string[], remote
   const titleHits = terms.filter((term) => title.includes(term)).length;
   const bodyHits = terms.filter((term) => body.includes(term)).length;
   const geographic = anchors.some((anchor) => job.location.toLowerCase().includes(anchor.toLowerCase())) ? 8 : 0;
-  const remote = remoteAllowed && /remote|distans|hybrid/i.test(`${job.location} ${job.description}`) ? 4 : 0;
+  const remote = remoteAllowed && job.workMode !== 'onsite' ? 4 : 0;
   const priority = Math.max(0, 4 - Number(lane.priority || 3)) * 10;
   return Math.min(100, priority + titleHits * 12 + Math.min(bodyHits, 8) * 2 + geographic + remote);
 }
@@ -55,9 +69,28 @@ async function searchPlatsbanken(query: string, lane: Lane, anchors: string[], r
     const title = clean(hit?.headline || hit?.occupation?.label); const company = clean(employer?.name || employer?.workplace);
     const location = [address?.municipality, address?.region].filter(Boolean).join(', ');
     const targetUrl = hit?.webpage_url || application?.url || (hit?.id ? `https://arbetsformedlingen.se/platsbanken/annonser/${hit.id}` : '');
-    const base = { id: String(hit?.id || `${company}-${title}-${location}`), title, company, location, published: String(hit?.publication_date || ''), deadline: String(hit?.last_publication_date || ''), url: targetUrl, description: clean(description?.text_formatted || description?.text), matchedQuery: query, laneId: lane.lane_id, laneName: lane.name, laneBucket: lane.bucket };
+    const descriptionText = clean(description?.text_formatted || description?.text);
+    const employmentType = taxonomyLabel(hit?.employment_type);
+    const workingHours = taxonomyLabel(hit?.working_hours_type ?? hit?.workinghourstype);
+    const conditions = clean(description?.conditions || hit?.conditions);
+    const jobType = [employmentType, workingHours].filter(Boolean).join(' · ') || conditions || 'Not specified';
+    const workMode = inferWorkMode(location, `${descriptionText} ${conditions}`);
+    const base = {
+      id: String(hit?.id || `${company}-${title}-${location}`), title, company, location,
+      published: String(hit?.publication_date || ''), deadline: String(hit?.application_deadline || hit?.last_publication_date || ''),
+      url: targetUrl, description: descriptionText, matchedQuery: query, laneId: lane.lane_id, laneName: lane.name, laneBucket: lane.bucket,
+      jobType, workMode,
+    };
     return { ...base, score: scoreJob(base, lane, anchors, remoteAllowed) };
   });
+}
+
+async function readJson<T>(pathname: string): Promise<T | null> {
+  try {
+    const result = await get(pathname, { access: 'private' });
+    if (!result || result.statusCode !== 200) return null;
+    return JSON.parse(await new Response(result.stream).text()) as T;
+  } catch { return null; }
 }
 
 async function readPreviousSession(prefix: string): Promise<SearchSession | null> {
@@ -65,21 +98,34 @@ async function readPreviousSession(prefix: string): Promise<SearchSession | null
     const found = await list({ prefix, limit: 100 });
     const latest = [...found.blobs].sort((a, b) => String(b.uploadedAt).localeCompare(String(a.uploadedAt)))[0];
     if (!latest) return null;
-    const result = await get(latest.url, { access: 'private' });
-    if (!result || result.statusCode !== 200) return null;
-    return JSON.parse(await new Response(result.stream).text()) as SearchSession;
-  } catch {
-    return null;
-  }
+    return readJson<SearchSession>(latest.pathname);
+  } catch { return null; }
+}
+
+export async function GET() {
+  const context = resolveRuntimeProfileContext();
+  const storageAvailable = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  if (!storageAvailable) return NextResponse.json({ profileId: context.profileId, historyAvailable: false, filters: EMPTY_FILTERS, dismissedCount: 0 });
+  const [workspace, dismissals] = await Promise.all([
+    readJson<SearchWorkspaceState>(searchStatePath(context.profileId)),
+    readJson<DismissalState>(dismissalStatePath(context.profileId)),
+  ]);
+  return NextResponse.json({
+    profileId: context.profileId,
+    historyAvailable: true,
+    filters: workspace?.filters ?? EMPTY_FILTERS,
+    dismissedCount: dismissals?.jobs?.length ?? 0,
+  });
 }
 
 export async function POST(request: NextRequest) {
   const search = loadSearchProfile();
   if (!search) return NextResponse.json({ error: 'Search Profile could not be loaded.' }, { status: 500 });
-  const manifest = loadCareerHubManifest();
+  const context = resolveRuntimeProfileContext();
   const body = await request.json().catch(() => ({}));
   const requestedLane = typeof body?.lane === 'string' ? body.lane : 'all';
   const overlay = typeof body?.overlay === 'string' ? body.overlay.trim() : '';
+  const filters = normalizeFilters(body?.filters);
   const limit = Math.max(1, Math.min(Number(body?.limit) || 60, 100));
   const lanes: Lane[] = Array.isArray(search?.lanes) ? search.lanes : [];
   const selected = requestedLane === 'all' ? lanes : lanes.filter((lane) => lane.lane_id === requestedLane);
@@ -90,8 +136,8 @@ export async function POST(request: NextRequest) {
   const queryPlan = selected.flatMap((lane) => (lane.queries ?? []).slice(0, requestedLane === 'all' ? 2 : 6).map((raw) => ({ lane, query: overlay ? `${raw} ${overlay}` : raw }))).slice(0, 18);
   const startedAt = new Date().toISOString();
   const runId = `SEARCH-${startedAt.replace(/[-:.TZ]/g, '').slice(0, 14)}-${randomUUID().slice(0, 8)}`;
-  const comparisonKey = sha(JSON.stringify({ requestedLane, queries: queryPlan.map((x) => x.query), anchors, remoteAllowed })).slice(0, 20);
-  const prefix = `search-sessions/${manifest.profile_id}/${comparisonKey}/`;
+  const comparisonKey = sha(JSON.stringify({ requestedLane, queries: queryPlan.map((x) => x.query), anchors, remoteAllowed, filters })).slice(0, 20);
+  const sessionPrefix = `search-sessions/${encodeURIComponent(context.profileId)}/${comparisonKey}/`;
 
   const settled = await Promise.allSettled(queryPlan.map(({ query, lane }) => searchPlatsbanken(query, lane, anchors, remoteAllowed)));
   const failures = settled.filter((item) => item.status === 'rejected');
@@ -103,42 +149,58 @@ export async function POST(request: NextRequest) {
   const deduped = new Map<string, Job>();
   for (const job of jobs) {
     const key = job.url || `${job.company}|${job.title}|${job.location}`.toLowerCase();
-    const current = deduped.get(key);
-    if (!current || job.score > current.score) deduped.set(key, job);
+    const existing = deduped.get(key);
+    if (!existing || job.score > existing.score) deduped.set(key, job);
   }
-  const current = [...deduped.values()].filter((job) => job.title && job.url).sort((a, b) => b.score - a.score || b.published.localeCompare(a.published)).slice(0, limit);
-  current.forEach((job) => { job.identityKey = identityKey(job); job.contentHash = contentHash(job); });
+  const checkedCount = deduped.size;
+  const filtered = [...deduped.values()].filter((job) => job.title && job.url && matchesFilters(job, filters)).sort((a, b) => b.score - a.score || b.published.localeCompare(a.published)).slice(0, limit);
+  filtered.forEach((job) => { job.identityKey = identityKey(job); job.contentHash = contentHash(job); });
 
   const storageAvailable = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-  const previous = storageAvailable ? await readPreviousSession(prefix) : null;
+  const [previous, dismissalState] = storageAvailable ? await Promise.all([
+    readPreviousSession(sessionPrefix),
+    readJson<DismissalState>(dismissalStatePath(context.profileId)),
+  ]) : [null, null];
   const previousMap = new Map((previous?.results ?? []).map((job) => [job.identityKey, job]));
-  for (const job of current) {
+  for (const job of filtered) {
     if (!storageAvailable) job.novelty = 'UNKNOWN';
     else if (!previousMap.has(job.identityKey!)) job.novelty = 'NEW';
     else if (previousMap.get(job.identityKey!)?.contentHash !== job.contentHash) job.novelty = 'CHANGED';
     else job.novelty = 'SEEN';
   }
 
-  const nowKeys = new Set(current.map((job) => job.identityKey));
+  const dismissedKeys = new Set((dismissalState?.jobs ?? []).map((job) => job.identityKey));
+  const visibleCurrent = filtered.filter((job) => !dismissedKeys.has(job.identityKey!));
+  const dismissedCurrent = filtered.filter((job) => dismissedKeys.has(job.identityKey!));
+  const nowKeys = new Set(filtered.map((job) => job.identityKey));
   const removed = previous?.results.filter((job) => !nowKeys.has(job.identityKey)) ?? [];
   const sourceHealth = failures.length ? 'DEGRADED' : 'HEALTHY';
   let persisted = false;
+
   if (storageAvailable) {
     const session: SearchSession = {
-      schema_version: '1.0', run_id: runId, profile_id: manifest.profile_id, comparison_key: comparisonKey, created_at: new Date().toISOString(), lane: requestedLane,
-      query_plan: queryPlan.map((x) => x.query), source: 'Arbetsförmedlingen / Platsbanken', source_health: sourceHealth, result_count: current.length,
-      results: current.map((job) => ({ identityKey: job.identityKey!, contentHash: job.contentHash!, title: job.title, company: job.company, location: job.location, url: job.url, deadline: job.deadline })),
+      schema_version: '1.1', run_id: runId, profile_id: context.profileId, comparison_key: comparisonKey, created_at: new Date().toISOString(), lane: requestedLane,
+      query_plan: queryPlan.map((x) => x.query), filters, source: 'Arbetsförmedlingen / Platsbanken', source_health: sourceHealth, result_count: filtered.length,
+      results: filtered.map((job) => ({ identityKey: job.identityKey!, contentHash: job.contentHash!, title: job.title, company: job.company, location: job.location, url: job.url, deadline: job.deadline })),
     };
+    const workspace: SearchWorkspaceState = { schema_version: '1.0', profile_id: context.profileId, updated_at: new Date().toISOString(), filters };
     try {
-      await put(`${prefix}${runId}.json`, JSON.stringify(session, null, 2), { access: 'private', addRandomSuffix: false, contentType: 'application/json' });
+      await Promise.all([
+        put(`${sessionPrefix}${runId}.json`, JSON.stringify(session, null, 2), { access: 'private', addRandomSuffix: false, contentType: 'application/json' }),
+        put(searchStatePath(context.profileId), JSON.stringify(workspace, null, 2), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' }),
+      ]);
       persisted = true;
-    } catch {
-      persisted = false;
-    }
+    } catch { persisted = false; }
   }
 
-  const results = current.map(({ description: _description, contentHash: _contentHash, ...job }) => job);
+  const publicJob = ({ description: _description, contentHash: _contentHash, ...job }: Job) => job;
+  const results = visibleCurrent.map(publicJob);
+  const dismissedResults = dismissedCurrent.map(publicJob);
   const counts = {
+    checked: checkedCount,
+    matched: filtered.length,
+    visible: results.length,
+    dismissed: dismissedResults.length,
     new: results.filter((job) => job.novelty === 'NEW').length,
     seen: results.filter((job) => job.novelty === 'SEEN').length,
     changed: results.filter((job) => job.novelty === 'CHANGED').length,
@@ -149,7 +211,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     runId, currentSearchAt: startedAt, previousSuccessfulSearchAt: previous?.created_at ?? null,
     baselineEstablished: storageAvailable && !previous, historyAvailable: storageAvailable, persisted,
-    results, counts, searchedQueries: queryPlan.length, source: 'Arbetsförmedlingen / Platsbanken', sourceHealth,
+    filters, results, dismissedResults, counts, searchedQueries: queryPlan.length, source: 'Arbetsförmedlingen / Platsbanken', sourceHealth,
     sourceCoverage: ['Arbetsförmedlingen / Platsbanken'], lane: requestedLane, overlayUsed: Boolean(overlay), partialSourceFailure: failures.length > 0,
   });
 }
