@@ -5,8 +5,11 @@ summary: "WP40.4 — Help, Fleet Hardening, Release Audit & WP40 Lock"
 decision_context: >-
   Add a centrally managed user-facing Help layer, preserve the existing profile-owned
   Home boundary, verify the canonical three-profile fleet and fail-closed production
-  binding, and provide durable account-free protected Vercel access without making
-  profile workspaces publicly accessible.
+  binding, provide durable account-free protected Vercel access without making profile
+  workspaces publicly accessible, and prevent the central CareerHubZero source body from
+  being deployed as if it were a fourth profiled CareerHub. The central Vercel source-body
+  project therefore uses an ignored-build policy; real web deployments belong only to the
+  three profiled repositories after profile-owned material has been materialized.
 work_packages:
   - WP40.4
 failure_ids:
@@ -18,6 +21,7 @@ subsystems:
   - fleet_registry
   - deployment_binding
   - protected_access
+  - central_source_deployment_policy
   - release_audit
 source:
   repository: Motherpher/CareerHubZero
