@@ -1,0 +1,41 @@
+schema_version: "1.1"
+event_id: WP40.3-SEARCH-WORKFLOW
+recorded_at: "2026-10-07T03:20:00+02:00"
+summary: "WP40.3 — Search Workspace & Job Decision Flow"
+decision_context: >-
+  Turn Search into a persistent ordinary job-decision workspace while preserving
+  the saved Search Profile as baseline, keeping run filters session/workspace data,
+  retaining source-health semantics and handing real vacancies into the existing
+  durable Job Analysis pipeline.
+work_packages:
+  - WP40.3
+failure_ids:
+  - FAIL-016
+  - FAIL-024
+subsystems:
+  - search_workspace
+  - search_filters
+  - search_sessions
+  - profile_scoped_decisions
+  - source_health
+  - analyse_handoff
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 8bc5042751f41713c1048a77c7b174e1b6138511
+  head_sha: pending
+  branch: wp40-3/search-workspace-job-decision
+  actor: Hybrismannen
+  pull_request:
+    number: 52
+    title: "WP40.3 — Search Workspace & Job Decision Flow"
+    url: https://github.com/Motherpher/CareerHubZero/pull/52
+changes:
+  fingerprint: pending
+  file_count: 0
+  files: []
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
