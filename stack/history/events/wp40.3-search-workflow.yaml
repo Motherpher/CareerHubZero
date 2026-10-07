@@ -34,17 +34,28 @@ changes:
   fingerprint: sha256:790647f0f8ef2f05b55216b9a43bf45f5f6143ffe0f6e903711d93c158a05774
   file_count: 11
   files:
-    - CHANGELOG.md
-    - docs/history/WP40.3_SEARCH_WORKFLOW_LOCK.md
-    - schemas/search_session.schema.json
-    - stack/history/wp-registry.yaml
-    - tests/test_action_completeness.py
-    - tests/test_wp40_3_contract.py
-    - web-shell/site/app/api/search/dismiss/route.ts
-    - web-shell/site/app/api/search/route.ts
-    - web-shell/site/app/find/SearchRunner.tsx
-    - web-shell/site/app/motor.css
-    - web-shell/site/lib/search-workspace.ts
+    - status: M
+      path: CHANGELOG.md
+    - status: A
+      path: docs/history/WP40.3_SEARCH_WORKFLOW_LOCK.md
+    - status: M
+      path: schemas/search_session.schema.json
+    - status: M
+      path: stack/history/wp-registry.yaml
+    - status: M
+      path: tests/test_action_completeness.py
+    - status: A
+      path: tests/test_wp40_3_contract.py
+    - status: A
+      path: web-shell/site/app/api/search/dismiss/route.ts
+    - status: M
+      path: web-shell/site/app/api/search/route.ts
+    - status: M
+      path: web-shell/site/app/find/SearchRunner.tsx
+    - status: M
+      path: web-shell/site/app/motor.css
+    - status: A
+      path: web-shell/site/lib/search-workspace.ts
 commits: []
 provenance_contract:
   source_derived: true
