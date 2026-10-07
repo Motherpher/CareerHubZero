@@ -1,5 +1,5 @@
 export type SearchFilters = {
-  jobTypes: string[];
+  jobTypes: Array<'permanent' | 'temporary' | 'fulltime' | 'parttime' | 'consulting'>;
   workModes: Array<'onsite' | 'hybrid' | 'remote'>;
   publishedFrom: string;
   publishedTo: string;
@@ -43,10 +43,11 @@ export const EMPTY_FILTERS: SearchFilters = {
 export function normalizeFilters(raw: unknown): SearchFilters {
   const input = raw && typeof raw === 'object' ? raw as Record<string, unknown> : {};
   const strings = (value: unknown) => Array.isArray(value) ? value.map(String).map((item) => item.trim()).filter(Boolean).slice(0, 12) : [];
-  const workModes = strings(input.workModes).filter((value): value is 'onsite' | 'hybrid' | 'remote' => ['onsite', 'hybrid', 'remote'].includes(value));
+  const jobTypes = strings(input.jobTypes).filter((value): value is SearchFilters['jobTypes'][number] => ['permanent', 'temporary', 'fulltime', 'parttime', 'consulting'].includes(value));
+  const workModes = strings(input.workModes).filter((value): value is SearchFilters['workModes'][number] => ['onsite', 'hybrid', 'remote'].includes(value));
   const preset = Number(input.publishedPresetDays);
   return {
-    jobTypes: strings(input.jobTypes),
+    jobTypes,
     workModes,
     publishedFrom: typeof input.publishedFrom === 'string' ? input.publishedFrom.slice(0, 10) : '',
     publishedTo: typeof input.publishedTo === 'string' ? input.publishedTo.slice(0, 10) : '',
@@ -79,6 +80,18 @@ export function inferWorkMode(location: string, description: string): 'onsite' |
   return 'onsite';
 }
 
+function matchesJobType(jobType: string, filter: SearchFilters['jobTypes'][number]): boolean {
+  const text = jobType.toLowerCase();
+  const patterns: Record<SearchFilters['jobTypes'][number], RegExp> = {
+    permanent: /tillsvidare|permanent|fast anställning|indefinite/i,
+    temporary: /tidsbegränsad|visstid|vikariat|temporary|fixed[- ]term|seasonal|säsong/i,
+    fulltime: /heltid|full[- ]time|100\s?%/i,
+    parttime: /deltid|part[- ]time|[1-9]\d?\s?%/i,
+    consulting: /konsult|consultant|consulting|uppdrag|contractor/i,
+  };
+  return patterns[filter].test(text);
+}
+
 export function matchesFilters(job: {
   published: string;
   deadline: string;
@@ -93,8 +106,8 @@ export function matchesFilters(job: {
   if (filters.publishedTo && published && published > filters.publishedTo) return false;
   if (filters.deadlineFrom && deadline && deadline < filters.deadlineFrom) return false;
   if (deadlineTo && deadline && deadline > deadlineTo) return false;
-  if (filters.jobTypes.length && !filters.jobTypes.some((type) => job.jobType.toLowerCase().includes(type.toLowerCase()))) return false;
-  if (filters.workModes.length && !filters.workModes.includes(job.workMode as 'onsite' | 'hybrid' | 'remote')) return false;
+  if (filters.jobTypes.length && !filters.jobTypes.some((type) => matchesJobType(job.jobType, type))) return false;
+  if (filters.workModes.length && !filters.workModes.includes(job.workMode as SearchFilters['workModes'][number])) return false;
   return true;
 }
 
