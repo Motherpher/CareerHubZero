@@ -29,6 +29,10 @@ Every release section and every individual change entry has a permanent identifi
 - **`CHZ-CHG-029A-012`** Centralise profile-scoped Library namespace guards for list/open/upload/activate/deactivate/erase/reload operations.
 - **`CHZ-CHG-029A-013`** Add the conservative WP40.1 reset classifier and dry-run/apply tooling with `PRESERVE`, `SYNTHETIC_DELETE`, `TRANSIENT_CLEAR`, `ORPHAN_REVIEW` and `UNKNOWN_BLOCK` classes.
 - **`CHZ-CHG-029A-014`** Reconcile fleet binding metadata and legacy-Motor state, bind Linus/Weronika/Grace manifests to their repositories, and remove the known Weronika WP39 synthetic E2E ledger/report residue as a bounded reset unit.
+- **`CHZ-CHG-029A-015`** Establish the WP40.2 governed Library lifecycle `UPLOADED → INGESTING → INDEXED → ACTIVE`, with explicit `INACTIVE`, `INGEST_FAILED` and `ERASED` exception states.
+- **`CHZ-CHG-029A-016`** Add server-side document extraction/indexing and analysis evidence-use manifests so only successfully indexed ACTIVE profile-owned Library sources can enter a job analysis.
+- **`CHZ-CHG-029A-017`** Make Job Analysis navigation/reload-safe through a durable action record, stable `/analyse/<action-id>` result address and global background-process tray while preserving repository read-back before `COMPLETED`.
+- **`CHZ-CHG-029A-018`** Replace normal-user HRDM-R/Hybridianesque execution language with product language (`Analyse job opening` / `Job analysis`) and expose the normal 2–5 minute report window.
 
 ## 0.2.7-alpha — 2026-09-24
 **Release ID:** `CHZ-REL-027A`  

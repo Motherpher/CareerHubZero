@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
+import GlobalProcessTray from '@/app/_components/GlobalProcessTray';
 import { cssVars, loadHubProfile, loadProfileShell, loadTheme } from '@/lib/profile';
 import './globals.css';
 import './visual-language.css';
@@ -20,7 +21,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const shell = loadProfileShell();
   const theme = loadTheme();
   const style = cssVars(theme) as CSSProperties;
-  const swedish = (hub.identity.language ?? 'en').toLowerCase().startsWith('sv');
+  const language = hub.identity.language ?? 'en';
+  const swedish = language.toLowerCase().startsWith('sv');
   const profileShell = Boolean(shell?.enabled);
   const improveLabel = profileShell
     ? (swedish ? 'Förbättra min profil' : 'Improve my profile')
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   ].join(' ');
 
   return (
-    <html lang={hub.identity.language ?? 'en'}>
+    <html lang={language}>
       <body style={style} className={bodyClass}>
         <div className="visual-field" aria-hidden="true">
           <span className="visual-field__map" />
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <span className="visual-field__petal visual-field__petal--three" />
         </div>
         {children}
+        <GlobalProcessTray language={language} />
         <a className="wish-launcher" href="/wish" aria-label={improveLabel}>{improveLabel}</a>
       </body>
     </html>

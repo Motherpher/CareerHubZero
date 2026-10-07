@@ -6,19 +6,21 @@
   "additionalProperties": false,
   "required": ["schema_version", "profile_id", "sources", "index_state"],
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "2.0"},
     "profile_id": {"type": "string", "minLength": 1},
     "sources": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["source_id", "filename", "content_type", "storage", "status", "uploaded_at", "hash", "extraction"],
+        "required": ["schema_version", "source_id", "profile_id", "filename", "content_type", "document_class", "storage", "status", "requested_active", "uploaded_at", "updated_at", "hash", "size", "extraction"],
         "properties": {
+          "schema_version": {"const": "2.0"},
           "source_id": {"type": "string", "minLength": 1},
+          "profile_id": {"type": "string", "minLength": 1},
           "filename": {"type": "string", "minLength": 1},
           "content_type": {"type": "string", "minLength": 1},
-          "document_class": {"type": ["string", "null"]},
+          "document_class": {"type": "string", "minLength": 1},
           "storage": {
             "type": "object",
             "additionalProperties": false,
@@ -29,25 +31,23 @@
               "access": {"const": "private"}
             }
           },
-          "status": {"type": "string", "enum": ["STORED", "EXTRACTED", "REVIEW", "ACTIVE", "INACTIVE", "DELETED", "ERROR"]},
+          "status": {"type": "string", "enum": ["UPLOADED", "INGESTING", "INDEXED", "ACTIVE", "INACTIVE", "INGEST_FAILED", "ERASED"]},
+          "requested_active": {"type": "boolean"},
           "uploaded_at": {"type": "string", "format": "date-time"},
-          "updated_at": {"type": ["string", "null"], "format": "date-time"},
-          "hash": {"type": "string", "minLength": 1},
+          "updated_at": {"type": "string", "format": "date-time"},
+          "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+          "size": {"type": "integer", "minimum": 0},
           "extraction": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["state"],
+            "required": ["state", "extracted_text_ref", "completed_at", "char_count", "error"],
             "properties": {
-              "state": {"type": "string", "enum": ["PENDING", "COMPLETE", "PARTIAL", "FAILED"]},
+              "state": {"type": "string", "enum": ["PENDING", "COMPLETE", "FAILED"]},
               "extracted_text_ref": {"type": ["string", "null"]},
               "completed_at": {"type": ["string", "null"], "format": "date-time"},
+              "char_count": {"type": "integer", "minimum": 0},
               "error": {"type": ["string", "null"]}
             }
-          },
-          "profile_contributions": {
-            "type": "array",
-            "items": {"type": "string"},
-            "default": []
           }
         }
       }
@@ -55,10 +55,11 @@
     "index_state": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "active_source_count"],
+      "required": ["status", "active_source_count", "active_source_ids"],
       "properties": {
         "status": {"type": "string", "enum": ["CURRENT", "STALE", "RELOADING", "ERROR"]},
         "active_source_count": {"type": "integer", "minimum": 0},
+        "active_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "last_reloaded_at": {"type": ["string", "null"], "format": "date-time"},
         "last_result": {"type": ["string", "null"]}
       }
