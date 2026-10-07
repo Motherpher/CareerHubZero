@@ -238,8 +238,11 @@ operational_product_line:
         change_ids: [CHZ-CHG-029A-015, CHZ-CHG-029A-016, CHZ-CHG-029A-017, CHZ-CHG-029A-018]
       WP40.3:
         name: Search Workspace & Job Decision Flow
-        status: PENDING
+        issue: 51
+        pr: 52
+        status: COMPLETE
         gate: SEARCH_WORKFLOW_LOCK
+        change_ids: [CHZ-CHG-029A-019, CHZ-CHG-029A-020, CHZ-CHG-029A-021, CHZ-CHG-029A-022]
       WP40.4:
         name: Help, Fleet Hardening, Release Audit & WP40 Lock
         status: PENDING
