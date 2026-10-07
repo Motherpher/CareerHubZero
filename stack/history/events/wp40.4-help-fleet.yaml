@@ -1,0 +1,41 @@
+schema_version: "1.1"
+event_id: WP40.4-HELP-FLEET
+recorded_at: "2026-10-07T10:43:00+02:00"
+summary: "WP40.4 — Help, Fleet Hardening, Release Audit & WP40 Lock"
+decision_context: >-
+  Add a centrally managed user-facing Help layer, preserve the existing profile-owned
+  Home boundary, verify the canonical three-profile fleet and fail-closed production
+  binding, and provide durable account-free protected Vercel access without making
+  profile workspaces publicly accessible.
+work_packages:
+  - WP40.4
+failure_ids:
+  - FAIL-025
+subsystems:
+  - help_workspace
+  - product_language
+  - managed_shell_distribution
+  - fleet_registry
+  - deployment_binding
+  - protected_access
+  - release_audit
+source:
+  repository: Motherpher/CareerHubZero
+  event_name: pull_request
+  base_sha: 30d914677b32f1e8cb36fc56ece07b88c442cce5
+  head_sha: ab9492f12d8fcc22648dcdc938c6a892c8bc2ff1
+  branch: wp40-4/help-fleet-release-lock
+  actor: Hybrismannen
+  pull_request:
+    number: 54
+    title: "WP40.4 — Help, Fleet Hardening & Release Lock"
+    url: https://github.com/Motherpher/CareerHubZero/pull/54
+changes:
+  fingerprint: pending
+  file_count: 0
+  files: []
+commits: []
+provenance_contract:
+  source_derived: true
+  historical_snapshot: false
+  coverage_basis: normalized_content_delta
