@@ -14,6 +14,15 @@ Supporting workspaces: **Library** and **Improve my CareerHub**.
 
 Everything else is implementation behind that interface.
 
+## Start here — user guide
+
+- [CareerHub User Guide](docs/USER-GUIDE.md) — practical Profile → Search → Analyse → Apply → Track and Library/Help navigation, with bounded verification status
+- [In-application Help source](web-shell/site/app/help/page.tsx) — the current bilingual Help route (`/help`), with content in [HelpClient](web-shell/site/app/help/HelpClient.tsx)
+- [Current product source](web-shell/site/app/) — implemented route files; verified source presence is not live deployment certification
+- [Source Issues](https://github.com/Motherpher/CareerHubZero/issues) — defects, compatibility, release and unresolved live external gates
+
+**User safety:** Search preferences and temporary wishes do not become verified career facts. An alpha release or source-defined route alone does not prove external API/production readiness.
+
 ## Body contract
 
 ```text
